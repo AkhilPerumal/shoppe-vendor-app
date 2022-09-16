@@ -1,0 +1,223 @@
+{
+  "project_info": {
+    "project_number": "968510000223",
+    "firebase_url": "https://carclenx.firebaseio.com",
+    "project_id": "carclenx",
+    "storage_bucket": "carclenx.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:968510000223:android:187fe4bc0cd1c3d159dfea",
+        "android_client_info": {
+          "package_name": "com.carclenx.carcare"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "968510000223-pk21qbthjpg5rhfi4iog719b209kdhlu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBYwCdWlH-k7tQQIT4YYuHLSlEXaVQer3g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "968510000223-pk21qbthjpg5rhfi4iog719b209kdhlu.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "968510000223-8uoepc4oec8ac511bm24ksq2ttt64sjq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.carclenx.partner"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:968510000223:android:53ee584db39ae0ee59dfea",
+        "android_client_info": {
+          "package_name": "com.carclenx.motor.shoping"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "968510000223-06np8qaslk550qssc0mpnngpeq1mvatu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.carclenx.motor.shoping",
+            "certificate_hash": "ecf3fe8a2eec1db53fe52f784d1f270ca37fd0ee"
+          }
+        },
+        {
+          "client_id": "968510000223-0pc8ufep82ktbknpbl498lqs1f706i59.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.carclenx.motor.shoping",
+            "certificate_hash": "6c64051ad84a04067d3712f25ac9eb0917ce84e4"
+          }
+        },
+        {
+          "client_id": "968510000223-pk21qbthjpg5rhfi4iog719b209kdhlu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBYwCdWlH-k7tQQIT4YYuHLSlEXaVQer3g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "968510000223-pk21qbthjpg5rhfi4iog719b209kdhlu.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "968510000223-8uoepc4oec8ac511bm24ksq2ttt64sjq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.carclenx.partner"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:968510000223:android:829a89d86d3c6d5959dfea",
+        "android_client_info": {
+          "package_name": "com.carclenx.partner"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "968510000223-c4cu6e7ja5rd8iefgps2ub0or16ho9bt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.carclenx.partner",
+            "certificate_hash": "ecf3fe8a2eec1db53fe52f784d1f270ca37fd0ee"
+          }
+        },
+        {
+          "client_id": "968510000223-c8j6gtt3unnq2g5cevp0bi43dgr6aq78.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.carclenx.partner",
+            "certificate_hash": "f8e25d32c9926224894905f3cf98029b1cf21f97"
+          }
+        },
+        {
+          "client_id": "968510000223-pk21qbthjpg5rhfi4iog719b209kdhlu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBYwCdWlH-k7tQQIT4YYuHLSlEXaVQer3g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "968510000223-pk21qbthjpg5rhfi4iog719b209kdhlu.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "968510000223-8uoepc4oec8ac511bm24ksq2ttt64sjq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.carclenx.partner"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:968510000223:android:c7442726d3e9210b59dfea",
+        "android_client_info": {
+          "package_name": "com.carclenx.worker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "968510000223-pk21qbthjpg5rhfi4iog719b209kdhlu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBYwCdWlH-k7tQQIT4YYuHLSlEXaVQer3g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "968510000223-pk21qbthjpg5rhfi4iog719b209kdhlu.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "968510000223-8uoepc4oec8ac511bm24ksq2ttt64sjq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.carclenx.partner"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:968510000223:android:d6ae62408b55633959dfea",
+        "android_client_info": {
+          "package_name": "com.pexa.partner"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "968510000223-pk21qbthjpg5rhfi4iog719b209kdhlu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBYwCdWlH-k7tQQIT4YYuHLSlEXaVQer3g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "968510000223-pk21qbthjpg5rhfi4iog719b209kdhlu.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "968510000223-8uoepc4oec8ac511bm24ksq2ttt64sjq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.carclenx.partner"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
