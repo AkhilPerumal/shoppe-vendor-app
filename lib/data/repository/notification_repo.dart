@@ -11,8 +11,8 @@ class NotificationRepo {
       {@required this.apiClient, @required this.sharedPreferences});
 
   Future<Response> getNotificationList() async {
-    return await apiClient
-        .getData('${AppConstants.NOTIFICATION_URI}${getUserToken()}');
+    return await apiClient.getData(
+        uri: '${AppConstants.NOTIFICATION_URI}${getUserToken()}');
   }
 
   String getUserToken() {

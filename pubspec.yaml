@@ -38,7 +38,7 @@ dependencies:
   audioplayers: ^0.20.1
   flutter_widget_from_html_core: ^0.8.5+3
   fwfh_text_style: ^2.7.3+2
-  change_app_package_name: ^1.1.0
+  marquee: ^2.2.3
 
 dev_dependencies:
   flutter_test:

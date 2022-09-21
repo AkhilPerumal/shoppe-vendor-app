@@ -4,7 +4,7 @@ import 'package:carclenx_vendor_app/controller/auth_controller.dart';
 import 'package:carclenx_vendor_app/controller/localization_controller.dart';
 import 'package:carclenx_vendor_app/controller/order_controller.dart';
 import 'package:carclenx_vendor_app/controller/splash_controller.dart';
-import 'package:carclenx_vendor_app/data/model/response/order_model.dart';
+import 'package:carclenx_vendor_app/data/model/response/all_service_model.dart';
 import 'package:carclenx_vendor_app/helper/date_converter.dart';
 import 'package:carclenx_vendor_app/util/dimensions.dart';
 import 'package:carclenx_vendor_app/util/images.dart';
@@ -42,11 +42,11 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
 
     Get.find<OrderController>().setOrder(widget.orderModel);
     Get.find<OrderController>()
-        .getOrderDetails(Get.find<OrderController>().orderModel.id);
+        .getOrderDetails(Get.find<OrderController>().orderModel.orderId);
 
     _timer = Timer.periodic(Duration(seconds: 10), (timer) {
       Get.find<OrderController>()
-          .getOrderWithId(Get.find<OrderController>().orderModel.id);
+          .getOrderWithId(Get.find<OrderController>().orderModel.orderId);
     });
   }
 
@@ -74,33 +74,28 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
           bool _restConfModel =
               Get.find<SplashController>().configModel.orderConfirmationModel !=
                   'deliveryman';
-          bool _showBottomView =
-              controllerOrderModel.orderStatus == 'accepted' ||
-                  controllerOrderModel.orderStatus == 'confirmed' ||
-                  controllerOrderModel.orderStatus == 'processing' ||
-                  controllerOrderModel.orderStatus == 'handover' ||
-                  controllerOrderModel.orderStatus == 'picked_up' ||
-                  widget.isRunningOrder;
-          bool _showSlider =
-              (controllerOrderModel.paymentMethod == 'cash_on_delivery' &&
-                      controllerOrderModel.orderStatus == 'accepted' &&
-                      !_restConfModel &&
-                      !_selfDelivery) ||
-                  controllerOrderModel.orderStatus == 'handover' ||
-                  controllerOrderModel.orderStatus == 'picked_up';
+          bool _showBottomView = controllerOrderModel.status == 'accepted' ||
+              controllerOrderModel.status == 'confirmed' ||
+              controllerOrderModel.status == 'processing' ||
+              controllerOrderModel.status == 'handover' ||
+              controllerOrderModel.status == 'picked_up' ||
+              widget.isRunningOrder;
+          bool _showSlider = (controllerOrderModel.mode == 'cash_on_delivery' &&
+                  controllerOrderModel.status == 'accepted' &&
+                  !_restConfModel &&
+                  !_selfDelivery) ||
+              controllerOrderModel.status == 'handover' ||
+              controllerOrderModel.status == 'picked_up';
           return orderController.orderDetailsModel != null
               ? Column(children: [
                   Expanded(
                       child: SingleChildScrollView(
                     physics: BouncingScrollPhysics(),
                     child: Column(children: [
-                      DateConverter.isBeforeTime(
-                              controllerOrderModel.scheduleAt)
-                          ? (controllerOrderModel.orderStatus != 'delivered' &&
-                                  controllerOrderModel.orderStatus !=
-                                      'failed' &&
-                                  controllerOrderModel.orderStatus !=
-                                      'canceled')
+                      DateConverter.isBeforeTime(controllerOrderModel.timeSlot)
+                          ? (controllerOrderModel.status != 'delivered' &&
+                                  controllerOrderModel.status != 'failed' &&
+                                  controllerOrderModel.status != 'canceled')
                               ? Column(children: [
                                   ClipRRect(
                                       borderRadius: BorderRadius.circular(10),
@@ -118,39 +113,39 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                   SizedBox(
                                       height:
                                           Dimensions.PADDING_SIZE_EXTRA_SMALL),
-                                  Center(
-                                    child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Text(
-                                            DateConverter.differenceInMinute(
-                                                        controllerOrderModel
-                                                            .restaurantDeliveryTime,
-                                                        controllerOrderModel
-                                                            .createdAt,
-                                                        controllerOrderModel
-                                                            .processingTime,
-                                                        controllerOrderModel
-                                                            .scheduleAt) <
-                                                    5
-                                                ? '1 - 5'
-                                                : '${DateConverter.differenceInMinute(controllerOrderModel.restaurantDeliveryTime, controllerOrderModel.createdAt, controllerOrderModel.processingTime, controllerOrderModel.scheduleAt) - 5} '
-                                                    '- ${DateConverter.differenceInMinute(controllerOrderModel.restaurantDeliveryTime, controllerOrderModel.createdAt, controllerOrderModel.processingTime, controllerOrderModel.scheduleAt)}',
-                                            style: robotoBold.copyWith(
-                                                fontSize: Dimensions
-                                                    .FONT_SIZE_EXTRA_LARGE),
-                                          ),
-                                          SizedBox(
-                                              width: Dimensions
-                                                  .PADDING_SIZE_EXTRA_SMALL),
-                                          Text('min'.tr,
-                                              style: robotoMedium.copyWith(
-                                                  fontSize: Dimensions
-                                                      .FONT_SIZE_LARGE,
-                                                  color: Theme.of(context)
-                                                      .primaryColor)),
-                                        ]),
-                                  ),
+                                  // Center(
+                                  //   child: Row(
+                                  //       mainAxisSize: MainAxisSize.min,
+                                  //       children: [
+                                  //         Text(
+                                  //           DateConverter.differenceInMinute(
+                                  //                       controllerOrderModel
+                                  //                           .restaurantDeliveryTime,
+                                  //                       controllerOrderModel
+                                  //                           .createdAt,
+                                  //                       controllerOrderModel
+                                  //                           .processingTime,
+                                  //                       controllerOrderModel
+                                  //                           .scheduleAt) <
+                                  //                   5
+                                  //               ? '1 - 5'
+                                  //               : '${DateConverter.differenceInMinute(controllerOrderModel.restaurantDeliveryTime, controllerOrderModel.createdAt, controllerOrderModel.processingTime, controllerOrderModel.scheduleAt) - 5} '
+                                  //                   '- ${DateConverter.differenceInMinute(controllerOrderModel.restaurantDeliveryTime, controllerOrderModel.createdAt, controllerOrderModel.processingTime, controllerOrderModel.scheduleAt)}',
+                                  //           style: robotoBold.copyWith(
+                                  //               fontSize: Dimensions
+                                  //                   .FONT_SIZE_EXTRA_LARGE),
+                                  //         ),
+                                  //         SizedBox(
+                                  //             width: Dimensions
+                                  //                 .PADDING_SIZE_EXTRA_SMALL),
+                                  //         Text('min'.tr,
+                                  //             style: robotoMedium.copyWith(
+                                  //                 fontSize: Dimensions
+                                  //                     .FONT_SIZE_LARGE,
+                                  //                 color: Theme.of(context)
+                                  //                     .primaryColor)),
+                                  //       ]),
+                                  // ),
                                   SizedBox(
                                       height:
                                           Dimensions.PADDING_SIZE_EXTRA_LARGE),
@@ -160,7 +155,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                       Row(children: [
                         Text('${'order_id'.tr}:', style: robotoRegular),
                         SizedBox(width: Dimensions.PADDING_SIZE_EXTRA_SMALL),
-                        Text(controllerOrderModel.id.toString(),
+                        Text(controllerOrderModel.orderId.toString(),
                             style: robotoMedium),
                         SizedBox(width: Dimensions.PADDING_SIZE_EXTRA_SMALL),
                         Expanded(child: SizedBox()),
@@ -171,41 +166,34 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                 shape: BoxShape.circle, color: Colors.green)),
                         SizedBox(width: Dimensions.PADDING_SIZE_EXTRA_SMALL),
                         Text(
-                          controllerOrderModel.orderStatus.tr,
+                          controllerOrderModel.status.tr,
                           style: robotoRegular,
                         ),
                       ]),
                       SizedBox(height: Dimensions.PADDING_SIZE_LARGE),
                       InfoCard(
                         title: 'restaurant_details'.tr,
-                        addressModel: DeliveryAddress(
-                            address: controllerOrderModel.restaurantAddress),
-                        image:
-                            '${Get.find<SplashController>().configModel.baseUrls.restaurantImageUrl}/${controllerOrderModel.restaurantLogo}',
-                        name: controllerOrderModel.restaurantName,
-                        phone: controllerOrderModel.restaurantPhone,
-                        latitude: controllerOrderModel.restaurantLat,
-                        longitude: controllerOrderModel.restaurantLng,
-                        showButton:
-                            controllerOrderModel.orderStatus != 'delivered',
+                        addressModel: controllerOrderModel.address,
+                        image: Images.logo,
+                        name: 'franchise name',
+                        phone: 'franchise number',
+                        latitude: 'franchise lat',
+                        longitude: 'franchise long',
+                        showButton: controllerOrderModel.status != 'delivered',
                       ),
                       SizedBox(height: Dimensions.PADDING_SIZE_LARGE),
                       InfoCard(
                         title: 'customer_contact_details'.tr,
-                        addressModel: controllerOrderModel.deliveryAddress,
+                        addressModel: controllerOrderModel.address,
                         isDelivery: true,
-                        image: controllerOrderModel.customer != null
-                            ? '${Get.find<SplashController>().configModel.baseUrls.customerImageUrl}/${controllerOrderModel.customer.image}'
-                            : '',
-                        name: controllerOrderModel
-                            .deliveryAddress.contactPersonName,
-                        phone: controllerOrderModel
-                            .deliveryAddress.contactPersonNumber,
-                        latitude: controllerOrderModel.deliveryAddress.latitude,
+                        image: '',
+                        name: controllerOrderModel.address.name,
+                        phone: controllerOrderModel.address.mobile.toString(),
+                        latitude:
+                            controllerOrderModel.address.location[0].toString(),
                         longitude:
-                            controllerOrderModel.deliveryAddress.longitude,
-                        showButton:
-                            controllerOrderModel.orderStatus != 'delivered',
+                            controllerOrderModel.address.location[1].toString(),
+                        showButton: controllerOrderModel.status != 'delivered',
                       ),
                       SizedBox(height: Dimensions.PADDING_SIZE_LARGE),
                       Column(
@@ -235,10 +223,10 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                       color: Theme.of(context).primaryColor,
                                       borderRadius: BorderRadius.circular(5)),
                                   child: Text(
-                                    controllerOrderModel.paymentMethod ==
+                                    controllerOrderModel.paymentStatus ==
                                             'cash_on_delivery'
                                         ? 'cod'.tr
-                                        : controllerOrderModel.paymentMethod ==
+                                        : controllerOrderModel.paymentStatus ==
                                                 'wallet'
                                             ? 'wallet_payment'.tr
                                             : 'digitally_paid'.tr,
@@ -264,55 +252,46 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                         .orderDetailsModel[index]);
                               },
                             ),
-                            (controllerOrderModel.orderNote != null &&
-                                    controllerOrderModel.orderNote.isNotEmpty)
-                                ? Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                        Text('additional_note'.tr,
-                                            style: robotoRegular),
-                                        SizedBox(
-                                            height:
-                                                Dimensions.PADDING_SIZE_SMALL),
-                                        Container(
-                                          width: 1170,
-                                          padding: EdgeInsets.all(
-                                              Dimensions.PADDING_SIZE_SMALL),
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(5),
-                                            border: Border.all(
-                                                width: 1,
-                                                color: Theme.of(context)
-                                                    .disabledColor),
-                                          ),
-                                          child: Text(
-                                            controllerOrderModel.orderNote,
-                                            style: robotoRegular.copyWith(
-                                                fontSize:
-                                                    Dimensions.FONT_SIZE_SMALL,
-                                                color: Theme.of(context)
-                                                    .disabledColor),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                            height:
-                                                Dimensions.PADDING_SIZE_LARGE),
-                                      ])
-                                : SizedBox(),
+                            Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('additional_note'.tr,
+                                      style: robotoRegular),
+                                  SizedBox(
+                                      height: Dimensions.PADDING_SIZE_SMALL),
+                                  Container(
+                                    width: 1170,
+                                    padding: EdgeInsets.all(
+                                        Dimensions.PADDING_SIZE_SMALL),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5),
+                                      border: Border.all(
+                                          width: 1,
+                                          color:
+                                              Theme.of(context).disabledColor),
+                                    ),
+                                    child: Text(
+                                      "Description note",
+                                      style: robotoRegular.copyWith(
+                                          fontSize: Dimensions.FONT_SIZE_SMALL,
+                                          color:
+                                              Theme.of(context).disabledColor),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                      height: Dimensions.PADDING_SIZE_LARGE),
+                                ]),
                           ]),
                     ]),
                   )),
                   _showBottomView
-                      ? ((controllerOrderModel.orderStatus == 'accepted' &&
-                                  (controllerOrderModel.paymentMethod !=
+                      ? ((controllerOrderModel.status == 'accepted' &&
+                                  (controllerOrderModel.paymentStatus !=
                                           'cash_on_delivery' ||
                                       _restConfModel ||
                                       _selfDelivery)) ||
-                              controllerOrderModel.orderStatus ==
-                                  'processing' ||
-                              controllerOrderModel.orderStatus == 'confirmed')
+                              controllerOrderModel.status == 'processing' ||
+                              controllerOrderModel.status == 'confirmed')
                           ? Container(
                               padding: EdgeInsets.all(
                                   Dimensions.PADDING_SIZE_DEFAULT),
@@ -324,16 +303,16 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                               ),
                               alignment: Alignment.center,
                               child: Text(
-                                controllerOrderModel.orderStatus == 'processing'
+                                controllerOrderModel.status == 'processing'
                                     ? 'food_is_preparing'.tr
                                     : 'food_waiting_for_cook'.tr,
                                 style: robotoMedium,
                               ),
                             )
                           : _showSlider
-                              ? (controllerOrderModel.paymentMethod ==
+                              ? (controllerOrderModel.paymentStatus ==
                                           'cash_on_delivery' &&
-                                      controllerOrderModel.orderStatus ==
+                                      controllerOrderModel.status ==
                                           'accepted' &&
                                       !_restConfModel &&
                                       _cancelPermission &&
@@ -430,9 +409,9 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                   : SliderButton(
                                       action: () {
                                         if (controllerOrderModel
-                                                    .paymentMethod ==
+                                                    .paymentStatus ==
                                                 'cash_on_delivery' &&
-                                            controllerOrderModel.orderStatus ==
+                                            controllerOrderModel.status ==
                                                 'accepted' &&
                                             !_restConfModel &&
                                             !_selfDelivery) {
@@ -463,13 +442,13 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                               ),
                                               barrierDismissible: false);
                                         } else if (controllerOrderModel
-                                                .orderStatus ==
+                                                .status ==
                                             'picked_up') {
                                           if (Get.find<SplashController>()
                                                   .configModel
                                                   .orderDeliveryVerification ||
                                               controllerOrderModel
-                                                      .paymentMethod ==
+                                                      .paymentStatus ==
                                                   'cash_on_delivery') {
                                             Get.bottomSheet(
                                                 VerifyDeliverySheet(
@@ -480,9 +459,10 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                       .orderDeliveryVerification,
                                                   orderAmount:
                                                       controllerOrderModel
-                                                          .orderAmount,
+                                                          .grandTotal
+                                                          .toDouble(),
                                                   cod: controllerOrderModel
-                                                          .paymentMethod ==
+                                                          .paymentStatus ==
                                                       'cash_on_delivery',
                                                 ),
                                                 isScrollControlled: true);
@@ -501,7 +481,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                             });
                                           }
                                         } else if (controllerOrderModel
-                                                .orderStatus ==
+                                                .status ==
                                             'handover') {
                                           if (Get.find<AuthController>()
                                                   .profileModel
@@ -527,20 +507,17 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                         }
                                       },
                                       label: Text(
-                                        (controllerOrderModel.paymentMethod ==
+                                        (controllerOrderModel.paymentStatus ==
                                                     'cash_on_delivery' &&
-                                                controllerOrderModel
-                                                        .orderStatus ==
+                                                controllerOrderModel.status ==
                                                     'accepted' &&
                                                 !_restConfModel &&
                                                 !_selfDelivery)
                                             ? 'swipe_to_confirm_order'.tr
-                                            : controllerOrderModel
-                                                        .orderStatus ==
+                                            : controllerOrderModel.status ==
                                                     'picked_up'
                                                 ? 'swipe_to_deliver_order'.tr
-                                                : controllerOrderModel
-                                                            .orderStatus ==
+                                                : controllerOrderModel.status ==
                                                         'handover'
                                                     ? 'swipe_to_pick_up_order'
                                                         .tr

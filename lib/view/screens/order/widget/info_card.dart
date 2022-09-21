@@ -1,3 +1,4 @@
+import 'package:carclenx_vendor_app/data/model/response/address_model.dart';
 import 'package:carclenx_vendor_app/data/model/response/order_model.dart';
 import 'package:carclenx_vendor_app/util/dimensions.dart';
 import 'package:carclenx_vendor_app/util/images.dart';
@@ -11,7 +12,7 @@ class InfoCard extends StatelessWidget {
   final String title;
   final String image;
   final String name;
-  final DeliveryAddress addressModel;
+  final AddressModel addressModel;
   final String phone;
   final String latitude;
   final String longitude;
@@ -74,19 +75,19 @@ class InfoCard extends StatelessWidget {
                               fontSize: Dimensions.FONT_SIZE_SMALL)),
                       SizedBox(height: Dimensions.PADDING_SIZE_EXTRA_SMALL),
                       Text(
-                        addressModel.address,
+                        "addressModel.address",
                         style: robotoRegular.copyWith(
                             fontSize: Dimensions.FONT_SIZE_SMALL,
                             color: Theme.of(context).disabledColor),
                       ),
                       isDelivery
                           ? Wrap(children: [
-                              (addressModel.streetNumber != null &&
-                                      addressModel.streetNumber.isNotEmpty)
+                              (addressModel.street != null &&
+                                      addressModel.street.isNotEmpty)
                                   ? Text(
                                       'street_number'.tr +
                                           ': ' +
-                                          addressModel.streetNumber +
+                                          addressModel.street +
                                           ', ',
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
@@ -109,10 +110,10 @@ class InfoCard extends StatelessWidget {
                                           color: Theme.of(context).hintColor),
                                     )
                                   : SizedBox(),
-                              (addressModel.floor != null &&
-                                      addressModel.floor.isNotEmpty)
+                              (addressModel.house != null &&
+                                      addressModel.house.isNotEmpty)
                                   ? Text(
-                                      'floor'.tr + ': ' + addressModel.floor,
+                                      'floor'.tr + ': ' + addressModel.house,
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                       style: robotoRegular.copyWith(

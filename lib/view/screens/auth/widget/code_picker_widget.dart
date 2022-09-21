@@ -121,7 +121,7 @@ class CodePickerWidget extends StatefulWidget {
     List<Map<String, String>> jsonList = countryList;
 
     List<CountryCode> elements =
-    jsonList.map((json) => CountryCode.fromJson(json)).toList();
+        jsonList.map((json) => CountryCode.fromJson(json)).toList();
 
     if (comparator != null) {
       elements.sort(comparator);
@@ -129,12 +129,12 @@ class CodePickerWidget extends StatefulWidget {
 
     if (countryFilter != null && countryFilter.isNotEmpty) {
       final uppercaseCustomList =
-      countryFilter.map((c) => c.toUpperCase()).toList();
+          countryFilter.map((c) => c.toUpperCase()).toList();
       elements = elements
           .where((c) =>
-      uppercaseCustomList.contains(c.code) ||
-          uppercaseCustomList.contains(c.name) ||
-          uppercaseCustomList.contains(c.dialCode))
+              uppercaseCustomList.contains(c.code) ||
+              uppercaseCustomList.contains(c.name) ||
+              uppercaseCustomList.contains(c.dialCode))
           .toList();
     }
 
@@ -171,9 +171,8 @@ class CodePickerWidgetState extends State<CodePickerWidget> {
                 flex: 0,
                 fit: widget.alignLeft ? FlexFit.tight : FlexFit.loose,
                 child: Container(
-                  clipBehavior: widget.flagDecoration == null
-                      ? Clip.none
-                      : Clip.hardEdge,
+                  clipBehavior:
+                      widget.flagDecoration == null ? Clip.none : Clip.hardEdge,
                   decoration: widget.flagDecoration,
                   margin: widget.alignLeft
                       ? const EdgeInsets.only(right: 8.0, left: 8.0)
@@ -192,8 +191,7 @@ class CodePickerWidgetState extends State<CodePickerWidget> {
                   widget.showOnlyCountryWhenClosed
                       ? selectedItem.toCountryStringOnly()
                       : selectedItem.toString(),
-                  style:
-                  widget.textStyle ?? Theme.of(context).textTheme.button,
+                  style: widget.textStyle ?? Theme.of(context).textTheme.button,
                   overflow: widget.textOverflow,
                 ),
               ),
@@ -225,12 +223,11 @@ class CodePickerWidgetState extends State<CodePickerWidget> {
     if (oldWidget.initialSelection != widget.initialSelection) {
       if (widget.initialSelection != null) {
         selectedItem = elements.firstWhere(
-                (e) =>
-            (e.code.toUpperCase() ==
-                widget.initialSelection.toUpperCase()) ||
+            (e) =>
+                (e.code.toUpperCase() ==
+                    widget.initialSelection.toUpperCase()) ||
                 (e.dialCode == widget.initialSelection) ||
-                (e.name.toUpperCase() ==
-                    widget.initialSelection.toUpperCase()),
+                (e.name.toUpperCase() == widget.initialSelection.toUpperCase()),
             orElse: () => elements[0]);
       } else {
         selectedItem = elements[0];
@@ -245,9 +242,8 @@ class CodePickerWidgetState extends State<CodePickerWidget> {
 
     if (widget.initialSelection != null) {
       selectedItem = elements.firstWhere(
-              (e) =>
-          (e.code.toUpperCase() ==
-              widget.initialSelection.toUpperCase()) ||
+          (e) =>
+              (e.code.toUpperCase() == widget.initialSelection.toUpperCase()) ||
               (e.dialCode == widget.initialSelection) ||
               (e.name.toUpperCase() == widget.initialSelection.toUpperCase()),
           orElse: () => elements[0]);
@@ -257,11 +253,11 @@ class CodePickerWidgetState extends State<CodePickerWidget> {
 
     favoriteElements = elements
         .where((e) =>
-    widget.favorite.firstWhereOrNull((f) =>
-    e.code.toUpperCase() == f.toUpperCase() ||
-        e.dialCode == f ||
-        e.name.toUpperCase() == f.toUpperCase()) !=
-        null)
+            widget.favorite.firstWhereOrNull((f) =>
+                e.code.toUpperCase() == f.toUpperCase() ||
+                e.dialCode == f ||
+                e.name.toUpperCase() == f.toUpperCase()) !=
+            null)
         .toList();
   }
 

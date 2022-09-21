@@ -5,6 +5,7 @@ import 'package:carclenx_vendor_app/data/api/api_checker.dart';
 import 'package:carclenx_vendor_app/data/model/body/record_location_body.dart';
 import 'package:carclenx_vendor_app/data/model/response/profile_model.dart';
 import 'package:carclenx_vendor_app/data/model/response/response_model.dart';
+import 'package:carclenx_vendor_app/data/model/response/user_model/user_model.dart';
 import 'package:carclenx_vendor_app/data/repository/auth_repo.dart';
 import 'package:carclenx_vendor_app/helper/route_helper.dart';
 import 'package:carclenx_vendor_app/util/images.dart';
@@ -27,24 +28,27 @@ class AuthController extends GetxController implements GetxService {
 
   bool _isLoading = false;
   bool _notification = true;
-  ProfileModel _profileModel;
+  ProfileModel _profileModel = ProfileModel();
+  UserModel _userModel;
   XFile _pickedFile;
   Timer _timer;
   Location _location = Location();
 
   bool get isLoading => _isLoading;
   bool get notification => _notification;
+  UserModel get userModel => _userModel;
   ProfileModel get profileModel => _profileModel;
   XFile get pickedFile => _pickedFile;
 
-  Future<ResponseModel> login(String phone, String password) async {
+  Future<ResponseModel> login(String name, String password) async {
     _isLoading = true;
     update();
-    Response response = await authRepo.login(phone, password);
+    Response response = await authRepo.login(name, password);
     ResponseModel responseModel;
     if (response.statusCode == 200) {
+      _userModel = UserModel.fromJson(response.body['resultData']);
       authRepo.saveUserToken(
-          response.body['token'], response.body['zone_wise_topic']);
+          _userModel.userToken, response.body['zone_wise_topic']);
       await authRepo.updateToken();
       responseModel = ResponseModel(true, 'successful');
     } else {
@@ -55,11 +59,9 @@ class AuthController extends GetxController implements GetxService {
     return responseModel;
   }
 
-  Future<void> getProfile() async {
-    Response response = await authRepo.getProfileInfo();
-    if (response.statusCode == 200) {
-      _profileModel = ProfileModel.fromJson(response.body);
-      if (_profileModel.active == 1) {
+  Future<void> getProfile({String userID}) async {
+    if (userModel != null) {
+      if (_userModel.isActive) {
         LocationPermission permission = await Geolocator.checkPermission();
         if (permission == LocationPermission.denied ||
             permission == LocationPermission.deniedForever ||
@@ -84,8 +86,6 @@ class AuthController extends GetxController implements GetxService {
       } else {
         stopLocationRecord();
       }
-    } else {
-      ApiChecker.checkApi(response);
     }
     update();
   }
@@ -182,9 +182,9 @@ class AuthController extends GetxController implements GetxService {
   void startLocationRecord() {
     _location.enableBackgroundMode(enable: true);
     _timer?.cancel();
-    _timer = Timer.periodic(Duration(seconds: 10), (timer) {
-      recordLocation();
-    });
+    // _timer = Timer.periodic(Duration(seconds: 10), (timer) {
+    //   recordLocation();
+    // });
   }
 
   void stopLocationRecord() {
@@ -301,9 +301,12 @@ class AuthController extends GetxController implements GetxService {
     return await authRepo.clearSharedData();
   }
 
-  void saveUserNumberAndPassword(
-      String number, String password, String countryCode) {
-    authRepo.saveUserNumberAndPassword(number, password, countryCode);
+  void saveUserNameAndPassword(String name, String password) {
+    authRepo.saveUserNameAndPassword(name, password);
+  }
+
+  String getUserName() {
+    return authRepo.getUserName() ?? "";
   }
 
   String getUserNumber() {
@@ -318,8 +321,8 @@ class AuthController extends GetxController implements GetxService {
     return authRepo.getUserPassword() ?? "";
   }
 
-  Future<bool> clearUserNumberAndPassword() async {
-    return authRepo.clearUserNumberAndPassword();
+  Future<bool> clearUserNameAndPassword() async {
+    return authRepo.clearUserNameAndPassword();
   }
 
   String getUserToken() {

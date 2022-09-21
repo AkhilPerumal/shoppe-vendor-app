@@ -16,7 +16,7 @@ class CustomTextField extends StatefulWidget {
   final bool isEnabled;
   final int maxLines;
   final TextCapitalization capitalization;
-  final String prefixIcon;
+  final IconData prefixIcon;
   final bool divider;
 
   CustomTextField(
@@ -79,8 +79,10 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 ? Padding(
                     padding: EdgeInsets.symmetric(
                         horizontal: Dimensions.PADDING_SIZE_SMALL),
-                    child:
-                        Image.asset(widget.prefixIcon, height: 20, width: 20),
+                    child: Icon(
+                      widget.prefixIcon,
+                      size: 20,
+                    ),
                   )
                 : null,
             suffixIcon: widget.isPassword

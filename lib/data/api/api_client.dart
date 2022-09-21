@@ -39,8 +39,10 @@ class ApiClient extends GetxService {
     };
   }
 
-  Future<Response> getData(String uri,
-      {Map<String, dynamic> query, Map<String, String> headers}) async {
+  Future<Response> getData(
+      {String uri,
+      Map<String, dynamic> query,
+      Map<String, String> headers}) async {
     try {
       debugPrint('====> API Call: $uri\nHeader: $_mainHeaders');
       Http.Response _response = await Http.get(
@@ -53,14 +55,20 @@ class ApiClient extends GetxService {
     }
   }
 
-  Future<Response> postData(String uri, dynamic body,
-      {Map<String, String> headers}) async {
+  Future<Response> postData(String uri,
+      {Map<String, String> headers, Map<String, dynamic> body}) async {
+    var encBody;
     try {
+      if (body != null) {
+        encBody = jsonEncode(body);
+      } else {
+        encBody = "";
+      }
       debugPrint('====> API Call: $uri\nHeader: $_mainHeaders');
       debugPrint('====> API Body: $body');
       Http.Response _response = await Http.post(
         Uri.parse(appBaseUrl + uri),
-        body: jsonEncode(body),
+        body: encBody,
         headers: headers ?? _mainHeaders,
       ).timeout(Duration(seconds: timeoutInSeconds));
       return handleResponse(_response, uri);
@@ -110,14 +118,22 @@ class ApiClient extends GetxService {
     }
   }
 
-  Future<Response> putData(String uri, dynamic body,
-      {Map<String, String> headers}) async {
+  Future<Response> putData(
+      {String uri,
+      Map<String, dynamic> headers,
+      Map<String, dynamic> body}) async {
+    var encBody;
     try {
+      if (body != null) {
+        encBody = jsonEncode(body);
+      } else {
+        encBody = "";
+      }
       debugPrint('====> API Call: $uri\nHeader: $_mainHeaders');
       debugPrint('====> API Body: $body');
       Http.Response _response = await Http.put(
         Uri.parse(appBaseUrl + uri),
-        body: jsonEncode(body),
+        body: encBody,
         headers: headers ?? _mainHeaders,
       ).timeout(Duration(seconds: timeoutInSeconds));
       return handleResponse(_response, uri);

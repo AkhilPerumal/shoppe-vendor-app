@@ -7,7 +7,8 @@ class Images {
   static const String arabic = 'assets/image/arabic.png';
   static const String mail = 'assets/image/mail.png';
   static const String checked = 'assets/image/checked.png';
-  static const String delivery_man_marker = 'assets/image/delivery_man_marker.png';
+  static const String delivery_man_marker =
+      'assets/image/delivery_man_marker.png';
   static const String location_marker = 'assets/image/location_marker.png';
   static const String restaurant_marker = 'assets/image/restaurant_marker.png';
   static const String location = 'assets/image/location.png';
@@ -23,7 +24,8 @@ class Images {
   static const String user = 'assets/image/user.png';
   static const String forgot = 'assets/image/forgot.png';
   static const String wallet = 'assets/image/wallet.png';
-  static const String location_permission = 'assets/image/location_permission.png';
+  static const String location_permission =
+      'assets/image/location_permission.png';
   static const String update = 'assets/image/update.png';
   static const String maintenance = 'assets/image/maintenance.png';
   static const String animate_delivery_man = 'assets/image/delivery-man.gif';

@@ -101,14 +101,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
   // }
 
   void _navigateRequestPage() {
-    if (Get.find<AuthController>().profileModel != null &&
-        Get.find<AuthController>().profileModel.active == 1 &&
+    if (Get.find<AuthController>().userModel != null &&
+        Get.find<AuthController>().userModel.isActive == true &&
         Get.find<OrderController>().currentOrderList != null &&
         Get.find<OrderController>().currentOrderList.length < 1) {
       _setPage(1);
     } else {
-      if (Get.find<AuthController>().profileModel == null ||
-          Get.find<AuthController>().profileModel.active == 0) {
+      if (Get.find<AuthController>().userModel == null ||
+          Get.find<AuthController>().userModel.isActive == false) {
         Get.dialog(CustomAlertDialog(
             description: 'you_are_offline_now'.tr,
             onOkPressed: () => Get.back()));
@@ -128,7 +128,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           return false;
         } else {
           if (GetPlatform.isAndroid &&
-              Get.find<AuthController>().profileModel.active == 1) {
+              Get.find<AuthController>().userModel.isActive == true) {
             _channel.invokeMethod('sendToBackground');
             return false;
           } else {

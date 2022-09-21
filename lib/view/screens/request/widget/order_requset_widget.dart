@@ -1,7 +1,7 @@
 import 'package:carclenx_vendor_app/controller/auth_controller.dart';
 import 'package:carclenx_vendor_app/controller/order_controller.dart';
 import 'package:carclenx_vendor_app/controller/splash_controller.dart';
-import 'package:carclenx_vendor_app/data/model/response/order_model.dart';
+import 'package:carclenx_vendor_app/data/model/response/all_service_model.dart';
 import 'package:carclenx_vendor_app/helper/date_converter.dart';
 import 'package:carclenx_vendor_app/helper/price_converter.dart';
 import 'package:carclenx_vendor_app/helper/route_helper.dart';
@@ -45,8 +45,7 @@ class OrderRequestWidget extends StatelessWidget {
                   height: 45,
                   width: 45,
                   fit: BoxFit.cover,
-                  image:
-                      '${Get.find<SplashController>().configModel.baseUrls.restaurantImageUrl}/${orderModel.restaurantLogo ?? ''}',
+                  image: orderModel.serviceId.thumbURL[0],
                   imageErrorBuilder: (c, o, s) => Image.asset(
                       Images.placeholder,
                       height: 45,
@@ -59,14 +58,14 @@ class OrderRequestWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                   Text(
-                    orderModel.restaurantName ?? 'no_restaurant_data_found'.tr,
+                    orderModel.orderId,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: robotoRegular.copyWith(
                         fontSize: Dimensions.FONT_SIZE_SMALL),
                   ),
                   Text(
-                    orderModel.restaurantAddress ?? '',
+                    orderModel.serviceId.name,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: robotoRegular.copyWith(
@@ -85,21 +84,17 @@ class OrderRequestWidget extends StatelessWidget {
                     Border.all(color: Theme.of(context).primaryColor, width: 1),
               ),
               child: Column(children: [
-                (Get.find<SplashController>().configModel.showDmEarning &&
-                        Get.find<AuthController>().profileModel.earnings == 1)
+                (Get.find<AuthController>().profileModel.earnings != 1)
                     ? Text(
                         PriceConverter.convertPrice(
-                            orderModel.originalDeliveryCharge +
-                                orderModel.dmTips),
+                            orderModel.grandTotal.toDouble()),
                         style: robotoMedium.copyWith(
                             fontSize: Dimensions.FONT_SIZE_EXTRA_SMALL,
                             color: Theme.of(context).primaryColor),
                       )
                     : SizedBox(),
                 Text(
-                  orderModel.paymentMethod == 'cash_on_delivery'
-                      ? 'cod'.tr
-                      : 'digitally_paid'.tr,
+                  orderModel.mode,
                   style: robotoRegular.copyWith(
                       fontSize: Dimensions.FONT_SIZE_EXTRA_SMALL,
                       color: Theme.of(context).primaryColor),
@@ -109,11 +104,13 @@ class OrderRequestWidget extends StatelessWidget {
           ]),
           SizedBox(height: Dimensions.PADDING_SIZE_SMALL),
           Text(
-            '${orderModel.detailsCount} ${orderModel.detailsCount > 1 ? 'items'.tr : 'item'.tr}',
+            'Placed'.tr,
             style: robotoMedium.copyWith(fontSize: Dimensions.FONT_SIZE_SMALL),
           ),
           Text(
-            '${DateConverter.timeDistanceInMin(orderModel.createdAt)} ${'mins_ago'.tr}',
+            DateConverter.timeAgo(
+                dateTime: DateTime.parse(orderModel.createdAt),
+                numericDates: true),
             style: robotoBold.copyWith(color: Theme.of(context).primaryColor),
           ),
           SizedBox(height: Dimensions.PADDING_SIZE_SMALL),
@@ -161,17 +158,18 @@ class OrderRequestWidget extends StatelessWidget {
                     description: 'you_want_to_accept_this_order'.tr,
                     onYesPressed: () {
                       orderController
-                          .acceptOrder(orderModel.id, index, orderModel)
+                          .acceptOrder(int.tryParse(orderModel.orderId), index,
+                              orderModel)
                           .then((isSuccess) {
                         if (isSuccess) {
                           onTap();
-                          orderModel.orderStatus =
-                              (orderModel.orderStatus == 'pending' ||
-                                      orderModel.orderStatus == 'confirmed')
-                                  ? 'accepted'
-                                  : orderModel.orderStatus;
+                          orderModel.status = (orderModel.status == 'pending' ||
+                                  orderModel.status == 'confirmed')
+                              ? 'accepted'
+                              : orderModel.status;
                           Get.toNamed(
-                            RouteHelper.getOrderDetailsRoute(orderModel.id),
+                            RouteHelper.getOrderDetailsRoute(
+                                orderModel.orderId),
                             arguments: OrderDetailsScreen(
                               orderModel: orderModel,
                               isRunningOrder: true,

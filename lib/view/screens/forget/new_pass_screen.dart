@@ -70,7 +70,7 @@ class _NewPassScreenState extends State<NewPassScreen> {
                         focusNode: _newPasswordFocus,
                         nextFocus: _confirmPasswordFocus,
                         inputType: TextInputType.visiblePassword,
-                        prefixIcon: Images.lock,
+                        prefixIcon: Icons.lock,
                         isPassword: true,
                         divider: true,
                       ),
@@ -80,7 +80,7 @@ class _NewPassScreenState extends State<NewPassScreen> {
                         focusNode: _confirmPasswordFocus,
                         inputAction: TextInputAction.done,
                         inputType: TextInputType.visiblePassword,
-                        prefixIcon: Images.lock,
+                        prefixIcon: Icons.lock,
                         isPassword: true,
                         onSubmit: (text) =>
                             GetPlatform.isWeb ? _resetPassword() : null,

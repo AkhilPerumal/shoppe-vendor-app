@@ -1,4 +1,4 @@
-import 'package:carclenx_vendor_app/data/model/response/order_model.dart';
+import 'package:carclenx_vendor_app/data/model/response/all_service_model.dart';
 import 'package:carclenx_vendor_app/helper/route_helper.dart';
 import 'package:carclenx_vendor_app/util/dimensions.dart';
 import 'package:carclenx_vendor_app/util/images.dart';
@@ -40,7 +40,7 @@ class OrderWidget extends StatelessWidget {
               style:
                   robotoRegular.copyWith(fontSize: Dimensions.FONT_SIZE_SMALL)),
           SizedBox(width: Dimensions.PADDING_SIZE_EXTRA_SMALL),
-          Text('#${orderModel.id}',
+          Text('#${orderModel.orderId}',
               style:
                   robotoMedium.copyWith(fontSize: Dimensions.FONT_SIZE_SMALL)),
           Expanded(child: SizedBox()),
@@ -48,14 +48,14 @@ class OrderWidget extends StatelessWidget {
               width: 7,
               height: 7,
               decoration: BoxDecoration(
-                color: orderModel.paymentMethod == 'cash_on_delivery'
+                color: orderModel.paymentStatus == 'cash_on_delivery'
                     ? Colors.red
                     : Colors.green,
                 shape: BoxShape.circle,
               )),
           SizedBox(width: Dimensions.PADDING_SIZE_EXTRA_SMALL),
           Text(
-            orderModel.paymentMethod == 'cash_on_delivery'
+            orderModel.status == 'cash_on_delivery'
                 ? 'cod'.tr
                 : 'digitally_paid'.tr,
             style: robotoRegular.copyWith(fontSize: Dimensions.FONT_SIZE_SMALL),
@@ -67,14 +67,12 @@ class OrderWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Image.asset(
-                  orderModel.orderStatus == 'picked_up'
-                      ? Images.user
-                      : Images.house,
+                  orderModel.status == 'picked_up' ? Images.user : Images.house,
                   width: 20,
                   height: 15),
               SizedBox(width: Dimensions.PADDING_SIZE_EXTRA_SMALL),
               Text(
-                orderModel.orderStatus == 'picked_up'
+                orderModel.status == 'picked_up'
                     ? 'customer_location'.tr
                     : 'restaurant_location'.tr,
                 style: robotoRegular.copyWith(
@@ -92,9 +90,9 @@ class OrderWidget extends StatelessWidget {
               SizedBox(width: Dimensions.PADDING_SIZE_EXTRA_SMALL),
               Expanded(
                   child: Text(
-                orderModel.orderStatus == 'picked_up'
-                    ? orderModel.deliveryAddress.address.toString()
-                    : orderModel.restaurantAddress ?? '',
+                orderModel.status == 'picked_up'
+                    ? orderModel.address.toString()
+                    : orderModel.address ?? '',
                 style: robotoRegular.copyWith(
                     color: Theme.of(context).disabledColor,
                     fontSize: Dimensions.FONT_SIZE_SMALL),
@@ -108,7 +106,7 @@ class OrderWidget extends StatelessWidget {
               child: TextButton(
             onPressed: () {
               Get.toNamed(
-                RouteHelper.getOrderDetailsRoute(orderModel.id),
+                RouteHelper.getOrderDetailsRoute(orderModel.orderId),
                 arguments: OrderDetailsScreen(
                     orderModel: orderModel,
                     isRunningOrder: isRunningOrder,
@@ -136,14 +134,14 @@ class OrderWidget extends StatelessWidget {
             height: 45,
             onPressed: () async {
               String _url;
-              if (orderModel.orderStatus == 'picked_up') {
+              if (orderModel.status == 'picked_up') {
                 _url =
-                    'https://www.google.com/maps/dir/?api=1&destination=${orderModel.deliveryAddress.latitude}'
-                    ',${orderModel.deliveryAddress.longitude}&mode=d';
+                    'https://www.google.com/maps/dir/?api=1&destination=${orderModel.address.location[0]}'
+                    ',${orderModel.address.location[0]}&mode=d';
               } else {
                 _url =
-                    'https://www.google.com/maps/dir/?api=1&destination=${orderModel.restaurantLat ?? '0'}'
-                    ',${orderModel.restaurantLng ?? '0'}&mode=d';
+                    'https://www.google.com/maps/dir/?api=1&destination=${orderModel.address.location[1] ?? '0'}'
+                    ',${orderModel.address.location[1] ?? '0'}&mode=d';
               }
               if (await canLaunchUrlString(_url)) {
                 await launchUrlString(_url,

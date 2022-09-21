@@ -26,8 +26,8 @@ class HomeScreen extends StatelessWidget {
     Get.find<OrderController>().getIgnoreList();
     Get.find<OrderController>().removeFromIgnoreList();
     await Get.find<AuthController>().getProfile();
-    await Get.find<OrderController>().getCurrentOrders();
-    await Get.find<NotificationController>().getNotificationList();
+    // await Get.find<OrderController>().getCurrentOrders();
+    // await Get.find<NotificationController>().getNotificationList();
     bool _isBatteryOptimizationDisabled =
         await DisableBatteryOptimization.isBatteryOptimizationDisabled;
     if (!_isBatteryOptimizationDisabled) {
@@ -87,8 +87,7 @@ class HomeScreen extends StatelessWidget {
           ),
           GetBuilder<AuthController>(builder: (authController) {
             return GetBuilder<OrderController>(builder: (orderController) {
-              return (authController.profileModel != null &&
-                      orderController.currentOrderList != null)
+              return (authController.userModel != null)
                   ? FlutterSwitch(
                       width: 75,
                       height: 30,
@@ -97,9 +96,10 @@ class HomeScreen extends StatelessWidget {
                       activeText: 'online'.tr,
                       inactiveText: 'offline'.tr,
                       activeColor: Theme.of(context).primaryColor,
-                      value: authController.profileModel.active == 1,
+                      value: authController.userModel.isActive == true,
                       onToggle: (bool isActive) async {
                         if (!isActive &&
+                            orderController.currentOrderList != null &&
                             orderController.currentOrderList.length > 0) {
                           showCustomSnackBar('you_can_not_go_offline_now'.tr);
                         } else {
@@ -165,7 +165,7 @@ class HomeScreen extends StatelessWidget {
             return Column(children: [
               GetBuilder<OrderController>(builder: (orderController) {
                 bool _hasActiveOrder =
-                    orderController.currentOrderList == null ||
+                    orderController.currentOrderList != null &&
                         orderController.currentOrderList.length > 0;
                 bool _hasMoreOrder = orderController.currentOrderList != null &&
                     orderController.currentOrderList.length > 1;
@@ -187,9 +187,10 @@ class HomeScreen extends StatelessWidget {
                           ? Dimensions.PADDING_SIZE_EXTRA_SMALL
                           : 0),
                   orderController.currentOrderList == null
-                      ? OrderShimmer(
-                          isEnabled: orderController.currentOrderList == null,
-                        )
+                      ? SizedBox()
+                      // OrderShimmer(
+                      //     isEnabled: orderController.currentOrderList == null,
+                      //   )
                       : orderController.currentOrderList.length > 0
                           ? OrderWidget(
                               orderModel: orderController.currentOrderList[0],
@@ -203,7 +204,8 @@ class HomeScreen extends StatelessWidget {
                           : 0),
                 ]);
               }),
-              (authController.profileModel != null &&
+              (authController.userModel != null &&
+                      authController.profileModel != null &&
                       authController.profileModel.earnings == 1)
                   ? Column(children: [
                       TitleWidget(title: 'earnings'.tr),
@@ -219,7 +221,6 @@ class HomeScreen extends StatelessWidget {
                           Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                SizedBox(width: Dimensions.PADDING_SIZE_SMALL),
                                 Image.asset(Images.wallet,
                                     width: 60, height: 60),
                                 SizedBox(width: Dimensions.PADDING_SIZE_LARGE),
@@ -237,11 +238,15 @@ class HomeScreen extends StatelessWidget {
                                       SizedBox(
                                           height:
                                               Dimensions.PADDING_SIZE_SMALL),
-                                      authController.profileModel != null
+                                      authController.userModel != null
                                           ? Text(
                                               PriceConverter.convertPrice(
-                                                  authController
-                                                      .profileModel.balance),
+                                                  authController.profileModel
+                                                              .balance !=
+                                                          null
+                                                      ? authController
+                                                          .profileModel.balance
+                                                      : 0),
                                               style: robotoBold.copyWith(
                                                   fontSize: 24,
                                                   color: Theme.of(context)
@@ -259,7 +264,7 @@ class HomeScreen extends StatelessWidget {
                           Row(children: [
                             EarningWidget(
                               title: 'today'.tr,
-                              amount: authController.profileModel != null
+                              amount: authController.userModel != null
                                   ? authController.profileModel.todaysEarning
                                   : null,
                             ),
@@ -269,7 +274,7 @@ class HomeScreen extends StatelessWidget {
                                 color: Theme.of(context).cardColor),
                             EarningWidget(
                               title: 'this_week'.tr,
-                              amount: authController.profileModel != null
+                              amount: authController.userModel != null
                                   ? authController.profileModel.thisWeekEarning
                                   : null,
                             ),
@@ -279,7 +284,7 @@ class HomeScreen extends StatelessWidget {
                                 color: Theme.of(context).cardColor),
                             EarningWidget(
                               title: 'this_month'.tr,
-                              amount: authController.profileModel != null
+                              amount: authController.userModel != null
                                   ? authController.profileModel.thisMonthEarning
                                   : null,
                             ),
@@ -297,7 +302,7 @@ class HomeScreen extends StatelessWidget {
                   title: 'todays_orders'.tr,
                   backgroundColor: Theme.of(context).secondaryHeaderColor,
                   height: 180,
-                  value: authController.profileModel != null
+                  value: authController.userModel != null
                       ? authController.profileModel.todaysOrderCount.toString()
                       : null,
                 )),
@@ -307,7 +312,7 @@ class HomeScreen extends StatelessWidget {
                   title: 'this_week_orders'.tr,
                   backgroundColor: Theme.of(context).errorColor,
                   height: 180,
-                  value: authController.profileModel != null
+                  value: authController.userModel != null
                       ? authController.profileModel.thisWeekOrderCount
                           .toString()
                       : null,
@@ -318,7 +323,7 @@ class HomeScreen extends StatelessWidget {
                 title: 'total_orders'.tr,
                 backgroundColor: Theme.of(context).primaryColor,
                 height: 140,
-                value: authController.profileModel != null
+                value: authController.userModel != null
                     ? authController.profileModel.orderCount.toString()
                     : null,
               ),
@@ -327,9 +332,11 @@ class HomeScreen extends StatelessWidget {
                 title: 'cash_in_your_hand'.tr,
                 backgroundColor: Colors.green,
                 height: 140,
-                value: authController.profileModel != null
+                value: authController.userModel != null
                     ? PriceConverter.convertPrice(
-                        authController.profileModel.cashInHands)
+                        authController.profileModel.cashInHands != null
+                            ? authController.profileModel.cashInHands
+                            : 0)
                     : null,
               ),
 
@@ -352,13 +359,13 @@ class HomeScreen extends StatelessWidget {
                       color: Colors.grey[500],
                       child: Column(children: [
                         Row(children: [
-                          authController.profileModel != null ? Text(
+                          authController.userModel != null ? Text(
                             authController.profileModel.avgRating.toString(),
                             style: robotoBold.copyWith(fontSize: 30, color: Colors.white),
                           ) : Container(height: 25, width: 40, color: Colors.white),
                           Icon(Icons.star, color: Colors.white, size: 35),
                         ]),
-                        authController.profileModel != null ? Text(
+                        authController.userModel != null ? Text(
                           '${authController.profileModel.ratingCount} ${'reviews'.tr}',
                           style: robotoRegular.copyWith(fontSize: Dimensions.FONT_SIZE_SMALL, color: Colors.white),
                         ) : Container(height: 10, width: 50, color: Colors.white),

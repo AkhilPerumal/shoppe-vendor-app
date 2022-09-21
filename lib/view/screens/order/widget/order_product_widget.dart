@@ -1,6 +1,6 @@
 import 'package:carclenx_vendor_app/controller/splash_controller.dart';
+import 'package:carclenx_vendor_app/data/model/response/all_service_model.dart';
 import 'package:carclenx_vendor_app/data/model/response/order_details_model.dart';
-import 'package:carclenx_vendor_app/data/model/response/order_model.dart';
 import 'package:carclenx_vendor_app/helper/price_converter.dart';
 import 'package:carclenx_vendor_app/util/dimensions.dart';
 import 'package:carclenx_vendor_app/util/images.dart';

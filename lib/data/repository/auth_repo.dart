@@ -20,19 +20,22 @@ class AuthRepo {
   final SharedPreferences sharedPreferences;
   AuthRepo({@required this.apiClient, @required this.sharedPreferences});
 
-  Future<Response> login(String phone, String password) async {
-    return await apiClient.postData(
-        AppConstants.LOGIN_URI, {"phone": phone, "password": password});
+  Future<Response> login(String name, String password) async {
+    return await apiClient.postData(AppConstants.LOGIN_URI, body: {
+      "username": name,
+      "password": password,
+      'loginType': "franchise"
+    });
   }
 
-  Future<Response> getProfileInfo() async {
-    return await apiClient.getData(AppConstants.PROFILE_URI + getUserToken());
+  Future<Response> getProfileInfo({String userID}) async {
+    return await apiClient.getData(uri: AppConstants.PROFILE_URI + userID);
   }
 
   Future<Response> recordLocation(RecordLocationBody recordLocationBody) {
     recordLocationBody.token = getUserToken();
-    return apiClient.postData(
-        AppConstants.RECORD_LOCATION_URI, recordLocationBody.toJson());
+    return apiClient.postData(AppConstants.RECORD_LOCATION_URI,
+        body: recordLocationBody.toJson());
   }
 
   Future<http.StreamedResponse> updateProfile(
@@ -70,7 +73,7 @@ class AuthRepo {
 
   Future<Response> changePassword(
       ProfileModel userInfoModel, String password) async {
-    return await apiClient.postData(AppConstants.UPDATE_PROFILE_URI, {
+    return await apiClient.postData(AppConstants.UPDATE_PROFILE_URI, body: {
       '_method': 'put',
       'f_name': userInfoModel.fName,
       'l_name': userInfoModel.lName,
@@ -81,8 +84,8 @@ class AuthRepo {
   }
 
   Future<Response> updateActiveStatus() async {
-    return await apiClient
-        .postData(AppConstants.ACTIVE_STATUS_URI, {'token': getUserToken()});
+    return await apiClient.postData(AppConstants.ACTIVE_STATUS_URI,
+        body: {'token': getUserToken()});
   }
 
   Future<Response> updateToken() async {
@@ -108,11 +111,14 @@ class AuthRepo {
     }
     if (!GetPlatform.isWeb) {
       FirebaseMessaging.instance.subscribeToTopic(AppConstants.TOPIC);
-      FirebaseMessaging.instance.subscribeToTopic(
-          sharedPreferences.getString(AppConstants.ZONE_TOPIC));
+      // FirebaseMessaging.instance.subscribeToTopic(
+      //     sharedPreferences.getString(AppConstants.ZONE_TOPIC));
     }
-    return await apiClient.postData(AppConstants.TOKEN_URI,
-        {"_method": "put", "token": getUserToken(), "fcm_token": _deviceToken});
+    return await apiClient.postData(AppConstants.TOKEN_URI, body: {
+      "_method": "put",
+      "token": getUserToken(),
+      "fcm_token": _deviceToken
+    });
   }
 
   Future<String> _saveDeviceToken() async {
@@ -128,19 +134,19 @@ class AuthRepo {
 
   Future<Response> forgetPassword(String phone) async {
     return await apiClient
-        .postData(AppConstants.FORGET_PASSWORD_URI, {"phone": phone});
+        .postData(AppConstants.FORGET_PASSWORD_URI, body: {"phone": phone});
   }
 
   Future<Response> verifyToken(String phone, String token) async {
-    return await apiClient.postData(
-        AppConstants.VERIFY_TOKEN_URI, {"phone": phone, "reset_token": token});
+    return await apiClient.postData(AppConstants.VERIFY_TOKEN_URI,
+        body: {"phone": phone, "reset_token": token});
   }
 
   Future<Response> resetPassword(String resetToken, String phone,
       String password, String confirmPassword) async {
     return await apiClient.postData(
       AppConstants.RESET_PASSWORD_URI,
-      {
+      body: {
         "_method": "put",
         "phone": phone,
         "reset_token": resetToken,
@@ -154,7 +160,7 @@ class AuthRepo {
     apiClient.token = token;
     apiClient.updateHeader(
         token, sharedPreferences.getString(AppConstants.LANGUAGE_CODE));
-    sharedPreferences.setString(AppConstants.ZONE_TOPIC, zoneTopic);
+    // sharedPreferences.setString(AppConstants.ZONE_TOPIC, zoneTopic);
     return await sharedPreferences.setString(AppConstants.TOKEN, token);
   }
 
@@ -172,7 +178,7 @@ class AuthRepo {
       FirebaseMessaging.instance.unsubscribeFromTopic(
           sharedPreferences.getString(AppConstants.ZONE_TOPIC));
       apiClient.postData(AppConstants.TOKEN_URI,
-          {"_method": "put", "token": getUserToken(), "fcm_token": '@'});
+          body: {"_method": "put", "token": getUserToken(), "fcm_token": '@'});
     }
     await sharedPreferences.remove(AppConstants.TOKEN);
     await sharedPreferences.setStringList(AppConstants.IGNORE_LIST, []);
@@ -181,16 +187,17 @@ class AuthRepo {
     return true;
   }
 
-  Future<void> saveUserNumberAndPassword(
-      String number, String password, String countryCode) async {
+  Future<void> saveUserNameAndPassword(String name, String password) async {
     try {
       await sharedPreferences.setString(AppConstants.USER_PASSWORD, password);
-      await sharedPreferences.setString(AppConstants.USER_NUMBER, number);
-      await sharedPreferences.setString(
-          AppConstants.USER_COUNTRY_CODE, countryCode);
+      await sharedPreferences.setString(AppConstants.USER_NAME, name);
     } catch (e) {
       throw e;
     }
+  }
+
+  String getUserName() {
+    return sharedPreferences.getString(AppConstants.USER_NAME) ?? "";
   }
 
   String getUserNumber() {
@@ -222,10 +229,9 @@ class AuthRepo {
     sharedPreferences.setBool(AppConstants.NOTIFICATION, isActive);
   }
 
-  Future<bool> clearUserNumberAndPassword() async {
+  Future<bool> clearUserNameAndPassword() async {
     await sharedPreferences.remove(AppConstants.USER_PASSWORD);
-    await sharedPreferences.remove(AppConstants.USER_COUNTRY_CODE);
-    return await sharedPreferences.remove(AppConstants.USER_NUMBER);
+    return await sharedPreferences.remove(AppConstants.USER_NAME);
   }
 
   Future<Response> deleteDriver() async {

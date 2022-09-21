@@ -2,6 +2,7 @@
   "suffix_name": "Partner",
   "sign_in": "Sign In",
   "email": "E-mail",
+  "user_name": "User Name",
   "password": "Password",
   "confirm_password": "Confirm Password",
   "remember_me": "Remember me",
@@ -10,6 +11,7 @@
   "enter_email_address": "Enter your email address",
   "enter_a_valid_email_address": "Enter a valid email address",
   "enter_phone_number": "Enter your phone number",
+  "enter_name": "Enter your user name",
   "invalid_phone_number": "Invalid phone number. Please enter your phone number without country code",
   "enter_password": "Enter your password",
   "password_does_not_matched": "Confirm Password doesn't matched",
@@ -38,7 +40,7 @@
   "this_week_orders": "This Week Orders",
   "total_orders": "Total Orders",
   "cash_in_your_hand": "Cash In Your Hand",
-  "cash_on_delivery": "Cash On Delivery",
+  "cash_on_delivery": "COD",
   "digital_payment": "Digital Payment",
   "paid": "Paid",
   "unpaid": "Unpaid",
@@ -191,5 +193,10 @@
   "delete_account": "Delete Account",
   "are_you_sure_to_delete_account": "Are you sure to delete your account?",
   "it_will_remove_your_all_information": "It will remove your all information.",
-  "no_restaurant_data_found": "No restaurant data found"
+  "no_restaurant_data_found": "No restaurant data found",
+
+  "car_shoppe": "Car Shoppe",
+  "car_spa": "Car Spa",
+  "car_mechanical": "Car Mecanical Services",
+  "quick_help": "Road Side Assistance"
 }

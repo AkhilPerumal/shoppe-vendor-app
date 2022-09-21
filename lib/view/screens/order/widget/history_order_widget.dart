@@ -1,5 +1,5 @@
 import 'package:carclenx_vendor_app/controller/splash_controller.dart';
-import 'package:carclenx_vendor_app/data/model/response/order_model.dart';
+import 'package:carclenx_vendor_app/data/model/response/all_service_model.dart';
 import 'package:carclenx_vendor_app/helper/date_converter.dart';
 import 'package:carclenx_vendor_app/helper/route_helper.dart';
 import 'package:carclenx_vendor_app/util/dimensions.dart';
@@ -22,7 +22,7 @@ class HistoryOrderWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () => Get.toNamed(
-        RouteHelper.getOrderDetailsRoute(orderModel.id),
+        RouteHelper.getOrderDetailsRoute(orderModel.orderId),
         arguments: OrderDetailsScreen(
             orderModel: orderModel,
             isRunningOrder: isRunning,
@@ -50,8 +50,7 @@ class HistoryOrderWidget extends StatelessWidget {
               width: 70,
               fit: BoxFit.cover,
               image:
-                  '${Get.find<SplashController>().configModel.baseUrls.restaurantImageUrl}'
-                  '/${orderModel.restaurantLogo ?? ''}',
+                  '${Get.find<SplashController>().configModel.baseUrls.restaurantImageUrl}}',
               imageErrorBuilder: (c, o, s) => Image.asset(Images.placeholder,
                   height: 70, width: 70, fit: BoxFit.cover),
             ),
@@ -66,14 +65,14 @@ class HistoryOrderWidget extends StatelessWidget {
                         fontSize: Dimensions.FONT_SIZE_SMALL)),
                 SizedBox(width: Dimensions.PADDING_SIZE_EXTRA_SMALL),
                 Text(
-                  '#${orderModel.id}',
+                  '#${orderModel.orderId}',
                   style: robotoMedium.copyWith(
                       fontSize: Dimensions.FONT_SIZE_SMALL),
                 ),
               ]),
               SizedBox(height: Dimensions.PADDING_SIZE_EXTRA_SMALL),
               Text(
-                orderModel.restaurantName ?? 'no_restaurant_data_found'.tr,
+                'no_restaurant_data_found'.tr,
                 style: robotoMedium.copyWith(
                     fontSize: Dimensions.FONT_SIZE_SMALL,
                     color: Theme.of(context).primaryColor),

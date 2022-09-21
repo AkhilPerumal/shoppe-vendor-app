@@ -6,6 +6,7 @@ import 'package:carclenx_vendor_app/data/model/body/update_status_body.dart';
 import 'package:carclenx_vendor_app/data/model/response/ignore_model.dart';
 import 'package:carclenx_vendor_app/util/app_constants.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/response/response.dart';
 import 'package:get/state_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,48 +17,64 @@ class OrderRepo extends GetxService {
   OrderRepo({@required this.apiClient, @required this.sharedPreferences});
 
   Future<Response> getAllOrders() {
-    return apiClient.getData(AppConstants.ALL_ORDERS_URI + getUserToken());
+    return apiClient.getData(uri: AppConstants.ALL_ORDERS_URI + getUserToken());
   }
 
   Future<Response> getCompletedOrderList(int offset) async {
     return await apiClient.getData(
-        '${AppConstants.ALL_ORDERS_URI}?token=${getUserToken()}&offset=$offset&limit=10');
+        uri:
+            '${AppConstants.ALL_ORDERS_URI}?token=${getUserToken()}&offset=$offset&limit=10');
   }
 
   Future<Response> getCurrentOrders() {
-    return apiClient.getData(AppConstants.CURRENT_ORDERS_URI + getUserToken());
+    return apiClient.getData(
+        uri: AppConstants.CURRENT_ORDERS_URI + getUserToken());
   }
 
-  Future<Response> getLatestOrders() {
-    return apiClient.getData(AppConstants.LATEST_ORDERS_URI + getUserToken());
+  Future<Response> getLatestOrders(
+      {String status, String pageNo, String category}) {
+    if (category == 'car_spa'.tr) {
+      return apiClient.getData(
+          uri: '/carspa-order/franchise?status=$status&page=$pageNo');
+    } else if (category == 'car_mechanical'.tr) {
+      return apiClient.getData(
+          uri: '/mechanical-order/franchise?status=$status&page=$pageNo');
+    } else if (category == 'quick_help'.tr) {
+      return apiClient.getData(
+          uri: '/quickhelp-order/franchise?status=$status&page=$pageNo');
+    } else {
+      return apiClient.getData(
+          uri: '/order/vendor?status=$status&page=$pageNo');
+    }
   }
 
   Future<Response> recordLocation(RecordLocationBody recordLocationBody) {
     recordLocationBody.token = getUserToken();
-    return apiClient.postData(
-        AppConstants.RECORD_LOCATION_URI, recordLocationBody.toJson());
+    return apiClient.postData(AppConstants.RECORD_LOCATION_URI,
+        body: recordLocationBody.toJson());
   }
 
   Future<Response> updateOrderStatus(UpdateStatusBody updateStatusBody) {
     updateStatusBody.token = getUserToken();
-    return apiClient.postData(
-        AppConstants.UPDATE_ORDER_STATUS_URI, updateStatusBody.toJson());
+    return apiClient.postData(AppConstants.UPDATE_ORDER_STATUS_URI,
+        body: updateStatusBody.toJson());
   }
 
   Future<Response> updatePaymentStatus(UpdateStatusBody updateStatusBody) {
     updateStatusBody.token = getUserToken();
-    return apiClient.postData(
-        AppConstants.UPDATE_PAYMENT_STATUS_URI, updateStatusBody.toJson());
+    return apiClient.postData(AppConstants.UPDATE_PAYMENT_STATUS_URI,
+        body: updateStatusBody.toJson());
   }
 
-  Future<Response> getOrderDetails(int orderID) {
+  Future<Response> getOrderDetails(String orderID) {
     return apiClient.getData(
-        '${AppConstants.ORDER_DETAILS_URI}${getUserToken()}&order_id=$orderID');
+        uri:
+            '${AppConstants.ORDER_DETAILS_URI}${getUserToken()}&order_id=$orderID');
   }
 
   Future<Response> acceptOrder(int orderID) {
     return apiClient.postData(AppConstants.ACCEPT_ORDER_URI,
-        {"_method": "put", 'token': getUserToken(), 'order_id': orderID});
+        body: {"_method": "put", 'token': getUserToken(), 'order_id': orderID});
   }
 
   String getUserToken() {
@@ -82,8 +99,9 @@ class OrderRepo extends GetxService {
     return _ignoreList;
   }
 
-  Future<Response> getOrderWithId(int orderId) {
+  Future<Response> getOrderWithId(String orderId) {
     return apiClient.getData(
-        '${AppConstants.CURRENT_ORDER_URI}${getUserToken()}&order_id=$orderId');
+        uri:
+            '${AppConstants.CURRENT_ORDER_URI}${getUserToken()}&order_id=$orderId');
   }
 }

@@ -1,4 +1,4 @@
-import 'package:carclenx_vendor_app/data/model/response/order_model.dart';
+import 'package:carclenx_vendor_app/data/model/response/all_service_model.dart';
 import 'package:carclenx_vendor_app/view/screens/auth/sign_in_screen.dart';
 import 'package:carclenx_vendor_app/view/screens/dashboard/dashboard_screen.dart';
 import 'package:carclenx_vendor_app/view/screens/forget/forget_pass_screen.dart';
@@ -41,7 +41,7 @@ class RouteHelper {
   static String getResetPasswordRoute(
           String phone, String token, String page) =>
       '$resetPassword?phone=$phone&token=$token&page=$page';
-  static String getOrderDetailsRoute(int id) => '$orderDetails?id=$id';
+  static String getOrderDetailsRoute(String id) => '$orderDetails?id=$id';
   static String getUpdateProfileRoute() => '$updateProfile';
   static String getNotificationRoute() => '$notification';
   static String getRunningOrderRoute() => '$runningOrder';
@@ -86,7 +86,7 @@ class RouteHelper {
           return _orderDetails != null
               ? _orderDetails
               : OrderDetailsScreen(
-                  orderModel: OrderModel(id: int.parse(Get.parameters['id'])),
+                  orderModel: OrderModel(),
                   orderIndex: null,
                   isRunningOrder: null,
                 );

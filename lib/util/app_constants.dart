@@ -15,7 +15,7 @@ class AppConstants {
       '/api/v1/auth/delivery-man/verify-token';
   static const String RESET_PASSWORD_URI =
       '/api/v1/auth/delivery-man/reset-password';
-  static const String LOGIN_URI = '/api/v1/auth/delivery-man/login';
+  static const String LOGIN_URI = '/auth/sign-in';
   static const String TOKEN_URI = '/api/v1/delivery-man/update-fcm-token';
   static const String CURRENT_ORDERS_URI =
       '/api/v1/delivery-man/current-orders?token=';
@@ -24,7 +24,7 @@ class AppConstants {
       '/api/v1/delivery-man/latest-orders?token=';
   static const String RECORD_LOCATION_URI =
       '/api/v1/delivery-man/record-location-data';
-  static const String PROFILE_URI = '/api/v1/delivery-man/profile?token=';
+  static const String PROFILE_URI = '/user/id/';
   static const String UPDATE_ORDER_STATUS_URI =
       '/api/v1/delivery-man/update-order-status';
   static const String UPDATE_PAYMENT_STATUS_URI =
@@ -48,6 +48,7 @@ class AppConstants {
   static const String COUNTRY_CODE = 'country_code';
   static const String LANGUAGE_CODE = 'language_code';
   static const String USER_PASSWORD = 'user_password';
+  static const String USER_NAME = 'user_name';
   static const String USER_ADDRESS = 'user_address';
   static const String USER_NUMBER = 'user_number';
   static const String USER_COUNTRY_CODE = 'user_country_code';
@@ -64,10 +65,5 @@ class AppConstants {
         languageName: 'English',
         countryCode: 'US',
         languageCode: 'en'),
-    LanguageModel(
-        imageUrl: Images.arabic,
-        languageName: 'Arabic',
-        countryCode: 'SA',
-        languageCode: 'ar'),
   ];
 }

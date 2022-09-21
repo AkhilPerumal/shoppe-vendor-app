@@ -18,21 +18,21 @@ class OrderDetailsModel {
 
   OrderDetailsModel(
       {this.id,
-        this.foodId,
-        this.orderId,
-        this.price,
-        this.foodDetails,
-        this.variation,
-        this.addOns,
-        this.discountOnFood,
-        this.discountType,
-        this.quantity,
-        this.taxAmount,
-        this.variant,
-        this.createdAt,
-        this.updatedAt,
-        this.itemCampaignId,
-        this.totalAddOnPrice});
+      this.foodId,
+      this.orderId,
+      this.price,
+      this.foodDetails,
+      this.variation,
+      this.addOns,
+      this.discountOnFood,
+      this.discountType,
+      this.quantity,
+      this.taxAmount,
+      this.variant,
+      this.createdAt,
+      this.updatedAt,
+      this.itemCampaignId,
+      this.totalAddOnPrice});
 
   OrderDetailsModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -115,7 +115,6 @@ class AddOn {
   }
 }
 
-
 class FoodDetails {
   int id;
   String name;
@@ -143,28 +142,28 @@ class FoodDetails {
 
   FoodDetails(
       {this.id,
-        this.name,
-        this.description,
-        this.image,
-        this.categoryIds,
-        this.variations,
-        this.addOns,
-        this.choiceOptions,
-        this.price,
-        this.tax,
-        this.taxType,
-        this.discount,
-        this.discountType,
-        this.availableTimeStarts,
-        this.availableTimeEnds,
-        this.restaurantId,
-        this.createdAt,
-        this.updatedAt,
-        this.restaurantName,
-        this.restaurantDiscount,
-        this.avgRating,
-        this.veg,
-        this.ratingCount});
+      this.name,
+      this.description,
+      this.image,
+      this.categoryIds,
+      this.variations,
+      this.addOns,
+      this.choiceOptions,
+      this.price,
+      this.tax,
+      this.taxType,
+      this.discount,
+      this.discountType,
+      this.availableTimeStarts,
+      this.availableTimeEnds,
+      this.restaurantId,
+      this.createdAt,
+      this.updatedAt,
+      this.restaurantName,
+      this.restaurantDiscount,
+      this.avgRating,
+      this.veg,
+      this.ratingCount});
 
   FoodDetails.fromJson(Map<String, dynamic> json) {
     id = json['id'];

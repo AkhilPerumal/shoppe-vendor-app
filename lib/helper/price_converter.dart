@@ -11,8 +11,8 @@ class PriceConverter {
         price = price - ((discount / 100) * price);
       }
     }
-    return '${Get.find<SplashController>().configModel.currencySymbol} '
-        '${(price).toStringAsFixed(asFixed ?? Get.find<SplashController>().configModel.digitAfterDecimalPoint).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}';
+    return '₹ '
+        '${(price).toStringAsFixed(asFixed ?? 2).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}';
   }
 
   static double convertWithDiscount(
