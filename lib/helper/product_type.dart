@@ -1,3 +1,3 @@
-enum RestaurantType {
-  ALL_RESTAURANT,
+enum franchiseType {
+  ALL_franchise,
 }

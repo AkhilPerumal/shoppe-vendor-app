@@ -12,9 +12,10 @@ class HtmlViewerScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String _data = isPrivacyPolicy
-        ? Get.find<SplashController>().configModel.privacyPolicy
-        : Get.find<SplashController>().configModel.termsAndConditions;
+    String _data;
+    // String _data = isPrivacyPolicy
+    //     ? Get.find<SplashController>().configModel.privacyPolicy
+    //     : Get.find<SplashController>().configModel.termsAndConditions;
     return Scaffold(
       appBar: CustomAppBar(
           title: isPrivacyPolicy ? 'privacy_policy'.tr : 'terms_condition'.tr),

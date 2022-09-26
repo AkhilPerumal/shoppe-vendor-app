@@ -38,6 +38,6 @@ class PriceConverter {
 
   static String percentageCalculation(
       String price, String discount, String discountType) {
-    return '$discount${discountType == 'percent' ? '%' : Get.find<SplashController>().configModel.currencySymbol} OFF';
+    return '$discount${discountType == 'percent' ? '%' : '₹'} OFF';
   }
 }

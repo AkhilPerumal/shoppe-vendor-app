@@ -1,12 +1,12 @@
 class AddressModel {
   String sId;
   String name;
-  int mobile;
+  String mobile;
   String house;
   String street;
   String city;
   String state;
-  int pincode;
+  String pincode;
   String landmark;
   String type;
   List<double> location;
@@ -37,12 +37,12 @@ class AddressModel {
   AddressModel.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
     name = json['name'];
-    mobile = json['mobile'];
+    mobile = json['mobile'].toString();
     house = json['house'];
     street = json['street'];
     city = json['city'];
     state = json['state'];
-    pincode = json['pincode'];
+    pincode = json['pincode'].toString();
     landmark = json['landmark'];
     type = json['type'];
     location = json['location'].cast<double>();

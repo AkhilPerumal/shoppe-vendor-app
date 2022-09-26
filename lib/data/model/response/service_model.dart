@@ -1,15 +1,16 @@
-import 'package:carclenx_vendor_app/data/model/response/add_ons_model.dart';
+import 'package:carclenx_vendor_app/data/model/response/cateory_model.dart';
+import 'package:carclenx_vendor_app/data/model/response/order_details_model.dart';
 
 class ServiceModel {
-  String sId;
+  String id;
   String name;
-  String categoryId;
+  CategoryId categoryId;
   String carType;
   List<String> images;
   List<String> thumbnails;
   bool isActive;
   int price;
-  List<AddOnsModel> addOns;
+  List<AddOns> addOns;
   String description;
   String list;
   String createdAt;
@@ -19,7 +20,7 @@ class ServiceModel {
   List<String> imageURL;
 
   ServiceModel(
-      {this.sId,
+      {this.id,
       this.name,
       this.categoryId,
       this.carType,
@@ -37,18 +38,20 @@ class ServiceModel {
       this.imageURL});
 
   ServiceModel.fromJson(Map<String, dynamic> json) {
-    sId = json['_id'];
+    id = json['_id'];
     name = json['name'];
-    categoryId = json['categoryId'];
+    categoryId = json['categoryId'] != null
+        ? new CategoryId.fromJson(json['categoryId'])
+        : null;
     carType = json['carType'];
     images = json['images'].cast<String>();
     thumbnails = json['thumbnails'].cast<String>();
     isActive = json['isActive'];
     price = json['price'];
     if (json['addOns'] != null) {
-      addOns = <AddOnsModel>[];
+      addOns = <AddOns>[];
       json['addOns'].forEach((v) {
-        addOns.add(new AddOnsModel.fromJson(v));
+        addOns.add(new AddOns.fromJson(v));
       });
     }
     description = json['description'];
@@ -62,9 +65,11 @@ class ServiceModel {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['_id'] = this.sId;
+    data['_id'] = this.id;
     data['name'] = this.name;
-    data['categoryId'] = this.categoryId;
+    if (this.categoryId != null) {
+      data['categoryId'] = this.categoryId.toJson();
+    }
     data['carType'] = this.carType;
     data['images'] = this.images;
     data['thumbnails'] = this.thumbnails;

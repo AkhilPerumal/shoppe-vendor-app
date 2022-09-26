@@ -23,7 +23,7 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This app needs access to location to manage coverage of restaurant and also show the customer and restaurant distance.</string>
+	<string>This app needs access to location to manage coverage of franchise and also show the customer and franchise distance.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>This app requires access to the gallery for update user profile.</string>
 	<key>NSMicrophoneUsageDescription</key>

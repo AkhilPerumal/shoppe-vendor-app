@@ -66,7 +66,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         NotificationHelper.showNotification(
             message, flutterLocalNotificationsPlugin, false);
       }
-      Get.find<OrderController>().getCurrentOrders();
+      // Get.find<OrderController>().getCurrentOrders();
       Get.find<OrderController>().getLatestOrders();
       //Get.find<OrderController>().getAllOrders();
       if (_type == 'new_order') {
@@ -101,10 +101,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
   // }
 
   void _navigateRequestPage() {
-    if (Get.find<AuthController>().userModel != null &&
-        Get.find<AuthController>().userModel.isActive == true &&
-        Get.find<OrderController>().currentOrderList != null &&
-        Get.find<OrderController>().currentOrderList.length < 1) {
+    if (Get.find<AuthController>().isLoggedIn()
+        // && Get.find<OrderController>().currentOrderList != null &&
+        //     Get.find<OrderController>().currentOrderList.length < 1
+        ) {
       _setPage(1);
     } else {
       if (Get.find<AuthController>().userModel == null ||
@@ -157,7 +157,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           _navigateRequestPage();
                         }),
                     BottomNavItem(
-                        iconData: Icons.shopping_bag,
+                        iconData: Icons.history,
                         isSelected: _pageIndex == 2,
                         onTap: () => _setPage(2)),
                     BottomNavItem(

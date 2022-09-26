@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 
 class HomeScreen extends StatelessWidget {
   Future<void> _loadData() async {
@@ -99,8 +100,8 @@ class HomeScreen extends StatelessWidget {
                       value: authController.userModel.isActive == true,
                       onToggle: (bool isActive) async {
                         if (!isActive &&
-                            orderController.currentOrderList != null &&
-                            orderController.currentOrderList.length > 0) {
+                            orderController.activeOrderList != null &&
+                            orderController.activeOrderList.length > 0) {
                           showCustomSnackBar('you_can_not_go_offline_now'.tr);
                         } else {
                           if (!isActive) {
@@ -165,10 +166,10 @@ class HomeScreen extends StatelessWidget {
             return Column(children: [
               GetBuilder<OrderController>(builder: (orderController) {
                 bool _hasActiveOrder =
-                    orderController.currentOrderList != null &&
-                        orderController.currentOrderList.length > 0;
-                bool _hasMoreOrder = orderController.currentOrderList != null &&
-                    orderController.currentOrderList.length > 1;
+                    orderController.activeOrderList != null &&
+                        orderController.activeOrderList.length > 0;
+                bool _hasMoreOrder = orderController.activeOrderList != null &&
+                    orderController.activeOrderList.length > 1;
                 return Column(children: [
                   _hasActiveOrder
                       ? TitleWidget(
@@ -193,7 +194,7 @@ class HomeScreen extends StatelessWidget {
                       //   )
                       : orderController.currentOrderList.length > 0
                           ? OrderWidget(
-                              orderModel: orderController.currentOrderList[0],
+                              orderModel: orderController.activeOrderList[0],
                               isRunningOrder: true,
                               orderIndex: 0,
                             )
@@ -204,9 +205,7 @@ class HomeScreen extends StatelessWidget {
                           : 0),
                 ]);
               }),
-              (authController.userModel != null &&
-                      authController.profileModel != null &&
-                      authController.profileModel.earnings == 1)
+              (authController.userModel != null)
                   ? Column(children: [
                       TitleWidget(title: 'earnings'.tr),
                       SizedBox(height: Dimensions.PADDING_SIZE_EXTRA_SMALL),
@@ -241,11 +240,11 @@ class HomeScreen extends StatelessWidget {
                                       authController.userModel != null
                                           ? Text(
                                               PriceConverter.convertPrice(
-                                                  authController.profileModel
+                                                  authController.userModel
                                                               .balance !=
                                                           null
                                                       ? authController
-                                                          .profileModel.balance
+                                                          .userModel.balance
                                                       : 0),
                                               style: robotoBold.copyWith(
                                                   fontSize: 24,
@@ -265,7 +264,7 @@ class HomeScreen extends StatelessWidget {
                             EarningWidget(
                               title: 'today'.tr,
                               amount: authController.userModel != null
-                                  ? authController.profileModel.todaysEarning
+                                  ? (authController.userModel.todaysEarning)
                                   : null,
                             ),
                             Container(
@@ -275,7 +274,7 @@ class HomeScreen extends StatelessWidget {
                             EarningWidget(
                               title: 'this_week'.tr,
                               amount: authController.userModel != null
-                                  ? authController.profileModel.thisWeekEarning
+                                  ? authController.userModel.thisWeekEarning
                                   : null,
                             ),
                             Container(
@@ -285,7 +284,7 @@ class HomeScreen extends StatelessWidget {
                             EarningWidget(
                               title: 'this_month'.tr,
                               amount: authController.userModel != null
-                                  ? authController.profileModel.thisMonthEarning
+                                  ? authController.userModel.thisMonthEarning
                                   : null,
                             ),
                           ]),
@@ -303,7 +302,7 @@ class HomeScreen extends StatelessWidget {
                   backgroundColor: Theme.of(context).secondaryHeaderColor,
                   height: 180,
                   value: authController.userModel != null
-                      ? authController.profileModel.todaysOrderCount.toString()
+                      ? authController.userModel.todaysOrderCount.toString()
                       : null,
                 )),
                 SizedBox(width: Dimensions.PADDING_SIZE_SMALL),
@@ -313,8 +312,7 @@ class HomeScreen extends StatelessWidget {
                   backgroundColor: Theme.of(context).errorColor,
                   height: 180,
                   value: authController.userModel != null
-                      ? authController.profileModel.thisWeekOrderCount
-                          .toString()
+                      ? authController.userModel.thisWeekOrderCount.toString()
                       : null,
                 )),
               ]),
@@ -324,7 +322,7 @@ class HomeScreen extends StatelessWidget {
                 backgroundColor: Theme.of(context).primaryColor,
                 height: 140,
                 value: authController.userModel != null
-                    ? authController.profileModel.orderCount.toString()
+                    ? authController.userModel.orderCount.toString()
                     : null,
               ),
               SizedBox(height: Dimensions.PADDING_SIZE_SMALL),
@@ -334,13 +332,15 @@ class HomeScreen extends StatelessWidget {
                 height: 140,
                 value: authController.userModel != null
                     ? PriceConverter.convertPrice(
-                        authController.profileModel.cashInHands != null
-                            ? authController.profileModel.cashInHands
+                        authController.userModel.cashInHands != null
+                            ? authController.userModel.cashInHands
                             : 0)
                     : null,
               ),
-
-              /*TitleWidget(title: 'ratings'.tr),
+              SizedBox(
+                height: Dimensions.PADDING_SIZE_DEFAULT,
+              ),
+              TitleWidget(title: 'ratings'.tr),
               SizedBox(height: Dimensions.PADDING_SIZE_EXTRA_SMALL),
               Container(
                 padding: EdgeInsets.all(Dimensions.PADDING_SIZE_SMALL),
@@ -348,32 +348,49 @@ class HomeScreen extends StatelessWidget {
                   color: Theme.of(context).primaryColor,
                   borderRadius: BorderRadius.circular(Dimensions.RADIUS_SMALL),
                 ),
-                child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Expanded(child: Text('my_ratings'.tr, style: robotoMedium.copyWith(
-                    fontSize: Dimensions.FONT_SIZE_LARGE, color: Colors.white,
-                  ))),
-                  GetBuilder<AuthController>(builder: (authController) {
-                    return Shimmer(
-                      duration: Duration(seconds: 2),
-                      enabled: authController.profileModel == null,
-                      color: Colors.grey[500],
-                      child: Column(children: [
-                        Row(children: [
-                          authController.userModel != null ? Text(
-                            authController.profileModel.avgRating.toString(),
-                            style: robotoBold.copyWith(fontSize: 30, color: Colors.white),
-                          ) : Container(height: 25, width: 40, color: Colors.white),
-                          Icon(Icons.star, color: Colors.white, size: 35),
-                        ]),
-                        authController.userModel != null ? Text(
-                          '${authController.profileModel.ratingCount} ${'reviews'.tr}',
-                          style: robotoRegular.copyWith(fontSize: Dimensions.FONT_SIZE_SMALL, color: Colors.white),
-                        ) : Container(height: 10, width: 50, color: Colors.white),
-                      ]),
-                    );
-                  }),
-                ]),
-              ),*/
+                child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                          child: Text('my_ratings'.tr,
+                              style: robotoMedium.copyWith(
+                                fontSize: Dimensions.FONT_SIZE_LARGE,
+                                color: Colors.white,
+                              ))),
+                      GetBuilder<AuthController>(builder: (authController) {
+                        return Shimmer(
+                          duration: Duration(seconds: 2),
+                          enabled: authController.userModel == null,
+                          color: Colors.grey[500],
+                          child: Column(children: [
+                            Row(children: [
+                              authController.userModel != null
+                                  ? Text(
+                                      authController.userModel.avgRating
+                                          .toString(),
+                                      style: robotoBold.copyWith(
+                                          fontSize: 30, color: Colors.white),
+                                    )
+                                  : Container(
+                                      height: 25,
+                                      width: 40,
+                                      color: Colors.white),
+                              Icon(Icons.star, color: Colors.white, size: 35),
+                            ]),
+                            authController.userModel != null
+                                ? Text(
+                                    '${authController.userModel.ratingCount} ${'reviews'.tr}',
+                                    style: robotoRegular.copyWith(
+                                        fontSize: Dimensions.FONT_SIZE_SMALL,
+                                        color: Colors.white),
+                                  )
+                                : Container(
+                                    height: 10, width: 50, color: Colors.white),
+                          ]),
+                        );
+                      }),
+                    ]),
+              ),
             ]);
           }),
         ),

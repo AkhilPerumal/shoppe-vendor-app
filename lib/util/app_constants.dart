@@ -3,7 +3,7 @@ import 'package:carclenx_vendor_app/util/images.dart';
 
 class AppConstants {
   static const String APP_NAME = 'Pexa Partner App';
-  static const double APP_VERSION = 1.0;
+  static const String APP_VERSION = '1.0.1';
 
   // static const String BASE_URL = 'https://stackfood-admin.6amtech.com';
   // static const String BASE_URL = 'https://stagingshoppe.carclenx.com/v1.0';
@@ -19,7 +19,7 @@ class AppConstants {
   static const String TOKEN_URI = '/api/v1/delivery-man/update-fcm-token';
   static const String CURRENT_ORDERS_URI =
       '/api/v1/delivery-man/current-orders?token=';
-  static const String ALL_ORDERS_URI = '/api/v1/delivery-man/all-orders';
+  static const String ALL_ORDERS_URI = '/mechanical-order/franchise/all';
   static const String LATEST_ORDERS_URI =
       '/api/v1/delivery-man/latest-orders?token=';
   static const String RECORD_LOCATION_URI =
@@ -47,10 +47,15 @@ class AppConstants {
   static const String TOKEN = 'carclenx_vendor_app_token';
   static const String COUNTRY_CODE = 'country_code';
   static const String LANGUAGE_CODE = 'language_code';
-  static const String USER_PASSWORD = 'user_password';
+  static const String LOGIN_USER_PASSWORD = 'login_user_password';
+  static const String LOGIN_USER_NAME = 'login_user_name';
   static const String USER_NAME = 'user_name';
   static const String USER_ADDRESS = 'user_address';
   static const String USER_NUMBER = 'user_number';
+  static const String USER_EMAIL = 'user_email';
+  static const String PROVIDES = 'provides';
+  static const String ROLES = 'roles';
+  static const String IS_ACTIVE = 'is_active';
   static const String USER_COUNTRY_CODE = 'user_country_code';
   static const String NOTIFICATION = 'notification';
   static const String NOTIFICATION_COUNT = 'notification_count';

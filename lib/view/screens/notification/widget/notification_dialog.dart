@@ -39,8 +39,7 @@ class NotificationDialog extends StatelessWidget {
                 borderRadius: BorderRadius.circular(Dimensions.RADIUS_SMALL),
                 child: FadeInImage.assetNetwork(
                   placeholder: Images.placeholder,
-                  image:
-                      '${Get.find<SplashController>().configModel.baseUrls.notificationImageUrl}/${notificationModel.image}',
+                  image: '/${notificationModel.image}',
                   height: 150,
                   width: MediaQuery.of(context).size.width,
                   fit: BoxFit.cover,

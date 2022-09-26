@@ -1,8 +1,7 @@
 import 'dart:io';
 
 import 'package:carclenx_vendor_app/controller/auth_controller.dart';
-import 'package:carclenx_vendor_app/controller/splash_controller.dart';
-import 'package:carclenx_vendor_app/data/model/response/profile_model.dart';
+import 'package:carclenx_vendor_app/data/model/response/user_model/user_model.dart';
 import 'package:carclenx_vendor_app/util/dimensions.dart';
 import 'package:carclenx_vendor_app/util/images.dart';
 import 'package:carclenx_vendor_app/util/styles.dart';
@@ -33,7 +32,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     // TODO: implement initState
     super.initState();
 
-    if (Get.find<AuthController>().profileModel == null) {
+    if (Get.find<AuthController>().userModel == null) {
       Get.find<AuthController>().getProfile();
     }
     Get.find<AuthController>().initData();
@@ -44,15 +43,14 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     return Scaffold(
       backgroundColor: Theme.of(context).cardColor,
       body: GetBuilder<AuthController>(builder: (authController) {
-        if (authController.profileModel != null &&
+        if (authController.userModel != null &&
             _firstNameController.text.isEmpty) {
-          _firstNameController.text = authController.profileModel.fName ?? '';
-          _lastNameController.text = authController.profileModel.lName ?? '';
-          _phoneController.text = authController.profileModel.phone ?? '';
-          _emailController.text = authController.profileModel.email ?? '';
+          _firstNameController.text = authController.userModel.name ?? '';
+          _phoneController.text = authController.userModel.phone ?? '';
+          _emailController.text = authController.userModel.email ?? '';
         }
 
-        return authController.profileModel != null
+        return authController.userModel != null
             ? ProfileBgWidget(
                 backButton: true,
                 circularImage: Center(
@@ -74,8 +72,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                                 )
                           : FadeInImage.assetNetwork(
                               placeholder: Images.placeholder,
-                              image:
-                                  '${Get.find<SplashController>().configModel.baseUrls.deliveryManImageUrl}/${authController.profileModel.image}',
+                              image: '${authController.userModel.image}',
                               height: 100,
                               width: 100,
                               fit: BoxFit.cover,
@@ -228,10 +225,9 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     String _lastName = _lastNameController.text.trim();
     String _email = _emailController.text.trim();
     String _phoneNumber = _phoneController.text.trim();
-    if (authController.profileModel.fName == _firstName &&
-        authController.profileModel.lName == _lastName &&
-        authController.profileModel.phone == _phoneNumber &&
-        authController.profileModel.email == _emailController.text &&
+    if (authController.userModel.name == _firstName &&
+        authController.userModel.phone == _phoneNumber &&
+        authController.userModel.email == _emailController.text &&
         authController.pickedFile == null) {
       showCustomSnackBar('change_something_to_update'.tr);
     } else if (_firstName.isEmpty) {
@@ -247,11 +243,8 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     } else if (_phoneNumber.length < 6) {
       showCustomSnackBar('enter_a_valid_phone_number'.tr);
     } else {
-      ProfileModel _updatedUser = ProfileModel(
-          fName: _firstName,
-          lName: _lastName,
-          email: _email,
-          phone: _phoneNumber);
+      UserModel _updatedUser =
+          UserModel(name: _firstName, email: _email, phone: _phoneNumber);
       bool _isSuccess = await authController.updateUserInfo(
           _updatedUser, Get.find<AuthController>().getUserToken());
       if (_isSuccess) {

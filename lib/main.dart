@@ -13,6 +13,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
 import 'package:url_strategy/url_strategy.dart';
 import 'controller/auth_controller.dart';
@@ -45,13 +46,9 @@ class MyApp extends StatelessWidget {
   MyApp({@required this.languages});
 
   void _route() {
-    Get.find<SplashController>().getConfigData().then((bool isSuccess) async {
-      if (isSuccess) {
-        if (Get.find<AuthController>().isLoggedIn()) {
-          Get.find<AuthController>().updateToken();
-        }
-      }
-    });
+    if (Get.find<AuthController>().isLoggedIn()) {
+      Get.find<AuthController>().updateToken();
+    }
   }
 
   @override
@@ -59,22 +56,25 @@ class MyApp extends StatelessWidget {
     return GetBuilder<ThemeController>(builder: (themeController) {
       return GetBuilder<LocalizationController>(builder: (localizeController) {
         return GetBuilder<SplashController>(builder: (splashController) {
-          return (GetPlatform.isWeb && splashController.configModel == null)
-              ? SizedBox()
-              : GetMaterialApp(
-                  title: AppConstants.APP_NAME,
-                  debugShowCheckedModeBanner: false,
-                  navigatorKey: Get.key,
-                  theme: themeController.darkTheme ? dark : light,
-                  locale: localizeController.locale,
-                  translations: Messages(languages: languages),
-                  fallbackLocale: Locale(AppConstants.languages[0].languageCode,
-                      AppConstants.languages[0].countryCode),
-                  initialRoute: RouteHelper.getSplashRoute(),
-                  getPages: RouteHelper.routes,
-                  defaultTransition: Transition.topLevel,
-                  transitionDuration: Duration(milliseconds: 500),
-                );
+          return GetMaterialApp(
+            title: AppConstants.APP_NAME,
+            debugShowCheckedModeBanner: false,
+            navigatorKey: Get.key,
+            theme: themeController.darkTheme ? dark : light,
+            locale: localizeController.locale,
+            translations: Messages(languages: languages),
+            fallbackLocale: Locale(AppConstants.languages[0].languageCode,
+                AppConstants.languages[0].countryCode),
+            localizationsDelegates: [
+              GlobalCupertinoLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate
+            ],
+            initialRoute: RouteHelper.getSplashRoute(),
+            getPages: RouteHelper.routes,
+            defaultTransition: Transition.topLevel,
+            transitionDuration: Duration(milliseconds: 500),
+          );
         });
       });
     });

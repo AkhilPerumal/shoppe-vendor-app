@@ -10,7 +10,7 @@ class Images {
   static const String delivery_man_marker =
       'assets/image/delivery_man_marker.png';
   static const String location_marker = 'assets/image/location_marker.png';
-  static const String restaurant_marker = 'assets/image/restaurant_marker.png';
+  static const String franchise_marker = 'assets/image/franchise_marker.png';
   static const String location = 'assets/image/location.png';
   static const String log_out = 'assets/image/log_out.png';
   static const String warning = 'assets/image/warning.png';
@@ -29,4 +29,8 @@ class Images {
   static const String update = 'assets/image/update.png';
   static const String maintenance = 'assets/image/maintenance.png';
   static const String animate_delivery_man = 'assets/image/delivery-man.gif';
+  static const String shoppe_icon = 'assets/image/shoppe.png';
+  static const String car_spa_icon = 'assets/image/car-spa.png';
+  static const String mechanical_icon = 'assets/image/mechanical.png';
+  static const String quick_help_icon = 'assets/image/roadside-ass.png';
 }

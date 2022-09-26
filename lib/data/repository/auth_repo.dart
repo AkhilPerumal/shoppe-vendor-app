@@ -2,11 +2,11 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:carclenx_vendor_app/data/model/body/record_location_body.dart';
+import 'package:carclenx_vendor_app/data/model/response/user_model/role.dart';
+import 'package:carclenx_vendor_app/data/model/response/user_model/user_model.dart';
 import 'package:path/path.dart';
 import 'package:http_parser/http_parser.dart';
-
 import 'package:carclenx_vendor_app/data/api/api_client.dart';
-import 'package:carclenx_vendor_app/data/model/response/profile_model.dart';
 import 'package:carclenx_vendor_app/util/app_constants.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -39,7 +39,7 @@ class AuthRepo {
   }
 
   Future<http.StreamedResponse> updateProfile(
-      ProfileModel userInfoModel, XFile data, String token) async {
+      UserModel userInfoModel, XFile data, String token) async {
     http.MultipartRequest request = http.MultipartRequest(
         'POST',
         Uri.parse(
@@ -61,8 +61,7 @@ class AuthRepo {
     Map<String, String> _fields = Map();
     _fields.addAll(<String, String>{
       '_method': 'put',
-      'f_name': userInfoModel.fName,
-      'l_name': userInfoModel.lName,
+      'nname': userInfoModel.name,
       'email': userInfoModel.email,
       'token': getUserToken()
     });
@@ -72,11 +71,10 @@ class AuthRepo {
   }
 
   Future<Response> changePassword(
-      ProfileModel userInfoModel, String password) async {
+      UserModel userInfoModel, String password) async {
     return await apiClient.postData(AppConstants.UPDATE_PROFILE_URI, body: {
       '_method': 'put',
-      'f_name': userInfoModel.fName,
-      'l_name': userInfoModel.lName,
+      'name': userInfoModel.name,
       'email': userInfoModel.email,
       'password': password,
       'token': getUserToken()
@@ -183,21 +181,66 @@ class AuthRepo {
     await sharedPreferences.remove(AppConstants.TOKEN);
     await sharedPreferences.setStringList(AppConstants.IGNORE_LIST, []);
     await sharedPreferences.remove(AppConstants.USER_ADDRESS);
+    sharedPreferences.remove(AppConstants.IS_ACTIVE);
+    sharedPreferences.remove(AppConstants.USER_NAME);
+    sharedPreferences.remove(AppConstants.USER_NUMBER);
+    sharedPreferences.remove(AppConstants.USER_EMAIL);
+    sharedPreferences.remove(AppConstants.PROVIDES);
+    sharedPreferences.remove(AppConstants.ROLES);
     apiClient.updateHeader(null, null);
     return true;
   }
 
   Future<void> saveUserNameAndPassword(String name, String password) async {
     try {
-      await sharedPreferences.setString(AppConstants.USER_PASSWORD, password);
-      await sharedPreferences.setString(AppConstants.USER_NAME, name);
+      await sharedPreferences.setString(
+          AppConstants.LOGIN_USER_PASSWORD, password);
+      await sharedPreferences.setString(AppConstants.LOGIN_USER_NAME, name);
     } catch (e) {
       throw e;
     }
   }
 
+  setUserDetails(UserModel userModel) {
+    sharedPreferences.setBool(AppConstants.IS_ACTIVE, userModel.isActive);
+    sharedPreferences.setString(AppConstants.USER_NAME, userModel.name);
+    sharedPreferences.setString(AppConstants.USER_NUMBER, userModel.phone);
+    sharedPreferences.setString(AppConstants.USER_EMAIL, userModel.email);
+    sharedPreferences.setString(
+        AppConstants.PROVIDES,
+        userModel.provides != null && userModel.provides.length >= 0
+            ? userModel.provides.join(',')
+            : '');
+    sharedPreferences.setString(
+        AppConstants.ROLES,
+        userModel.role.length != 1
+            ? userModel.role.map((e) => e.name).toList().join(',')
+            : userModel.role[0].name);
+  }
+
+  getUserDetails() {
+    UserModel userModel = UserModel();
+    userModel.isActive = sharedPreferences.get(AppConstants.IS_ACTIVE);
+    userModel.name = sharedPreferences.get(AppConstants.USER_NAME);
+    userModel.phone = sharedPreferences.get(AppConstants.USER_NUMBER);
+    userModel.email = sharedPreferences.get(AppConstants.USER_EMAIL);
+    userModel.provides =
+        sharedPreferences.get(AppConstants.PROVIDES).toString().split(",");
+    userModel.role = sharedPreferences
+        .get(AppConstants.ROLES)
+        .toString()
+        .split(',')
+        .map((e) => Role(name: e))
+        .toList();
+    return userModel;
+  }
+
   String getUserName() {
     return sharedPreferences.getString(AppConstants.USER_NAME) ?? "";
+  }
+
+  String getLoginUserName() {
+    return sharedPreferences.getString(AppConstants.LOGIN_USER_NAME) ?? "";
   }
 
   String getUserNumber() {
@@ -209,7 +252,7 @@ class AuthRepo {
   }
 
   String getUserPassword() {
-    return sharedPreferences.getString(AppConstants.USER_PASSWORD) ?? "";
+    return sharedPreferences.getString(AppConstants.LOGIN_USER_PASSWORD) ?? "";
   }
 
   bool isNotificationActive() {
@@ -230,8 +273,8 @@ class AuthRepo {
   }
 
   Future<bool> clearUserNameAndPassword() async {
-    await sharedPreferences.remove(AppConstants.USER_PASSWORD);
-    return await sharedPreferences.remove(AppConstants.USER_NAME);
+    await sharedPreferences.remove(AppConstants.LOGIN_USER_PASSWORD);
+    return await sharedPreferences.remove(AppConstants.LOGIN_USER_NAME);
   }
 
   Future<Response> deleteDriver() async {

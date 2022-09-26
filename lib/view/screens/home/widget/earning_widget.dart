@@ -20,21 +20,14 @@ class EarningWidget extends StatelessWidget {
             color: Theme.of(context).cardColor),
       ),
       SizedBox(height: Dimensions.PADDING_SIZE_SMALL),
-      amount != null
-          ? Text(
-              PriceConverter.convertPrice(amount),
-              style: robotoMedium.copyWith(
-                  fontSize: Dimensions.FONT_SIZE_EXTRA_LARGE,
-                  color: Theme.of(context).cardColor),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            )
-          : Shimmer(
-              duration: Duration(seconds: 2),
-              enabled: amount == null,
-              color: Colors.grey[500],
-              child: Container(height: 20, width: 40, color: Colors.white),
-            ),
+      Text(
+        PriceConverter.convertPrice(amount != null ? amount : 0.0).toString(),
+        style: robotoMedium.copyWith(
+            fontSize: Dimensions.FONT_SIZE_EXTRA_LARGE,
+            color: Theme.of(context).cardColor),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      )
     ]));
   }
 }

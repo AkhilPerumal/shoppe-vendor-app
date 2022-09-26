@@ -1,5 +1,4 @@
 import 'package:carclenx_vendor_app/data/model/response/address_model.dart';
-import 'package:carclenx_vendor_app/data/model/response/order_model.dart';
 import 'package:carclenx_vendor_app/util/dimensions.dart';
 import 'package:carclenx_vendor_app/util/images.dart';
 import 'package:carclenx_vendor_app/util/styles.dart';
@@ -74,12 +73,14 @@ class InfoCard extends StatelessWidget {
                           style: robotoRegular.copyWith(
                               fontSize: Dimensions.FONT_SIZE_SMALL)),
                       SizedBox(height: Dimensions.PADDING_SIZE_EXTRA_SMALL),
-                      Text(
-                        "addressModel.address",
-                        style: robotoRegular.copyWith(
-                            fontSize: Dimensions.FONT_SIZE_SMALL,
-                            color: Theme.of(context).disabledColor),
-                      ),
+                      addressModel.house != null
+                          ? Text(
+                              addressModel.house.toString(),
+                              style: robotoRegular.copyWith(
+                                  fontSize: Dimensions.FONT_SIZE_SMALL,
+                                  color: Theme.of(context).disabledColor),
+                            )
+                          : SizedBox(),
                       isDelivery
                           ? Wrap(children: [
                               (addressModel.street != null &&
@@ -88,8 +89,9 @@ class InfoCard extends StatelessWidget {
                                       'street_number'.tr +
                                           ': ' +
                                           addressModel.street +
-                                          ', ',
-                                      maxLines: 1,
+                                          ', ' +
+                                          addressModel.city,
+                                      maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
                                       style: robotoRegular.copyWith(
                                           fontSize: Dimensions.FONT_SIZE_SMALL,
@@ -156,14 +158,11 @@ class InfoCard extends StatelessWidget {
                                     throw '${'could_not_launch'.tr} $url';
                                   }
                                 },
-                                icon: Icon(Icons.directions,
-                                    color: Theme.of(context).disabledColor,
-                                    size: 20),
+                                icon: Icon(Icons.directions, size: 20),
                                 label: Text(
                                   'direction'.tr,
                                   style: robotoRegular.copyWith(
-                                      fontSize: Dimensions.FONT_SIZE_SMALL,
-                                      color: Theme.of(context).disabledColor),
+                                      fontSize: Dimensions.FONT_SIZE_SMALL),
                                 ),
                               ),
                             ])
@@ -174,7 +173,7 @@ class InfoCard extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
                       vertical: Dimensions.PADDING_SIZE_SMALL),
-                  child: Text('no_restaurant_data_found'.tr,
+                  child: Text('no_franchise_data_found'.tr,
                       style: robotoRegular.copyWith(
                           fontSize: Dimensions.FONT_SIZE_SMALL)),
                 ),

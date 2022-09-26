@@ -95,7 +95,6 @@ class NotificationScreen extends StatelessWidget {
                                                   width: 40,
                                                   fit: BoxFit.cover,
                                                   image:
-                                                      '${Get.find<SplashController>().configModel.baseUrls.notificationImageUrl}'
                                                       '/${notificationController.notificationList[index].image}',
                                                   imageErrorBuilder:
                                                       (c, o, s) => Image.asset(

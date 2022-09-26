@@ -1,9 +1,5 @@
-import 'package:carclenx_vendor_app/data/model/response/all_service_model.dart';
 import 'package:carclenx_vendor_app/view/screens/auth/sign_in_screen.dart';
 import 'package:carclenx_vendor_app/view/screens/dashboard/dashboard_screen.dart';
-import 'package:carclenx_vendor_app/view/screens/forget/forget_pass_screen.dart';
-import 'package:carclenx_vendor_app/view/screens/forget/new_pass_screen.dart';
-import 'package:carclenx_vendor_app/view/screens/forget/verification_screen.dart';
 import 'package:carclenx_vendor_app/view/screens/html/html_viewer_screen.dart';
 import 'package:carclenx_vendor_app/view/screens/language/language_screen.dart';
 import 'package:carclenx_vendor_app/view/screens/notification/notification_screen.dart';
@@ -56,9 +52,6 @@ class RouteHelper {
     GetPage(name: splash, page: () => SplashScreen()),
     GetPage(name: signIn, page: () => SignInScreen()),
     GetPage(
-        name: verification,
-        page: () => VerificationScreen(number: Get.parameters['number'])),
-    GetPage(
         name: main,
         page: () => DashboardScreen(
               pageIndex: Get.parameters['page'] == 'home'
@@ -71,25 +64,14 @@ class RouteHelper {
                               ? 3
                               : 0,
             )),
-    GetPage(name: forgotPassword, page: () => ForgetPassScreen()),
-    GetPage(
-        name: resetPassword,
-        page: () => NewPassScreen(
-              resetToken: Get.parameters['token'],
-              number: Get.parameters['phone'],
-              fromPasswordChange: Get.parameters['page'] == 'password-change',
-            )),
     GetPage(
         name: orderDetails,
         page: () {
-          OrderDetailsScreen _orderDetails = Get.arguments;
-          return _orderDetails != null
-              ? _orderDetails
-              : OrderDetailsScreen(
-                  orderModel: OrderModel(),
-                  orderIndex: null,
-                  isRunningOrder: null,
-                );
+          return OrderDetailsScreen(
+            orderModel: Get.arguments['orderModel'],
+            orderIndex: Get.arguments['orderIndex'],
+            isRunningOrder: Get.arguments['isRunningOrder'],
+          );
         }),
     GetPage(name: updateProfile, page: () => UpdateProfileScreen()),
     GetPage(name: notification, page: () => NotificationScreen()),

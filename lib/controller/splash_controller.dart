@@ -1,5 +1,3 @@
-import 'package:carclenx_vendor_app/data/api/api_checker.dart';
-import 'package:carclenx_vendor_app/data/model/response/config_model.dart';
 import 'package:carclenx_vendor_app/data/repository/splash_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -9,27 +7,11 @@ class SplashController extends GetxController implements GetxService {
   final SplashRepo splashRepo;
   SplashController({@required this.splashRepo});
 
-  ConfigModel _configModel;
   DateTime _currentTime = DateTime.now();
   bool _firstTimeConnectionCheck = true;
 
-  ConfigModel get configModel => _configModel;
   DateTime get currentTime => DateTime.now();
   bool get firstTimeConnectionCheck => _firstTimeConnectionCheck;
-
-  Future<bool> getConfigData() async {
-    Response response = await splashRepo.getConfigData();
-    bool _isSuccess = false;
-    if (response.statusCode == 200) {
-      _configModel = ConfigModel.fromJson(response.body);
-      _isSuccess = true;
-    } else {
-      ApiChecker.checkApi(response);
-      _isSuccess = false;
-    }
-    update();
-    return _isSuccess;
-  }
 
   Future<bool> initSharedData() {
     return splashRepo.initSharedData();
@@ -39,7 +21,7 @@ class SplashController extends GetxController implements GetxService {
     return splashRepo.removeSharedData();
   }
 
-  bool isRestaurantClosed() {
+  bool isfranchiseClosed() {
     DateTime _open = DateFormat('hh:mm').parse('');
     DateTime _close = DateFormat('hh:mm').parse('');
     DateTime _openTime = DateTime(_currentTime.year, _currentTime.month,

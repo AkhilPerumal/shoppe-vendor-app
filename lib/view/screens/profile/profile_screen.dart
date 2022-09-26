@@ -31,7 +31,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       backgroundColor: Theme.of(context).cardColor,
       body: GetBuilder<AuthController>(builder: (authController) {
-        return authController.profileModel == null
+        return authController.userModel == null
             ? Center(child: CircularProgressIndicator())
             : ProfileBgWidget(
                 backButton: false,
@@ -46,8 +46,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       child: FadeInImage.assetNetwork(
                     placeholder: Images.placeholder,
                     image:
-                        '${Get.find<SplashController>().configModel.baseUrls.deliveryManImageUrl}'
-                        '/${authController.profileModel != null ? authController.profileModel.image : ''}',
+                        '/${authController.userModel != null ? authController.userModel.image : ''}',
                     height: 100,
                     width: 100,
                     fit: BoxFit.cover,
@@ -67,7 +66,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       padding: EdgeInsets.all(Dimensions.PADDING_SIZE_SMALL),
                       child: Column(children: [
                         Text(
-                          '${authController.profileModel.fName} ${authController.profileModel.lName}',
+                          authController.userModel.name.toString(),
                           style: robotoMedium.copyWith(
                               fontSize: Dimensions.FONT_SIZE_LARGE),
                         ),
@@ -76,11 +75,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ProfileCard(
                               title: 'since_joining'.tr,
                               data:
-                                  '${authController.profileModel.memberSinceDays} ${'days'.tr}'),
+                                  '${authController.userModel.memberSinceDays} ${'days'.tr}'),
                           SizedBox(width: Dimensions.PADDING_SIZE_SMALL),
                           ProfileCard(
                               title: 'total_order'.tr,
-                              data: authController.profileModel.orderCount
+                              data: authController.userModel.orderCount
                                   .toString()),
                         ]),
                         SizedBox(height: 30),

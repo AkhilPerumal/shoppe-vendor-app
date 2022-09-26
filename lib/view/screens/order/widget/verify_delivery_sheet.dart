@@ -115,7 +115,7 @@ class VerifyDeliverySheet extends StatelessWidget {
                               .then((success) {
                             if (success) {
                               Get.find<AuthController>().getProfile();
-                              Get.find<OrderController>().getCurrentOrders();
+                              // Get.find<OrderController>().getCurrentOrders();
                               Get.offAllNamed(RouteHelper.getInitialRoute());
                             }
                           });

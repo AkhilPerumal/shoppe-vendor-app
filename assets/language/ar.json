@@ -85,7 +85,7 @@
   "completed_order": "الطلب جاهز",
   "item": "العنصر",
   "items": "العناصر",
-  "restaurant_details": "تفاصيل المطعم",
+  "franchise_details": "تفاصيل المطعم",
   "direction": "اتجاه",
   "customer_contact_details": "تفاصيل الاتصال بالعميل",
   "price": "سعر",
@@ -141,7 +141,7 @@
   "cod": "سمك القد",
   "digitally_paid": "مدفوعة رقميا",
   "go": "اذهب",
-  "restaurant_location": "موقع المطعم",
+  "franchise_location": "موقع المطعم",
   "customer_location": "موقع العميل",
   "mins_ago": "قبل دقيقة",
   "order_history": "تاريخ الطلب",
@@ -191,5 +191,5 @@
   "remove_account": "إزالة الحساب",
   "are_you_sure_to_delete_account": "هل أنت متأكد من حذف حسابك?",
   "it_will_remove_your_all_information": "سوف يزيل كل المعلومات الخاصة بك.",
-  "no_restaurant_data_found": "لم يتم العثور على بيانات مطعم"
+  "no_franchise_data_found": "لم يتم العثور على بيانات مطعم"
 }

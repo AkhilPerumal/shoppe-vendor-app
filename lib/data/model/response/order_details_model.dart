@@ -131,11 +131,11 @@ class FoodDetails {
   String discountType;
   String availableTimeStarts;
   String availableTimeEnds;
-  int restaurantId;
+  int franchiseId;
   String createdAt;
   String updatedAt;
-  String restaurantName;
-  double restaurantDiscount;
+  String franchiseName;
+  double franchiseDiscount;
   double avgRating;
   int veg;
   int ratingCount;
@@ -156,11 +156,11 @@ class FoodDetails {
       this.discountType,
       this.availableTimeStarts,
       this.availableTimeEnds,
-      this.restaurantId,
+      this.franchiseId,
       this.createdAt,
       this.updatedAt,
-      this.restaurantName,
-      this.restaurantDiscount,
+      this.franchiseName,
+      this.franchiseDiscount,
       this.avgRating,
       this.veg,
       this.ratingCount});
@@ -201,11 +201,11 @@ class FoodDetails {
     discountType = json['discount_type'];
     availableTimeStarts = json['available_time_starts'];
     availableTimeEnds = json['available_time_ends'];
-    restaurantId = json['restaurant_id'];
+    franchiseId = json['franchise_id'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
-    restaurantName = json['restaurant_name'];
-    restaurantDiscount = json['restaurant_discount'].toDouble();
+    franchiseName = json['franchise_name'];
+    franchiseDiscount = json['franchise_discount'].toDouble();
     avgRating = json['avg_rating'].toDouble();
     veg = json['veg'] != null ? int.parse(json['veg'].toString()) : 0;
     ratingCount = json['rating_count'];
@@ -237,11 +237,11 @@ class FoodDetails {
     data['discount_type'] = this.discountType;
     data['available_time_starts'] = this.availableTimeStarts;
     data['available_time_ends'] = this.availableTimeEnds;
-    data['restaurant_id'] = this.restaurantId;
+    data['franchise_id'] = this.franchiseId;
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
-    data['restaurant_name'] = this.restaurantName;
-    data['restaurant_discount'] = this.restaurantDiscount;
+    data['franchise_name'] = this.franchiseName;
+    data['franchise_discount'] = this.franchiseDiscount;
     data['avg_rating'] = this.avgRating;
     data['veg'] = this.veg;
     data['rating_count'] = this.ratingCount;

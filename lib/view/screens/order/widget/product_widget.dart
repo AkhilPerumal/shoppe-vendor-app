@@ -23,8 +23,7 @@ class ProductWidget extends StatelessWidget {
               height: 50,
               width: 50,
               fit: BoxFit.cover,
-              image:
-                  '${Get.find<SplashController>().configModel.baseUrls.productImageUrl}/${orderDetailsModel.foodDetails.image}',
+              image: '${orderDetailsModel.foodDetails.image}',
               imageErrorBuilder: (c, o, s) => Image.asset(Images.placeholder,
                   height: 50, width: 50, fit: BoxFit.cover),
             )),

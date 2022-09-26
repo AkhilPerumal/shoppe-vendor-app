@@ -30,10 +30,10 @@ class ConfirmationDialog extends StatelessWidget {
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(Dimensions.RADIUS_SMALL)),
       child: Padding(
-        padding: EdgeInsets.all(Dimensions.PADDING_SIZE_LARGE),
+        padding: EdgeInsets.all(Dimensions.PADDING_SIZE_DEFAULT),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           Padding(
-            padding: EdgeInsets.all(Dimensions.PADDING_SIZE_LARGE),
+            padding: EdgeInsets.all(Dimensions.PADDING_SIZE_DEFAULT),
             child: Image.asset(icon, width: iconSize, height: iconSize),
           ),
           title != null
@@ -56,7 +56,7 @@ class ConfirmationDialog extends StatelessWidget {
                     robotoMedium.copyWith(fontSize: Dimensions.FONT_SIZE_LARGE),
                 textAlign: TextAlign.center),
           ),
-          SizedBox(height: Dimensions.PADDING_SIZE_LARGE),
+          // SizedBox(height: Dimensions.PADDING_SIZE_LARGE),
           GetBuilder<AuthController>(builder: (authController) {
             return GetBuilder<OrderController>(builder: (orderController) {
               return (orderController.isLoading || authController.isLoading)

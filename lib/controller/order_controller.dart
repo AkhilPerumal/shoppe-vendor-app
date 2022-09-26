@@ -1,12 +1,11 @@
 import 'package:carclenx_vendor_app/controller/splash_controller.dart';
 import 'package:carclenx_vendor_app/data/api/api_checker.dart';
 import 'package:carclenx_vendor_app/data/model/body/record_location_body.dart';
-import 'package:carclenx_vendor_app/data/model/body/update_status_body.dart';
-import 'package:carclenx_vendor_app/data/model/response/all_service_model.dart';
+import 'package:carclenx_vendor_app/data/model/response/order_collection_model.dart';
+import 'package:carclenx_vendor_app/data/model/response/service_order_list_model.dart';
 import 'package:carclenx_vendor_app/data/model/response/ignore_model.dart';
 import 'package:carclenx_vendor_app/data/model/response/order_details_model.dart';
 import 'package:carclenx_vendor_app/data/repository/order_repo.dart';
-import 'package:carclenx_vendor_app/view/base/custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
@@ -16,13 +15,13 @@ class OrderController extends GetxController implements GetxService {
   final OrderRepo orderRepo;
   OrderController({@required this.orderRepo});
 
-  List<OrderModel> _allOrderList;
-  List<OrderModel> _currentOrderList;
-  List<OrderModel> _deliveredOrderList;
-  List<OrderModel> _completedOrderList;
-  List<OrderModel> _latestOrderList;
-  List<OrderModel> _allServiceModel;
+  List<OrderModel> _allOrderList, _currentOrderList;
+  List<OrderModel> _completedOrderList,
+      _activeOrderList,
+      _newOrderList,
+      _canceledOrderList;
   int _tabIndex = 0;
+  OrderCollectionModel _orderCollectionModel;
   List<OrderDetailsModel> _orderDetailsModel;
   List<IgnoreModel> _ignoredRequests = [];
   bool _isLoading = false;
@@ -45,16 +44,32 @@ class OrderController extends GetxController implements GetxService {
   List<int> _offsetList = [];
   int _offset = 1;
   OrderModel _orderModel;
+  String _toogleType;
+  List<Widget> _fliterListOrderRequest = [
+    Text("New"),
+    Text("Active"),
+  ];
+  List<Widget> _fliterListOrderHistory = [
+    Text("Completed"),
+    Text("Cancelled"),
+  ];
+  List<bool> _selectedFilterOrderRequest = [true, false];
+  List<bool> _selectedFilterOrderHistory = [true, false];
+  bool _haveMore;
 
+  List<Widget> get fliterListOrderRequest => _fliterListOrderRequest;
+  List<Widget> get fliterListOrderHistory => _fliterListOrderHistory;
   List<OrderModel> get allOrderList => _allOrderList;
-  List<OrderModel> get allServiceModel => _allServiceModel;
   List<OrderModel> get currentOrderList => _currentOrderList;
-  List<OrderModel> get deliveredOrderList => _deliveredOrderList;
+  List<OrderModel> get activeOrderList => _activeOrderList;
   List<OrderModel> get completedOrderList => _completedOrderList;
-  List<OrderModel> get latestOrderList => _latestOrderList;
-  List<OrderDetailsModel> get orderDetailsModel => _orderDetailsModel;
+  List<OrderModel> get newOrderList => _newOrderList;
+  List<OrderModel> get canceledOrderList => _canceledOrderList;
+  OrderCollectionModel get orderCollectionModel => _orderCollectionModel;
+
   int get tabIndex => _tabIndex;
   bool get isLoading => _isLoading;
+  bool get haveMore => _haveMore;
   Position get position => _position;
   Placemark get placeMark => _placeMark;
   String get address =>
@@ -63,17 +78,99 @@ class OrderController extends GetxController implements GetxService {
   bool get paginate => _paginate;
   int get pageSize => _pageSize;
   int get offset => _offset;
+  List<bool> get selectedFilterOrderRequest => _selectedFilterOrderRequest;
+  List<bool> get selectedFilterOrderHistory => _selectedFilterOrderHistory;
+  String get toogleType => _toogleType;
   OrderModel get orderModel => _orderModel;
 
-  void setTabIndex(int index) {
-    bool _notify = true;
-    if (_tabIndex == index) {
-      _notify = false;
+  void updateToogleType(String type) {
+    _toogleType = type;
+    update();
+  }
+
+  void updateFiltertype({int index, String category, String fromPage}) {
+    if (fromPage == "New Order") {
+      _selectedFilterOrderRequest.clear();
+      for (int i = 0; i < _fliterListOrderRequest.length; i++) {
+        if (i == index) {
+          _selectedFilterOrderRequest.add(true);
+        } else {
+          _selectedFilterOrderRequest.add(false);
+        }
+      }
+    } else {
+      _selectedFilterOrderHistory.clear();
+      for (int i = 0; i < _fliterListOrderHistory.length; i++) {
+        if (i == index) {
+          _selectedFilterOrderHistory.add(true);
+        } else {
+          _selectedFilterOrderHistory.add(false);
+        }
+      }
     }
-    _tabIndex = index;
-    if (_notify) {
-      update();
+    setCurrentOrderList(category, index, fromPage);
+    update();
+  }
+
+  void setCurrentOrderList(String category, int index, String fromPage) {
+    if (category == 'car_spa'.tr) {
+      if (fromPage == "New Order") {
+        if (index == 0) {
+          _currentOrderList = newOrderList;
+        } else {
+          _currentOrderList = activeOrderList;
+        }
+      } else {
+        if (index == 0) {
+          _currentOrderList = completedOrderList;
+        } else {
+          _currentOrderList = canceledOrderList;
+        }
+      }
+    } else if (category == 'car_mechanical'.tr) {
+      if (fromPage == "New Order") {
+        if (index == 0) {
+          _currentOrderList = newOrderList;
+        } else {
+          _currentOrderList = activeOrderList;
+        }
+      } else {
+        if (index == 0) {
+          _currentOrderList = completedOrderList;
+        } else {
+          _currentOrderList = canceledOrderList;
+        }
+      }
+    } else if (category == 'quick_help'.tr) {
+      if (fromPage == "New Order") {
+        if (index == 0) {
+          _currentOrderList = newOrderList;
+        } else {
+          _currentOrderList = activeOrderList;
+        }
+      } else {
+        if (index == 0) {
+          _currentOrderList = completedOrderList;
+        } else {
+          _currentOrderList = canceledOrderList;
+        }
+      }
+    } else {
+      if (fromPage == "New Order") {
+        if (index == 0) {
+          _currentOrderList = newOrderList;
+        } else {
+          _currentOrderList = activeOrderList;
+        }
+      } else {
+        if (index == 0) {
+          _currentOrderList = completedOrderList;
+        } else {
+          _currentOrderList = canceledOrderList;
+        }
+      }
     }
+    update();
   }
 
   Future<void> getAllOrders() async {
@@ -82,46 +179,10 @@ class OrderController extends GetxController implements GetxService {
       _allOrderList = [];
       response.body
           .forEach((order) => _allOrderList.add(OrderModel.fromJson(order)));
-      _deliveredOrderList = [];
-      _allOrderList.forEach((order) {
-        if (order.status == 'delivered') {
-          _deliveredOrderList.add(order);
-        }
-      });
     } else {
       ApiChecker.checkApi(response);
     }
     update();
-  }
-
-  Future<void> getCompletedOrders(int offset) async {
-    if (offset == 1) {
-      _offsetList = [];
-      _offset = 1;
-      _completedOrderList = null;
-      update();
-    }
-    if (!_offsetList.contains(offset)) {
-      _offsetList.add(offset);
-      Response response = await orderRepo.getCompletedOrderList(offset);
-      if (response.statusCode == 200) {
-        if (offset == 1) {
-          _completedOrderList = [];
-        }
-        // _completedOrderList
-        //     .addAll(PaginatedOrderModel.fromJson(response.body).orders);
-        // _pageSize = PaginatedOrderModel.fromJson(response.body).totalSize;
-        _paginate = false;
-        update();
-      } else {
-        ApiChecker.checkApi(response);
-      }
-    } else {
-      if (_paginate) {
-        _paginate = false;
-        update();
-      }
-    }
   }
 
   void showBottomLoader() {
@@ -131,22 +192,6 @@ class OrderController extends GetxController implements GetxService {
 
   void setOffset(int offset) {
     _offset = offset;
-  }
-
-  Future<void> getCurrentOrders() async {
-    Response response = await orderRepo.getCurrentOrders();
-    if (response.statusCode == 200) {
-      _currentOrderList = [];
-      response.body.forEach(
-          (order) => _currentOrderList.add(OrderModel.fromJson(order)));
-    } else {
-      ApiChecker.checkApi(response);
-    }
-    update();
-  }
-
-  void setOrder(OrderModel orderModel) {
-    _orderModel = orderModel;
   }
 
   Future<void> getOrderWithId(String orderId) async {
@@ -161,32 +206,136 @@ class OrderController extends GetxController implements GetxService {
   }
 
   Future<void> getLatestOrders(
-      {String status, String pageNo, String category}) async {
+      {String status, String pageNo, String category, String fromPage}) async {
+    _isLoading = true;
+    _haveMore = false;
     Response response = await orderRepo.getLatestOrders(
         status: status, pageNo: pageNo, category: category);
-    var a;
     if (response.statusCode == 200) {
-      _allServiceModel = [];
-      Autogenerated autogenerated = Autogenerated.fromJson(response.body);
-      autogenerated.resultData.forEach((element) {
-        _allServiceModel.add(element);
-      });
-
-      // _latestOrderList = [];
-      // List<int> _ignoredIdList = [];
-      // _ignoredRequests.forEach((ignore) {
-      //   _ignoredIdList.add(ignore.id);
-      // });
-      // if (response.body['resultData'].length > 0) {
-      //   response.body.forEach((order) {
-      //     if (!_ignoredIdList.contains(OrderModel.fromJson(order).id)) {
-      //       _latestOrderList.add(OrderModel.fromJson(order));
-      //     }
-      //   });
-      // }
+      _newOrderList = [];
+      _activeOrderList = [];
+      _completedOrderList = [];
+      _canceledOrderList = [];
+      if (response.body != null &&
+          response.body['resultData'] != null &&
+          response.body['resultData'].length > 0) {
+        ServiceOrderListModel serviceOrderListModel =
+            ServiceOrderListModel.fromJson(response.body);
+        if (category == 'car_spa'.tr &&
+            serviceOrderListModel.resultData != null &&
+            serviceOrderListModel.resultData.length > 0) {
+          List<OrderModel> _tempnewOrderList = [];
+          List<OrderModel> _tempactiveOrderList = [];
+          List<OrderModel> _tempcompletedOrderList = [];
+          List<OrderModel> _tempcanceledOrderList = [];
+          serviceOrderListModel.resultData.forEach((element) {
+            if (element.status == "Active" || element.status == "Reassigned") {
+              _tempnewOrderList.add(element);
+            } else if (element.status == "Accepted") {
+              _tempactiveOrderList.add(element);
+            } else if (element.status == "Completed") {
+              _tempcompletedOrderList.add(element);
+            } else {
+              _tempcanceledOrderList.add(element);
+            }
+          });
+          _newOrderList.addAll(_tempnewOrderList);
+          _activeOrderList.addAll(_tempactiveOrderList);
+          _completedOrderList.addAll(_tempcompletedOrderList);
+          _canceledOrderList.addAll(_tempcanceledOrderList);
+        } else {
+          _haveMore = false;
+        }
+        if (category == 'car_mechanical'.tr &&
+            serviceOrderListModel.resultData != null &&
+            serviceOrderListModel.resultData.length > 0) {
+          List<OrderModel> _tempnewOrderList = [];
+          List<OrderModel> _tempactiveOrderList = [];
+          List<OrderModel> _tempcompletedOrderList = [];
+          List<OrderModel> _tempcanceledOrderList = [];
+          serviceOrderListModel.resultData.forEach((element) {
+            if (element.status == "Active" || element.status == "Reassigned") {
+              _tempnewOrderList.add(element);
+            } else if (element.status == "Accepted") {
+              _tempactiveOrderList.add(element);
+            } else if (element.status == "Completed") {
+              _tempcompletedOrderList.add(element);
+            } else {
+              _tempcanceledOrderList.add(element);
+            }
+          });
+          _newOrderList.addAll(_tempnewOrderList);
+          _activeOrderList.addAll(_tempactiveOrderList);
+          _completedOrderList.addAll(_tempcompletedOrderList);
+          _canceledOrderList.addAll(_tempcanceledOrderList);
+        } else {
+          _haveMore = false;
+        }
+        if (category == 'quick_help'.tr &&
+            serviceOrderListModel.resultData != null &&
+            serviceOrderListModel.resultData.length > 0) {
+          List<OrderModel> _tempnewOrderList = [];
+          List<OrderModel> _tempactiveOrderList = [];
+          List<OrderModel> _tempcompletedOrderList = [];
+          List<OrderModel> _tempcanceledOrderList = [];
+          serviceOrderListModel.resultData.forEach((element) {
+            if (element.status == "Active" || element.status == "Reassigned") {
+              _tempnewOrderList.add(element);
+            } else if (element.status == "Accepted") {
+              _tempactiveOrderList.add(element);
+            } else if (element.status == "Completed") {
+              _tempcompletedOrderList.add(element);
+            } else {
+              _tempcanceledOrderList.add(element);
+            }
+          });
+          _newOrderList.addAll(_tempnewOrderList);
+          _activeOrderList.addAll(_tempactiveOrderList);
+          _completedOrderList.addAll(_tempcompletedOrderList);
+          _canceledOrderList.addAll(_tempcanceledOrderList);
+        } else {
+          _haveMore = false;
+        }
+        if (category == "car_shoppe".tr &&
+            serviceOrderListModel.resultData != null &&
+            serviceOrderListModel.resultData.length > 0) {
+          serviceOrderListModel.resultData.forEach((element) {
+            List<OrderModel> _tempnewOrderList = [];
+            List<OrderModel> _tempactiveOrderList = [];
+            List<OrderModel> _tempcompletedOrderList = [];
+            List<OrderModel> _tempcanceledOrderList = [];
+            if (element.status == "Active") {
+              _tempnewOrderList.add(element);
+            } else if (element.status == "Accepted") {
+              _tempactiveOrderList.add(element);
+            } else if (element.status == "Completed") {
+              _tempcompletedOrderList.add(element);
+            } else {
+              _tempcanceledOrderList.add(element);
+            }
+          });
+        } else {
+          _haveMore = false;
+        }
+        if (fromPage == "New Order") {
+          setCurrentOrderList(
+              category,
+              _selectedFilterOrderRequest
+                  .indexWhere((element) => element == true),
+              fromPage);
+        } else {
+          setCurrentOrderList(
+              category,
+              _selectedFilterOrderHistory
+                  .indexWhere((element) => element == true),
+              fromPage);
+        }
+      }
     } else {
       ApiChecker.checkApi(response);
     }
+    updateFiltertype(category: category, fromPage: fromPage, index: 0);
+    _isLoading = false;
     update();
   }
 
@@ -224,23 +373,23 @@ class OrderController extends GetxController implements GetxService {
     //   _isLoading = false;
     //   update();
     //   return _isSuccess;
-    // }
-
-    // Future<void> updatePaymentStatus(int index, String status) async {
-    //   _isLoading = true;
-    //   update();
-    //   UpdateStatusBody _updateStatusBody =
-    //       UpdateStatusBody(orderId: _currentOrderList[index].id, status: status);
-    //   Response response = await orderRepo.updatePaymentStatus(_updateStatusBody);
-    //   if (response.statusCode == 200) {
-    //     _currentOrderList[index].paymentStatus = status;
-    //     showCustomSnackBar(response.body['message'], isError: false);
-    //   } else {
-    //     ApiChecker.checkApi(response);
-    //   }
-    _isLoading = false;
-    update();
   }
+
+  // Future<void> updatePaymentStatus(int index, String status) async {
+  //   _isLoading = true;
+  //   update();
+  //   UpdateStatusBody _updateStatusBody =
+  //       UpdateStatusBody(orderId: _currentOrderList[index].id, status: status);
+  //   Response response = await orderRepo.updatePaymentStatus(_updateStatusBody);
+  //   if (response.statusCode == 200) {
+  //     _currentOrderList[index].paymentStatus = status;
+  //     showCustomSnackBar(response.body['message'], isError: false);
+  //   } else {
+  //     ApiChecker.checkApi(response);
+  //   }
+  //   _isLoading = false;
+  //   update();
+  // }
 
   Future<void> getOrderDetails(String orderID) async {
     _orderDetailsModel = null;
@@ -263,8 +412,8 @@ class OrderController extends GetxController implements GetxService {
     Get.back();
     bool _isSuccess;
     if (response.statusCode == 200) {
-      _latestOrderList.removeAt(index);
-      _currentOrderList.add(orderModel);
+      // _latestOrderList.removeAt(index);
+      // _currentOrderList.add(orderModel);
       _isSuccess = true;
     } else {
       ApiChecker.checkApi(response);

@@ -3,7 +3,6 @@ import 'dart:convert';
 
 import 'package:carclenx_vendor_app/data/api/api_checker.dart';
 import 'package:carclenx_vendor_app/data/model/body/record_location_body.dart';
-import 'package:carclenx_vendor_app/data/model/response/profile_model.dart';
 import 'package:carclenx_vendor_app/data/model/response/response_model.dart';
 import 'package:carclenx_vendor_app/data/model/response/user_model/user_model.dart';
 import 'package:carclenx_vendor_app/data/repository/auth_repo.dart';
@@ -28,7 +27,6 @@ class AuthController extends GetxController implements GetxService {
 
   bool _isLoading = false;
   bool _notification = true;
-  ProfileModel _profileModel = ProfileModel();
   UserModel _userModel;
   XFile _pickedFile;
   Timer _timer;
@@ -37,7 +35,6 @@ class AuthController extends GetxController implements GetxService {
   bool get isLoading => _isLoading;
   bool get notification => _notification;
   UserModel get userModel => _userModel;
-  ProfileModel get profileModel => _profileModel;
   XFile get pickedFile => _pickedFile;
 
   Future<ResponseModel> login(String name, String password) async {
@@ -47,8 +44,10 @@ class AuthController extends GetxController implements GetxService {
     ResponseModel responseModel;
     if (response.statusCode == 200) {
       _userModel = UserModel.fromJson(response.body['resultData']);
+      authRepo.setUserDetails(_userModel);
       authRepo.saveUserToken(
           _userModel.userToken, response.body['zone_wise_topic']);
+
       await authRepo.updateToken();
       responseModel = ResponseModel(true, 'successful');
     } else {
@@ -86,12 +85,13 @@ class AuthController extends GetxController implements GetxService {
       } else {
         stopLocationRecord();
       }
+    } else {
+      getUserDetails();
     }
     update();
   }
 
-  Future<bool> updateUserInfo(
-      ProfileModel updateUserModel, String token) async {
+  Future<bool> updateUserInfo(UserModel updateUserModel, String token) async {
     _isLoading = true;
     update();
     http.StreamedResponse response =
@@ -101,7 +101,7 @@ class AuthController extends GetxController implements GetxService {
     if (response.statusCode == 200) {
       Map map = jsonDecode(await response.stream.bytesToString());
       String message = map["message"];
-      _profileModel = updateUserModel;
+      _userModel = updateUserModel;
       showCustomSnackBar(message, isError: false);
       _isSuccess = true;
     } else {
@@ -120,7 +120,7 @@ class AuthController extends GetxController implements GetxService {
   }
 
   Future<bool> changePassword(
-      ProfileModel updatedUserModel, String password) async {
+      UserModel updatedUserModel, String password) async {
     _isLoading = true;
     update();
     bool _isSuccess;
@@ -143,10 +143,10 @@ class AuthController extends GetxController implements GetxService {
     Response response = await authRepo.updateActiveStatus();
     bool _isSuccess;
     if (response.statusCode == 200) {
-      _profileModel.active = _profileModel.active == 0 ? 1 : 0;
+      _userModel.isActive = _userModel.isActive == false ? true : false;
       showCustomSnackBar(response.body['message'], isError: false);
       _isSuccess = true;
-      if (_profileModel.active == 1) {
+      if (_userModel.isActive) {
         LocationPermission permission = await Geolocator.checkPermission();
         if (permission == LocationPermission.denied ||
             permission == LocationPermission.deniedForever ||
@@ -327,6 +327,10 @@ class AuthController extends GetxController implements GetxService {
 
   String getUserToken() {
     return authRepo.getUserToken();
+  }
+
+  getUserDetails() {
+    _userModel = authRepo.getUserDetails();
   }
 
   bool setNotificationActive(bool isActive) {

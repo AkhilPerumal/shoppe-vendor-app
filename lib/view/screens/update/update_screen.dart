@@ -51,12 +51,9 @@ class UpdateScreen extends StatelessWidget {
                     onPressed: () async {
                       String _appUrl = 'https://google.com';
                       if (GetPlatform.isAndroid) {
-                        _appUrl = Get.find<SplashController>()
-                            .configModel
-                            .appUrlAndroid;
+                        _appUrl = 'appUrlAndroid';
                       } else if (GetPlatform.isIOS) {
-                        _appUrl =
-                            Get.find<SplashController>().configModel.appUrlIos;
+                        _appUrl = 'appUrlIos';
                       }
                       if (await canLaunchUrlString(_appUrl)) {
                         launchUrlString(_appUrl,

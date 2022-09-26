@@ -1,5 +1,5 @@
 import 'package:carclenx_vendor_app/controller/splash_controller.dart';
-import 'package:carclenx_vendor_app/data/model/response/all_service_model.dart';
+import 'package:carclenx_vendor_app/data/model/response/service_order_list_model.dart';
 import 'package:carclenx_vendor_app/helper/date_converter.dart';
 import 'package:carclenx_vendor_app/helper/route_helper.dart';
 import 'package:carclenx_vendor_app/util/dimensions.dart';
@@ -22,11 +22,12 @@ class HistoryOrderWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () => Get.toNamed(
-        RouteHelper.getOrderDetailsRoute(orderModel.orderId),
-        arguments: OrderDetailsScreen(
-            orderModel: orderModel,
-            isRunningOrder: isRunning,
-            orderIndex: index),
+        RouteHelper.orderDetails,
+        arguments: {
+          'orderModel': orderModel,
+          'isRunningOrder': isRunning,
+          'orderIndex': index
+        },
       ),
       child: Container(
         padding: EdgeInsets.all(Dimensions.PADDING_SIZE_SMALL),
@@ -49,8 +50,7 @@ class HistoryOrderWidget extends StatelessWidget {
               height: 70,
               width: 70,
               fit: BoxFit.cover,
-              image:
-                  '${Get.find<SplashController>().configModel.baseUrls.restaurantImageUrl}}',
+              image: orderModel.serviceId.thumbURL[0].toString(),
               imageErrorBuilder: (c, o, s) => Image.asset(Images.placeholder,
                   height: 70, width: 70, fit: BoxFit.cover),
             ),
@@ -72,7 +72,7 @@ class HistoryOrderWidget extends StatelessWidget {
               ]),
               SizedBox(height: Dimensions.PADDING_SIZE_EXTRA_SMALL),
               Text(
-                'no_restaurant_data_found'.tr,
+                'status : '.tr + orderModel.status,
                 style: robotoMedium.copyWith(
                     fontSize: Dimensions.FONT_SIZE_SMALL,
                     color: Theme.of(context).primaryColor),
@@ -82,7 +82,8 @@ class HistoryOrderWidget extends StatelessWidget {
                 Icon(Icons.access_time, size: 15),
                 SizedBox(width: Dimensions.PADDING_SIZE_EXTRA_SMALL),
                 Text(
-                  DateConverter.dateTimeStringToDateTime(orderModel.createdAt),
+                  DateConverter.dateTimeStringToDateTime(
+                      DateTime.parse(orderModel.createdAt).toString()),
                   style: robotoRegular.copyWith(
                       color: Theme.of(context).disabledColor,
                       fontSize: Dimensions.FONT_SIZE_SMALL),

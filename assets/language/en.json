@@ -87,7 +87,7 @@
   "completed_order": "Completed Order",
   "item": "Item",
   "items": "Items",
-  "restaurant_details": "Restaurant Details",
+  "franchise_details": "franchise Details",
   "direction": "Direction",
   "customer_contact_details": "Customer Contact Details",
   "price": "Price",
@@ -143,7 +143,7 @@
   "cod": "COD",
   "digitally_paid": "Digitally Paid",
   "go": "Go",
-  "restaurant_location": "Restaurant Location",
+  "franchise_location": "franchise Location",
   "customer_location": "Customer Location",
   "mins_ago": "mins ago",
   "order_history": "Order History",
@@ -193,10 +193,10 @@
   "delete_account": "Delete Account",
   "are_you_sure_to_delete_account": "Are you sure to delete your account?",
   "it_will_remove_your_all_information": "It will remove your all information.",
-  "no_restaurant_data_found": "No restaurant data found",
+  "no_franchise_data_found": "No franchise data found",
 
-  "car_shoppe": "Car Shoppe",
-  "car_spa": "Car Spa",
-  "car_mechanical": "Car Mecanical Services",
-  "quick_help": "Road Side Assistance"
+  "car_shoppe": "Shoppe",
+  "car_spa": "Spa",
+  "car_mechanical": "Mechanics",
+  "quick_help": "Road Assistance"
 }

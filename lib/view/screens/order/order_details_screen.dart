@@ -4,7 +4,7 @@ import 'package:carclenx_vendor_app/controller/auth_controller.dart';
 import 'package:carclenx_vendor_app/controller/localization_controller.dart';
 import 'package:carclenx_vendor_app/controller/order_controller.dart';
 import 'package:carclenx_vendor_app/controller/splash_controller.dart';
-import 'package:carclenx_vendor_app/data/model/response/all_service_model.dart';
+import 'package:carclenx_vendor_app/data/model/response/service_order_list_model.dart';
 import 'package:carclenx_vendor_app/helper/date_converter.dart';
 import 'package:carclenx_vendor_app/util/dimensions.dart';
 import 'package:carclenx_vendor_app/util/images.dart';
@@ -35,18 +35,18 @@ class OrderDetailsScreen extends StatefulWidget {
 
 class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
   Timer _timer;
-
+  OrderModel orderDetails;
   @override
   void initState() {
     super.initState();
-
-    Get.find<OrderController>().setOrder(widget.orderModel);
-    Get.find<OrderController>()
-        .getOrderDetails(Get.find<OrderController>().orderModel.orderId);
+    orderDetails = widget.orderModel;
+    // Get.find<OrderController>().setOrder(widget.orderModel);
+    // Get.find<OrderController>()
+    //     .getOrderDetails(Get.find<OrderController>().orderModel.orderId);
 
     _timer = Timer.periodic(Duration(seconds: 10), (timer) {
-      Get.find<OrderController>()
-          .getOrderWithId(Get.find<OrderController>().orderModel.orderId);
+      // Get.find<OrderController>()
+      //     .getOrderWithId(Get.find<OrderController>().orderModel.orderId);
     });
   }
 
@@ -58,10 +58,9 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    bool _cancelPermission =
-        Get.find<SplashController>().configModel.canceledByDeliveryman;
-    bool _selfDelivery =
-        Get.find<AuthController>().profileModel.type != 'zone_wise';
+    bool _cancelPermission = false;
+    // bool _cancelPermission =
+    //     Get.find<SplashController>().configModel.canceledByDeliveryman;
 
     return Scaffold(
       backgroundColor: Theme.of(context).cardColor,
@@ -69,89 +68,89 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
       body: Padding(
         padding: EdgeInsets.all(Dimensions.PADDING_SIZE_SMALL),
         child: GetBuilder<OrderController>(builder: (orderController) {
-          OrderModel controllerOrderModel = orderController.orderModel;
+          OrderModel controllerOrderModel = widget.orderModel;
 
-          bool _restConfModel =
-              Get.find<SplashController>().configModel.orderConfirmationModel !=
-                  'deliveryman';
+          bool _restConfModel = false;
+          // bool _restConfModel =
+          //     Get.find<SplashController>().configModel.orderConfirmationModel !=
+          //         'deliveryman';
           bool _showBottomView = controllerOrderModel.status == 'accepted' ||
               controllerOrderModel.status == 'confirmed' ||
               controllerOrderModel.status == 'processing' ||
               controllerOrderModel.status == 'handover' ||
               controllerOrderModel.status == 'picked_up' ||
               widget.isRunningOrder;
-          bool _showSlider = (controllerOrderModel.mode == 'cash_on_delivery' &&
+          bool _showSlider = (controllerOrderModel.mode == 'cod'.tr &&
                   controllerOrderModel.status == 'accepted' &&
-                  !_restConfModel &&
-                  !_selfDelivery) ||
+                  !_restConfModel) ||
               controllerOrderModel.status == 'handover' ||
               controllerOrderModel.status == 'picked_up';
-          return orderController.orderDetailsModel != null
+          return orderDetails != null
               ? Column(children: [
                   Expanded(
                       child: SingleChildScrollView(
                     physics: BouncingScrollPhysics(),
                     child: Column(children: [
-                      DateConverter.isBeforeTime(controllerOrderModel.timeSlot)
-                          ? (controllerOrderModel.status != 'delivered' &&
-                                  controllerOrderModel.status != 'failed' &&
-                                  controllerOrderModel.status != 'canceled')
-                              ? Column(children: [
-                                  ClipRRect(
-                                      borderRadius: BorderRadius.circular(10),
-                                      child: Image.asset(
-                                          Images.animate_delivery_man,
-                                          fit: BoxFit.contain)),
-                                  SizedBox(
-                                      height: Dimensions.PADDING_SIZE_DEFAULT),
-                                  Text('food_need_to_deliver_within'.tr,
-                                      style: robotoRegular.copyWith(
-                                          fontSize:
-                                              Dimensions.FONT_SIZE_DEFAULT,
-                                          color:
-                                              Theme.of(context).disabledColor)),
-                                  SizedBox(
-                                      height:
-                                          Dimensions.PADDING_SIZE_EXTRA_SMALL),
-                                  // Center(
-                                  //   child: Row(
-                                  //       mainAxisSize: MainAxisSize.min,
-                                  //       children: [
-                                  //         Text(
-                                  //           DateConverter.differenceInMinute(
-                                  //                       controllerOrderModel
-                                  //                           .restaurantDeliveryTime,
-                                  //                       controllerOrderModel
-                                  //                           .createdAt,
-                                  //                       controllerOrderModel
-                                  //                           .processingTime,
-                                  //                       controllerOrderModel
-                                  //                           .scheduleAt) <
-                                  //                   5
-                                  //               ? '1 - 5'
-                                  //               : '${DateConverter.differenceInMinute(controllerOrderModel.restaurantDeliveryTime, controllerOrderModel.createdAt, controllerOrderModel.processingTime, controllerOrderModel.scheduleAt) - 5} '
-                                  //                   '- ${DateConverter.differenceInMinute(controllerOrderModel.restaurantDeliveryTime, controllerOrderModel.createdAt, controllerOrderModel.processingTime, controllerOrderModel.scheduleAt)}',
-                                  //           style: robotoBold.copyWith(
-                                  //               fontSize: Dimensions
-                                  //                   .FONT_SIZE_EXTRA_LARGE),
-                                  //         ),
-                                  //         SizedBox(
-                                  //             width: Dimensions
-                                  //                 .PADDING_SIZE_EXTRA_SMALL),
-                                  //         Text('min'.tr,
-                                  //             style: robotoMedium.copyWith(
-                                  //                 fontSize: Dimensions
-                                  //                     .FONT_SIZE_LARGE,
-                                  //                 color: Theme.of(context)
-                                  //                     .primaryColor)),
-                                  //       ]),
-                                  // ),
-                                  SizedBox(
-                                      height:
-                                          Dimensions.PADDING_SIZE_EXTRA_LARGE),
-                                ])
-                              : SizedBox()
-                          : SizedBox(),
+                      // DateConverter.isBeforeTime(controllerOrderModel.timeSlot)
+                      //     ? (controllerOrderModel.status != 'delivered' &&
+                      //             controllerOrderModel.status != 'failed' &&
+                      //             controllerOrderModel.status != 'canceled')
+                      //         ? Column(children: [
+                      //             ClipRRect(
+                      //                 borderRadius: BorderRadius.circular(10),
+                      //                 child: Image.asset(
+                      //                     Images.animate_delivery_man,
+                      //                     fit: BoxFit.contain)),
+                      //             SizedBox(
+                      //                 height: Dimensions.PADDING_SIZE_DEFAULT),
+                      //             Text('food_need_to_deliver_within'.tr,
+                      //                 style: robotoRegular.copyWith(
+                      //                     fontSize:
+                      //                         Dimensions.FONT_SIZE_DEFAULT,
+                      //                     color:
+                      //                         Theme.of(context).disabledColor)),
+                      //             SizedBox(
+                      //                 height:
+                      //                     Dimensions.PADDING_SIZE_EXTRA_SMALL),
+                      //             // Center(
+                      //             //   child: Row(
+                      //             //       mainAxisSize: MainAxisSize.min,
+                      //             //       children: [
+                      //             //         Text(
+                      //             //           DateConverter.differenceInMinute(
+                      //             //                       controllerOrderModel
+                      //             //                           .franchiseDeliveryTime,
+                      //             //                       controllerOrderModel
+                      //             //                           .createdAt,
+                      //             //                       controllerOrderModel
+                      //             //                           .processingTime,
+                      //             //                       controllerOrderModel
+                      //             //                           .scheduleAt) <
+                      //             //                   5
+                      //             //               ? '1 - 5'
+                      //             //               : '${DateConverter.differenceInMinute(controllerOrderModel.franchiseDeliveryTime, controllerOrderModel.createdAt, controllerOrderModel.processingTime, controllerOrderModel.scheduleAt) - 5} '
+                      //             //                   '- ${DateConverter.differenceInMinute(controllerOrderModel.franchiseDeliveryTime, controllerOrderModel.createdAt, controllerOrderModel.processingTime, controllerOrderModel.scheduleAt)}',
+                      //             //           style: robotoBold.copyWith(
+                      //             //               fontSize: Dimensions
+                      //             //                   .FONT_SIZE_EXTRA_LARGE),
+                      //             //         ),
+                      //             //         SizedBox(
+                      //             //             width: Dimensions
+                      //             //                 .PADDING_SIZE_EXTRA_SMALL),
+                      //             //         Text('min'.tr,
+                      //             //             style: robotoMedium.copyWith(
+                      //             //                 fontSize: Dimensions
+                      //             //                     .FONT_SIZE_LARGE,
+                      //             //                 color: Theme.of(context)
+                      //             //                     .primaryColor)),
+                      //             //       ]),
+                      //             // ),
+                      //             SizedBox(
+                      //                 height:
+                      //                     Dimensions.PADDING_SIZE_EXTRA_LARGE),
+                      //           ])
+                      //         : SizedBox()
+                      //     : SizedBox(),
                       Row(children: [
                         Text('${'order_id'.tr}:', style: robotoRegular),
                         SizedBox(width: Dimensions.PADDING_SIZE_EXTRA_SMALL),
@@ -170,17 +169,6 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                           style: robotoRegular,
                         ),
                       ]),
-                      SizedBox(height: Dimensions.PADDING_SIZE_LARGE),
-                      InfoCard(
-                        title: 'restaurant_details'.tr,
-                        addressModel: controllerOrderModel.address,
-                        image: Images.logo,
-                        name: 'franchise name',
-                        phone: 'franchise number',
-                        latitude: 'franchise lat',
-                        longitude: 'franchise long',
-                        showButton: controllerOrderModel.status != 'delivered',
-                      ),
                       SizedBox(height: Dimensions.PADDING_SIZE_LARGE),
                       InfoCard(
                         title: 'customer_contact_details'.tr,
@@ -208,8 +196,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                 SizedBox(
                                     width: Dimensions.PADDING_SIZE_EXTRA_SMALL),
                                 Text(
-                                  orderController.orderDetailsModel.length
-                                      .toString(),
+                                  orderDetails.addOn.length.toString(),
                                   style: robotoMedium.copyWith(
                                       color: Theme.of(context).primaryColor),
                                 ),
@@ -224,7 +211,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                       borderRadius: BorderRadius.circular(5)),
                                   child: Text(
                                     controllerOrderModel.paymentStatus ==
-                                            'cash_on_delivery'
+                                            'cod'.tr
                                         ? 'cod'.tr
                                         : controllerOrderModel.paymentStatus ==
                                                 'wallet'
@@ -243,13 +230,10 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                             ListView.builder(
                               shrinkWrap: true,
                               physics: NeverScrollableScrollPhysics(),
-                              itemCount:
-                                  orderController.orderDetailsModel.length,
+                              itemCount: controllerOrderModel.addOn.length,
                               itemBuilder: (context, index) {
                                 return OrderProductWidget(
-                                    order: controllerOrderModel,
-                                    orderDetails: orderController
-                                        .orderDetailsModel[index]);
+                                    order: controllerOrderModel);
                               },
                             ),
                             Column(
@@ -288,8 +272,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                       ? ((controllerOrderModel.status == 'accepted' &&
                                   (controllerOrderModel.paymentStatus !=
                                           'cash_on_delivery' ||
-                                      _restConfModel ||
-                                      _selfDelivery)) ||
+                                      _restConfModel)) ||
                               controllerOrderModel.status == 'processing' ||
                               controllerOrderModel.status == 'confirmed')
                           ? Container(
@@ -315,8 +298,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                       controllerOrderModel.status ==
                                           'accepted' &&
                                       !_restConfModel &&
-                                      _cancelPermission &&
-                                      !_selfDelivery)
+                                      _cancelPermission)
                                   ? Row(children: [
                                       Expanded(
                                           child: TextButton(
@@ -338,8 +320,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                   if (success) {
                                                     Get.find<AuthController>()
                                                         .getProfile();
-                                                    Get.find<OrderController>()
-                                                        .getCurrentOrders();
+                                                    // Get.find<OrderController>()
+                                                    //     .getCurrentOrders();
                                                   }
                                                 });
                                               },
@@ -395,9 +377,9 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                     if (success) {
                                                       Get.find<AuthController>()
                                                           .getProfile();
-                                                      Get.find<
-                                                              OrderController>()
-                                                          .getCurrentOrders();
+                                                      // Get.find<
+                                                      //         OrderController>()
+                                                      //     .getCurrentOrders();
                                                     }
                                                   });
                                                 },
@@ -413,8 +395,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                 'cash_on_delivery' &&
                                             controllerOrderModel.status ==
                                                 'accepted' &&
-                                            !_restConfModel &&
-                                            !_selfDelivery) {
+                                            !_restConfModel) {
                                           Get.dialog(
                                               ConfirmationDialog(
                                                 icon: Images.warning,
@@ -433,9 +414,9 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                     if (success) {
                                                       Get.find<AuthController>()
                                                           .getProfile();
-                                                      Get.find<
-                                                              OrderController>()
-                                                          .getCurrentOrders();
+                                                      // Get.find<
+                                                      //         OrderController>()
+                                                      //     .getCurrentOrders();
                                                     }
                                                   });
                                                 },
@@ -444,19 +425,13 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                         } else if (controllerOrderModel
                                                 .status ==
                                             'picked_up') {
-                                          if (Get.find<SplashController>()
-                                                  .configModel
-                                                  .orderDeliveryVerification ||
-                                              controllerOrderModel
-                                                      .paymentStatus ==
-                                                  'cash_on_delivery') {
+                                          if (controllerOrderModel
+                                                  .paymentStatus ==
+                                              'cash_on_delivery') {
                                             Get.bottomSheet(
                                                 VerifyDeliverySheet(
                                                   orderIndex: widget.orderIndex,
-                                                  verify: Get.find<
-                                                          SplashController>()
-                                                      .configModel
-                                                      .orderDeliveryVerification,
+                                                  verify: true,
                                                   orderAmount:
                                                       controllerOrderModel
                                                           .grandTotal
@@ -475,8 +450,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                               if (success) {
                                                 Get.find<AuthController>()
                                                     .getProfile();
-                                                Get.find<OrderController>()
-                                                    .getCurrentOrders();
+                                                // Get.find<OrderController>()
+                                                //     .getCurrentOrders();
                                               }
                                             });
                                           }
@@ -484,9 +459,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                 .status ==
                                             'handover') {
                                           if (Get.find<AuthController>()
-                                                  .profileModel
-                                                  .active ==
-                                              1) {
+                                              .userModel
+                                              .isActive) {
                                             Get.find<OrderController>()
                                                 .updateOrderStatus(
                                                     widget.orderIndex,
@@ -495,8 +469,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                               if (success) {
                                                 Get.find<AuthController>()
                                                     .getProfile();
-                                                Get.find<OrderController>()
-                                                    .getCurrentOrders();
+                                                // Get.find<OrderController>()
+                                                //     .getCurrentOrders();
                                               }
                                             });
                                           } else {
@@ -511,8 +485,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                                     'cash_on_delivery' &&
                                                 controllerOrderModel.status ==
                                                     'accepted' &&
-                                                !_restConfModel &&
-                                                !_selfDelivery)
+                                                !_restConfModel)
                                             ? 'swipe_to_confirm_order'.tr
                                             : controllerOrderModel.status ==
                                                     'picked_up'

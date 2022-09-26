@@ -15,7 +15,7 @@ class RunningOrderScreen extends StatelessWidget {
             ? orderController.currentOrderList.length > 0
                 ? RefreshIndicator(
                     onRefresh: () async {
-                      await orderController.getCurrentOrders();
+                      // await orderController.getCurrentOrders();
                     },
                     child: Scrollbar(
                         child: SingleChildScrollView(

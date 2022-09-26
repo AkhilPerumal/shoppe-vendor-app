@@ -1,4 +1,4 @@
-import 'package:carclenx_vendor_app/data/model/response/all_service_model.dart';
+import 'package:carclenx_vendor_app/data/model/response/service_order_list_model.dart';
 import 'package:carclenx_vendor_app/helper/route_helper.dart';
 import 'package:carclenx_vendor_app/util/dimensions.dart';
 import 'package:carclenx_vendor_app/util/images.dart';
@@ -66,15 +66,10 @@ class OrderWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Image.asset(
-                  orderModel.status == 'picked_up' ? Images.user : Images.house,
-                  width: 20,
-                  height: 15),
+              Icon(Icons.miscellaneous_services_rounded),
               SizedBox(width: Dimensions.PADDING_SIZE_EXTRA_SMALL),
               Text(
-                orderModel.status == 'picked_up'
-                    ? 'customer_location'.tr
-                    : 'restaurant_location'.tr,
+                orderModel.serviceId.name,
                 style: robotoRegular.copyWith(
                     fontSize: Dimensions.FONT_SIZE_SMALL),
                 maxLines: 1,
@@ -90,9 +85,14 @@ class OrderWidget extends StatelessWidget {
               SizedBox(width: Dimensions.PADDING_SIZE_EXTRA_SMALL),
               Expanded(
                   child: Text(
-                orderModel.status == 'picked_up'
-                    ? orderModel.address.toString()
-                    : orderModel.address ?? '',
+                orderModel.address != null
+                    ? orderModel.address.house != null
+                        ? orderModel.address.house + ', '
+                        : '' +
+                            orderModel.address.street +
+                            ', ' +
+                            orderModel.address.city
+                    : '',
                 style: robotoRegular.copyWith(
                     color: Theme.of(context).disabledColor,
                     fontSize: Dimensions.FONT_SIZE_SMALL),

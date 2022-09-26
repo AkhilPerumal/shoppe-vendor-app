@@ -8,6 +8,21 @@ class UserModel {
   String username;
   String password;
   String userToken;
+  String image;
+  String fcmToken;
+  double avgRating;
+  int ratingCount;
+  int memberSinceDays;
+  int orderCount;
+  int todaysOrderCount;
+  int thisWeekOrderCount;
+  double cashInHands;
+  int earnings;
+  double balance;
+  double todaysEarning;
+  double thisWeekEarning;
+  double thisMonthEarning;
+
   bool isActive;
   List<Role> role;
   List<String> provides;
@@ -20,6 +35,20 @@ class UserModel {
     this.username,
     this.password,
     this.userToken,
+    this.image,
+    this.fcmToken,
+    this.avgRating = 0,
+    this.memberSinceDays,
+    this.orderCount = 0,
+    this.todaysOrderCount = 0,
+    this.thisWeekOrderCount = 0,
+    this.cashInHands = 0,
+    this.ratingCount = 0,
+    this.earnings = 0,
+    this.balance = 0,
+    this.todaysEarning = 0,
+    this.thisWeekEarning = 0,
+    this.thisMonthEarning = 0,
     this.isActive,
     this.role,
     this.provides,

@@ -60,22 +60,18 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void _route() {
-    Get.find<SplashController>().getConfigData().then((isSuccess) {
-      if (isSuccess) {
-        Timer(Duration(seconds: 1), () async {
-          if (Get.find<SplashController>().configModel.maintenanceMode) {
-            Get.offNamed(RouteHelper.getUpdateRoute(false));
-          } else {
-            if (Get.find<AuthController>().isLoggedIn()) {
-              Get.find<AuthController>().updateToken();
-              await Get.find<AuthController>().getProfile();
-              Get.offNamed(RouteHelper.getInitialRoute());
-            } else {
-              Get.offNamed(RouteHelper.getSignInRoute());
-            }
-          }
-        });
+    Timer(Duration(seconds: 1), () async {
+      // if (Get.find<SplashController>().configModel.maintenanceMode) {
+      //   Get.ofnamed(RouteHelper.getUpdateRoute(false));
+      // } else {
+      if (Get.find<AuthController>().isLoggedIn()) {
+        Get.find<AuthController>().updateToken();
+        await Get.find<AuthController>().getProfile();
+        Get.offNamed(RouteHelper.getInitialRoute());
+      } else {
+        Get.offNamed(RouteHelper.getSignInRoute());
       }
+      // }
     });
   }
 

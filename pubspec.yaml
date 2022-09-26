@@ -39,6 +39,7 @@ dependencies:
   flutter_widget_from_html_core: ^0.8.5+3
   fwfh_text_style: ^2.7.3+2
   marquee: ^2.2.3
+  pull_to_refresh_flutter3: ^2.0.1
 
 dev_dependencies:
   flutter_test:
