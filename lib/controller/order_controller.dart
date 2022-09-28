@@ -1,3 +1,4 @@
+import 'package:carclenx_vendor_app/controller/auth_controller.dart';
 import 'package:carclenx_vendor_app/controller/splash_controller.dart';
 import 'package:carclenx_vendor_app/data/api/api_checker.dart';
 import 'package:carclenx_vendor_app/data/model/body/record_location_body.dart';
@@ -15,7 +16,7 @@ class OrderController extends GetxController implements GetxService {
   final OrderRepo orderRepo;
   OrderController({@required this.orderRepo});
 
-  List<OrderModel> _allOrderList, _currentOrderList;
+  List<OrderModel> _currentOrderList, _runningOrderList;
   List<OrderModel> _completedOrderList,
       _activeOrderList,
       _newOrderList,
@@ -59,8 +60,8 @@ class OrderController extends GetxController implements GetxService {
 
   List<Widget> get fliterListOrderRequest => _fliterListOrderRequest;
   List<Widget> get fliterListOrderHistory => _fliterListOrderHistory;
-  List<OrderModel> get allOrderList => _allOrderList;
   List<OrderModel> get currentOrderList => _currentOrderList;
+  List<OrderModel> get runningOrderList => _runningOrderList;
   List<OrderModel> get activeOrderList => _activeOrderList;
   List<OrderModel> get completedOrderList => _completedOrderList;
   List<OrderModel> get newOrderList => _newOrderList;
@@ -116,43 +117,45 @@ class OrderController extends GetxController implements GetxService {
     if (category == 'car_spa'.tr) {
       if (fromPage == "New Order") {
         if (index == 0) {
-          _currentOrderList = newOrderList;
+          _currentOrderList = orderCollectionModel.carspa.newOrderList;
         } else {
-          _currentOrderList = activeOrderList;
+          _currentOrderList = orderCollectionModel.carspa.activeOrderList;
         }
       } else {
         if (index == 0) {
-          _currentOrderList = completedOrderList;
+          _currentOrderList = orderCollectionModel.carspa.completedOrderList;
         } else {
-          _currentOrderList = canceledOrderList;
+          _currentOrderList = orderCollectionModel.carspa.cancelledOrderList;
         }
       }
     } else if (category == 'car_mechanical'.tr) {
       if (fromPage == "New Order") {
         if (index == 0) {
-          _currentOrderList = newOrderList;
+          _currentOrderList = orderCollectionModel.mechanical.newOrderList;
         } else {
-          _currentOrderList = activeOrderList;
+          _currentOrderList = orderCollectionModel.mechanical.activeOrderList;
         }
       } else {
         if (index == 0) {
-          _currentOrderList = completedOrderList;
+          _currentOrderList =
+              orderCollectionModel.mechanical.completedOrderList;
         } else {
-          _currentOrderList = canceledOrderList;
+          _currentOrderList =
+              orderCollectionModel.mechanical.cancelledOrderList;
         }
       }
     } else if (category == 'quick_help'.tr) {
       if (fromPage == "New Order") {
         if (index == 0) {
-          _currentOrderList = newOrderList;
+          _currentOrderList = orderCollectionModel.quickhelp.newOrderList;
         } else {
-          _currentOrderList = activeOrderList;
+          _currentOrderList = orderCollectionModel.quickhelp.activeOrderList;
         }
       } else {
         if (index == 0) {
-          _currentOrderList = completedOrderList;
+          _currentOrderList = orderCollectionModel.quickhelp.completedOrderList;
         } else {
-          _currentOrderList = canceledOrderList;
+          _currentOrderList = orderCollectionModel.quickhelp.cancelledOrderList;
         }
       }
     } else {
@@ -176,9 +179,15 @@ class OrderController extends GetxController implements GetxService {
   Future<void> getAllOrders() async {
     Response response = await orderRepo.getAllOrders();
     if (response.statusCode == 200) {
-      _allOrderList = [];
-      response.body
-          .forEach((order) => _allOrderList.add(OrderModel.fromJson(order)));
+      _orderCollectionModel =
+          OrderCollectionModel.fromJson(json: response.body['resultData']);
+
+      Get.find<AuthController>()
+          .userModel
+          .setOrderCount(_orderCollectionModel.orderCount);
+      Get.find<AuthController>()
+          .userModel
+          .setEarnings(_orderCollectionModel.earnings);
     } else {
       ApiChecker.checkApi(response);
     }
@@ -219,104 +228,9 @@ class OrderController extends GetxController implements GetxService {
       if (response.body != null &&
           response.body['resultData'] != null &&
           response.body['resultData'].length > 0) {
-        ServiceOrderListModel serviceOrderListModel =
-            ServiceOrderListModel.fromJson(response.body);
-        if (category == 'car_spa'.tr &&
-            serviceOrderListModel.resultData != null &&
-            serviceOrderListModel.resultData.length > 0) {
-          List<OrderModel> _tempnewOrderList = [];
-          List<OrderModel> _tempactiveOrderList = [];
-          List<OrderModel> _tempcompletedOrderList = [];
-          List<OrderModel> _tempcanceledOrderList = [];
-          serviceOrderListModel.resultData.forEach((element) {
-            if (element.status == "Active" || element.status == "Reassigned") {
-              _tempnewOrderList.add(element);
-            } else if (element.status == "Accepted") {
-              _tempactiveOrderList.add(element);
-            } else if (element.status == "Completed") {
-              _tempcompletedOrderList.add(element);
-            } else {
-              _tempcanceledOrderList.add(element);
-            }
-          });
-          _newOrderList.addAll(_tempnewOrderList);
-          _activeOrderList.addAll(_tempactiveOrderList);
-          _completedOrderList.addAll(_tempcompletedOrderList);
-          _canceledOrderList.addAll(_tempcanceledOrderList);
-        } else {
-          _haveMore = false;
-        }
-        if (category == 'car_mechanical'.tr &&
-            serviceOrderListModel.resultData != null &&
-            serviceOrderListModel.resultData.length > 0) {
-          List<OrderModel> _tempnewOrderList = [];
-          List<OrderModel> _tempactiveOrderList = [];
-          List<OrderModel> _tempcompletedOrderList = [];
-          List<OrderModel> _tempcanceledOrderList = [];
-          serviceOrderListModel.resultData.forEach((element) {
-            if (element.status == "Active" || element.status == "Reassigned") {
-              _tempnewOrderList.add(element);
-            } else if (element.status == "Accepted") {
-              _tempactiveOrderList.add(element);
-            } else if (element.status == "Completed") {
-              _tempcompletedOrderList.add(element);
-            } else {
-              _tempcanceledOrderList.add(element);
-            }
-          });
-          _newOrderList.addAll(_tempnewOrderList);
-          _activeOrderList.addAll(_tempactiveOrderList);
-          _completedOrderList.addAll(_tempcompletedOrderList);
-          _canceledOrderList.addAll(_tempcanceledOrderList);
-        } else {
-          _haveMore = false;
-        }
-        if (category == 'quick_help'.tr &&
-            serviceOrderListModel.resultData != null &&
-            serviceOrderListModel.resultData.length > 0) {
-          List<OrderModel> _tempnewOrderList = [];
-          List<OrderModel> _tempactiveOrderList = [];
-          List<OrderModel> _tempcompletedOrderList = [];
-          List<OrderModel> _tempcanceledOrderList = [];
-          serviceOrderListModel.resultData.forEach((element) {
-            if (element.status == "Active" || element.status == "Reassigned") {
-              _tempnewOrderList.add(element);
-            } else if (element.status == "Accepted") {
-              _tempactiveOrderList.add(element);
-            } else if (element.status == "Completed") {
-              _tempcompletedOrderList.add(element);
-            } else {
-              _tempcanceledOrderList.add(element);
-            }
-          });
-          _newOrderList.addAll(_tempnewOrderList);
-          _activeOrderList.addAll(_tempactiveOrderList);
-          _completedOrderList.addAll(_tempcompletedOrderList);
-          _canceledOrderList.addAll(_tempcanceledOrderList);
-        } else {
-          _haveMore = false;
-        }
-        if (category == "car_shoppe".tr &&
-            serviceOrderListModel.resultData != null &&
-            serviceOrderListModel.resultData.length > 0) {
-          serviceOrderListModel.resultData.forEach((element) {
-            List<OrderModel> _tempnewOrderList = [];
-            List<OrderModel> _tempactiveOrderList = [];
-            List<OrderModel> _tempcompletedOrderList = [];
-            List<OrderModel> _tempcanceledOrderList = [];
-            if (element.status == "Active") {
-              _tempnewOrderList.add(element);
-            } else if (element.status == "Accepted") {
-              _tempactiveOrderList.add(element);
-            } else if (element.status == "Completed") {
-              _tempcompletedOrderList.add(element);
-            } else {
-              _tempcanceledOrderList.add(element);
-            }
-          });
-        } else {
-          _haveMore = false;
-        }
+        _orderCollectionModel = OrderCollectionModel.fromJsonWithCategory(
+            resultBody: response.body, category: category);
+
         if (fromPage == "New Order") {
           setCurrentOrderList(
               category,

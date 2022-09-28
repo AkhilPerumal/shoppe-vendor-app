@@ -65,6 +65,20 @@ class DateConverter {
     return _currentTime.difference(_rangeTime).inMinutes;
   }
 
+  static bool checkDatesAreOnSameWeek({DateTime date1}) {
+    var today = DateTime.now();
+    var firstDayOfWeek1 = today.subtract(Duration(days: today.weekday));
+    var firstDayOfWeek2 = date1.subtract(Duration(days: date1.weekday));
+    return firstDayOfWeek1.day == firstDayOfWeek2.day;
+  }
+
+  static bool checkDatesAreOnSameMonth({DateTime date1}) {
+    var today = DateTime.now();
+    var firstDayOfWeek1 = today.month;
+    var firstDayOfWeek2 = date1.month;
+    return firstDayOfWeek1 == firstDayOfWeek2;
+  }
+
   static String timeAgo({bool numericDates = true, DateTime dateTime}) {
     final date2 = DateTime.now();
     final difference = date2.difference(dateTime);

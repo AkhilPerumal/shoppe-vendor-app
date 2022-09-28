@@ -101,11 +101,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
   // }
 
   void _navigateRequestPage() {
-    if (Get.find<AuthController>().isLoggedIn()
-        // && Get.find<OrderController>().currentOrderList != null &&
-        //     Get.find<OrderController>().currentOrderList.length < 1
-        ) {
-      _setPage(1);
+    if (Get.find<AuthController>().isLoggedIn() &&
+        Get.find<OrderController>().runningOrderList != null &&
+        Get.find<OrderController>().runningOrderList.length < 1) {
+      Get.dialog(CustomAlertDialog(
+          description: 'you_have_running_order'.tr,
+          onOkPressed: () => Get.back()));
     } else {
       if (Get.find<AuthController>().userModel == null ||
           Get.find<AuthController>().userModel.isActive == false) {
@@ -113,7 +114,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
             description: 'you_are_offline_now'.tr,
             onOkPressed: () => Get.back()));
       } else {
-        //Get.dialog(CustomAlertDialog(description: 'you_have_running_order'.tr, onOkPressed: () => Get.back()));
         _setPage(1);
       }
     }

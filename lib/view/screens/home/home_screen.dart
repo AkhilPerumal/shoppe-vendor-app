@@ -43,16 +43,19 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).cardColor,
-        leading: Padding(
-          padding: EdgeInsets.all(Dimensions.PADDING_SIZE_SMALL),
-          child: Image.asset(Images.logo, height: 30, width: 30),
-        ),
+        // leading: Padding(
+        //   padding: EdgeInsets.all(Dimensions.PADDING_SIZE_SMALL),
+        //   child: Image.asset(Images.logo, height: 30, width: 30),
+        // ),
         titleSpacing: 0,
         elevation: 0,
         /*title: Text(AppConstants.APP_NAME, maxLines: 1, overflow: TextOverflow.ellipsis, style: robotoMedium.copyWith(
           color: Theme.of(context).textTheme.bodyText1.color, fontSize: Dimensions.FONT_SIZE_DEFAULT,
         )),*/
-        title: Image.asset(Images.logo_name, width: 120),
+        title: Container(
+          margin: const EdgeInsets.only(left: Dimensions.PADDING_SIZE_SMALL),
+          child: Image.asset(Images.logo_name, width: 120),
+        ),
         actions: [
           IconButton(
             icon: GetBuilder<NotificationController>(
@@ -187,14 +190,14 @@ class HomeScreen extends StatelessWidget {
                       height: _hasActiveOrder
                           ? Dimensions.PADDING_SIZE_EXTRA_SMALL
                           : 0),
-                  orderController.currentOrderList == null
+                  orderController.runningOrderList == null
                       ? SizedBox()
                       // OrderShimmer(
                       //     isEnabled: orderController.currentOrderList == null,
                       //   )
-                      : orderController.currentOrderList.length > 0
+                      : orderController.runningOrderList.length > 0
                           ? OrderWidget(
-                              orderModel: orderController.activeOrderList[0],
+                              orderModel: orderController.runningOrderList[0],
                               isRunningOrder: true,
                               orderIndex: 0,
                             )
@@ -228,7 +231,7 @@ class HomeScreen extends StatelessWidget {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        'balance'.tr,
+                                        'earned_amount'.tr,
                                         style: robotoMedium.copyWith(
                                             fontSize:
                                                 Dimensions.FONT_SIZE_SMALL,
@@ -241,10 +244,11 @@ class HomeScreen extends StatelessWidget {
                                           ? Text(
                                               PriceConverter.convertPrice(
                                                   authController.userModel
-                                                              .balance !=
+                                                              .earnings !=
                                                           null
-                                                      ? authController
-                                                          .userModel.balance
+                                                      ? authController.userModel
+                                                          .earnings.total_earned
+                                                          .toDouble()
                                                       : 0),
                                               style: robotoBold.copyWith(
                                                   fontSize: 24,
@@ -263,8 +267,10 @@ class HomeScreen extends StatelessWidget {
                           Row(children: [
                             EarningWidget(
                               title: 'today'.tr,
-                              amount: authController.userModel != null
-                                  ? (authController.userModel.todaysEarning)
+                              amount: authController.userModel.earnings != null
+                                  ? (authController
+                                      .userModel.earnings.today_earning
+                                      .toDouble())
                                   : null,
                             ),
                             Container(
@@ -273,8 +279,10 @@ class HomeScreen extends StatelessWidget {
                                 color: Theme.of(context).cardColor),
                             EarningWidget(
                               title: 'this_week'.tr,
-                              amount: authController.userModel != null
-                                  ? authController.userModel.thisWeekEarning
+                              amount: authController.userModel.earnings != null
+                                  ? authController
+                                      .userModel.earnings.week_earning
+                                      .toDouble()
                                   : null,
                             ),
                             Container(
@@ -283,8 +291,10 @@ class HomeScreen extends StatelessWidget {
                                 color: Theme.of(context).cardColor),
                             EarningWidget(
                               title: 'this_month'.tr,
-                              amount: authController.userModel != null
-                                  ? authController.userModel.thisMonthEarning
+                              amount: authController.userModel.earnings != null
+                                  ? authController
+                                      .userModel.earnings.month_earning
+                                      .toDouble()
                                   : null,
                             ),
                           ]),
@@ -295,47 +305,38 @@ class HomeScreen extends StatelessWidget {
                   : SizedBox(),
               TitleWidget(title: 'orders'.tr),
               SizedBox(height: Dimensions.PADDING_SIZE_EXTRA_SMALL),
-              Row(children: [
-                Expanded(
-                    child: CountCard(
-                  title: 'todays_orders'.tr,
-                  backgroundColor: Theme.of(context).secondaryHeaderColor,
-                  height: 180,
-                  value: authController.userModel != null
-                      ? authController.userModel.todaysOrderCount.toString()
-                      : null,
-                )),
-                SizedBox(width: Dimensions.PADDING_SIZE_SMALL),
-                Expanded(
-                    child: CountCard(
-                  title: 'this_week_orders'.tr,
-                  backgroundColor: Theme.of(context).errorColor,
-                  height: 180,
-                  value: authController.userModel != null
-                      ? authController.userModel.thisWeekOrderCount.toString()
-                      : null,
-                )),
-              ]),
-              SizedBox(height: Dimensions.PADDING_SIZE_SMALL),
               CountCard(
-                title: 'total_orders'.tr,
-                backgroundColor: Theme.of(context).primaryColor,
-                height: 140,
-                value: authController.userModel != null
-                    ? authController.userModel.orderCount.toString()
+                title: 'todays_orders'.tr,
+                backgroundColor: Theme.of(context).secondaryHeaderColor,
+                height: 180,
+                orderCountList: authController.userModel != null
+                    ? authController.userModel.orderCount
                     : null,
               ),
               SizedBox(height: Dimensions.PADDING_SIZE_SMALL),
-              CountCard(
-                title: 'cash_in_your_hand'.tr,
-                backgroundColor: Colors.green,
-                height: 140,
-                value: authController.userModel != null
-                    ? PriceConverter.convertPrice(
-                        authController.userModel.cashInHands != null
-                            ? authController.userModel.cashInHands
-                            : 0)
-                    : null,
+              Row(
+                children: [
+                  Expanded(
+                    child: CountCard(
+                      title: 'total_orders_completed'.tr,
+                      backgroundColor: Theme.of(context).primaryColor,
+                      height: 140,
+                      orderCountList: authController.userModel != null
+                          ? authController.userModel.orderCount
+                          : null,
+                    ),
+                  ),
+                  SizedBox(width: Dimensions.PADDING_SIZE_SMALL),
+                  Expanded(
+                    child: CountCard(
+                        title: 'cash_in_your_hand'.tr,
+                        backgroundColor: Colors.green,
+                        height: 140,
+                        orderCountList: authController.userModel != null
+                            ? authController.userModel.orderCount
+                            : null),
+                  ),
+                ],
               ),
               SizedBox(
                 height: Dimensions.PADDING_SIZE_DEFAULT,

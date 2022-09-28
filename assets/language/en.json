@@ -1,4 +1,6 @@
 {
+  "version1.4": "1.4",
+
   "suffix_name": "Partner",
   "sign_in": "Sign In",
   "email": "E-mail",
@@ -36,9 +38,10 @@
   "view_all": "View All",
   "details": "Details",
   "delivery": "Delivery",
-  "todays_orders": "Today's Orders",
-  "this_week_orders": "This Week Orders",
+  "todays_orders": "Today's Active Orders",
+  "this_week_orders": "This Week Active Orders",
   "total_orders": "Total Orders",
+  "total_orders_completed": "Total Orders Completed",
   "cash_in_your_hand": "Cash In Your Hand",
   "cash_on_delivery": "COD",
   "digital_payment": "Digital Payment",
@@ -182,7 +185,6 @@
   "we_will_be_right_back": "We Will Be Right Back",
   "wallet_payment": "Wallet payment",
 
-  "version1.4": "1.4",
   "street_number": "Street Number",
   "house": "House",
   "floor": "Floor",

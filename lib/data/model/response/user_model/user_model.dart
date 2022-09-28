@@ -13,11 +13,11 @@ class UserModel {
   double avgRating;
   int ratingCount;
   int memberSinceDays;
-  int orderCount;
+  OrderCount orderCount;
   int todaysOrderCount;
   int thisWeekOrderCount;
   double cashInHands;
-  int earnings;
+  Earnings earnings;
   double balance;
   double todaysEarning;
   double thisWeekEarning;
@@ -39,12 +39,12 @@ class UserModel {
     this.fcmToken,
     this.avgRating = 0,
     this.memberSinceDays,
-    this.orderCount = 0,
+    this.orderCount,
     this.todaysOrderCount = 0,
     this.thisWeekOrderCount = 0,
     this.cashInHands = 0,
     this.ratingCount = 0,
-    this.earnings = 0,
+    this.earnings,
     this.balance = 0,
     this.todaysEarning = 0,
     this.thisWeekEarning = 0,
@@ -53,6 +53,14 @@ class UserModel {
     this.role,
     this.provides,
   });
+
+  setEarnings(Earnings earnings) {
+    this.earnings = earnings;
+  }
+
+  setOrderCount(OrderCount orderCount) {
+    this.orderCount = orderCount;
+  }
 
   factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
         id: json['_id'] as String,
@@ -81,4 +89,62 @@ class UserModel {
         'role': role?.map((e) => e.toJson())?.toList(),
         'provides': provides,
       };
+}
+
+class Earnings {
+  int today_earning;
+  int week_earning;
+  int month_earning;
+  int total_earned;
+  Earnings(
+      {this.today_earning = 0,
+      this.week_earning = 0,
+      this.month_earning = 0,
+      this.total_earned = 0});
+}
+
+class OrderCount {
+  int mechanical_todays_order_count;
+  int mechanical_weekly_order_count;
+
+  int carspa_todays_order_count;
+  int carspa_weekly_order_count;
+
+  int quickhelp_todays_order_count;
+  int quickhelp_weekly_order_count;
+
+  int mechanical_new_count;
+  int mechanical_active_count;
+  int mechanical_completed_count;
+  int mechanical_cancelled_count;
+
+  int carspa_new_count;
+  int carspa_active_count;
+  int carspa_completed_count;
+  int carspa_cancelled_count;
+
+  int quickhelp_new_count;
+  int quickhelp_active_count;
+  int quickhelp_completed_count;
+  int quickhelp_cancelled_count;
+
+  OrderCount(
+      {this.carspa_todays_order_count = 0,
+      this.carspa_weekly_order_count = 0,
+      this.mechanical_todays_order_count = 0,
+      this.mechanical_weekly_order_count = 0,
+      this.quickhelp_todays_order_count = 0,
+      this.quickhelp_weekly_order_count = 0,
+      this.mechanical_new_count = 0,
+      this.mechanical_active_count = 0,
+      this.mechanical_completed_count = 0,
+      this.mechanical_cancelled_count = 0,
+      this.carspa_new_count = 0,
+      this.carspa_active_count = 0,
+      this.carspa_completed_count = 0,
+      this.carspa_cancelled_count = 0,
+      this.quickhelp_new_count = 0,
+      this.quickhelp_active_count = 0,
+      this.quickhelp_completed_count = 0,
+      this.quickhelp_cancelled_count = 0});
 }

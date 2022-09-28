@@ -17,7 +17,7 @@ class OrderWidget extends StatelessWidget {
   OrderWidget(
       {@required this.orderModel,
       @required this.isRunningOrder,
-      @required this.orderIndex});
+      @required this.orderIndex = 0});
 
   @override
   Widget build(BuildContext context) {
@@ -106,11 +106,12 @@ class OrderWidget extends StatelessWidget {
               child: TextButton(
             onPressed: () {
               Get.toNamed(
-                RouteHelper.getOrderDetailsRoute(orderModel.orderId),
-                arguments: OrderDetailsScreen(
-                    orderModel: orderModel,
-                    isRunningOrder: isRunningOrder,
-                    orderIndex: orderIndex),
+                RouteHelper.orderDetails,
+                arguments: {
+                  'orderModel': orderModel,
+                  'isRunningOrder': isRunningOrder,
+                  'orderIndex': orderIndex
+                },
               );
             },
             style: TextButton.styleFrom(

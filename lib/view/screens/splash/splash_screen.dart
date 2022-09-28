@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:carclenx_vendor_app/controller/order_controller.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:carclenx_vendor_app/controller/auth_controller.dart';
 import 'package:carclenx_vendor_app/controller/splash_controller.dart';
@@ -67,7 +68,9 @@ class _SplashScreenState extends State<SplashScreen> {
       if (Get.find<AuthController>().isLoggedIn()) {
         Get.find<AuthController>().updateToken();
         await Get.find<AuthController>().getProfile();
-        Get.offNamed(RouteHelper.getInitialRoute());
+        await Get.find<OrderController>()
+            .getAllOrders()
+            .then((value) => Get.offNamed(RouteHelper.getInitialRoute()));
       } else {
         Get.offNamed(RouteHelper.getSignInRoute());
       }

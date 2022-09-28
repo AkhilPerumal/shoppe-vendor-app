@@ -37,6 +37,11 @@ class AuthController extends GetxController implements GetxService {
   UserModel get userModel => _userModel;
   XFile get pickedFile => _pickedFile;
 
+  updateUserModel(UserModel userModel) {
+    this._userModel = userModel;
+    update();
+  }
+
   Future<ResponseModel> login(String name, String password) async {
     _isLoading = true;
     update();

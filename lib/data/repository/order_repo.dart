@@ -17,7 +17,7 @@ class OrderRepo extends GetxService {
   OrderRepo({@required this.apiClient, @required this.sharedPreferences});
 
   Future<Response> getAllOrders() {
-    return apiClient.getData(uri: AppConstants.ALL_ORDERS_URI + getUserToken());
+    return apiClient.getData(uri: AppConstants.ALL_ORDERS_URI);
   }
 
   Future<Response> getCompletedOrderList(int offset) async {

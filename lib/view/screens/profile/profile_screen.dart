@@ -79,7 +79,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           SizedBox(width: Dimensions.PADDING_SIZE_SMALL),
                           ProfileCard(
                               title: 'total_order'.tr,
-                              data: authController.userModel.orderCount
+                              data: (authController.userModel.orderCount
+                                          .carspa_completed_count +
+                                      authController.userModel.orderCount
+                                          .mechanical_completed_count +
+                                      authController.userModel.orderCount
+                                          .quickhelp_completed_count)
                                   .toString()),
                         ]),
                         SizedBox(height: 30),
