@@ -47,6 +47,7 @@ dependencies:
   file_picker: ^5.2.1
   loading_animation_widget: ^1.2.0+3
   carousel_slider: ^4.1.1
+  firebase_analytics: ^10.0.3
 
 dev_dependencies:
   flutter_test:

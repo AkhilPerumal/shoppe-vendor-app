@@ -17,20 +17,40 @@ class NotificationHelper {
         android: androidInitialize, iOS: iOSInitialize);
     flutterLocalNotificationsPlugin.initialize(initializationsSettings);
 
-    // const AndroidNotificationChannel channel = AndroidNotificationChannel(
-    //     'pexapartner', // id
-    //     'High Importance Notifications', // title
-    //     description: 'For recieving order',
-    //     enableLights: true,
-    //     enableVibration: true,
-    //     importance: Importance.high,
-    //     playSound: true,
-    //     sound: RawResourceAndroidNotificationSound('notification'),
-    //     showBadge: true);
-    // await flutterLocalNotificationsPlugin
-    //     .resolvePlatformSpecificImplementation<
-    //         AndroidFlutterLocalNotificationsPlugin>()
-    //     ?.createNotificationChannel(channel);
+    const AndroidNotificationChannel channel = AndroidNotificationChannel(
+        'pexapartner', // id
+        'High Importance Notifications', // title
+        description: 'For recieving order',
+        enableLights: true,
+        enableVibration: true,
+        importance: Importance.high,
+        playSound: true,
+        sound: RawResourceAndroidNotificationSound('notification'),
+        showBadge: true);
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(channel);
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print("onMessage: ${message.data}");
+      // String _type = message.notification.bodyLocKey;
+      // String _orderID = message.notification.titleLocKey;
+      NotificationHelper.showNotification(
+          message, flutterLocalNotificationsPlugin, false);
+      // if (_type == 'new_order') {
+      //   //_orderCount = _orderCount + 1;
+      //   Get.dialog(NewRequestDialog(
+      //       isRequest: true, onTap: () => _navigateRequestPage()));
+      // } else if (_type == 'assign' && _orderID != null && _orderID.isNotEmpty) {
+      //   Get.dialog(
+      //       NewRequestDialog(isRequest: false, onTap: () => _setPage(0)));
+      // } else if (_type == 'block') {
+      //   Get.find<AuthController>().clearSharedData();
+      //   Get.find<AuthController>().stopLocationRecord();
+      //   Get.offAllNamed(RouteHelper.getSignInRoute());
+      // }
+    });
   }
 
   static Future<void> showNotification(RemoteMessage message,

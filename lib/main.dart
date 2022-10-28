@@ -9,6 +9,7 @@ import 'package:carclenx_vendor_app/theme/dark_theme.dart';
 import 'package:carclenx_vendor_app/theme/light_theme.dart';
 import 'package:carclenx_vendor_app/util/app_constants.dart';
 import 'package:carclenx_vendor_app/util/messages.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +30,7 @@ Future<void> main() async {
   setPathUrlStrategy();
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  FirebaseAnalytics analytics = FirebaseAnalytics.instance;
   Map<String, Map<String, String>> _languages = await di.init();
 
   try {

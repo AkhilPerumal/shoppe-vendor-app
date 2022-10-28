@@ -1,20 +1,13 @@
-import 'package:country_code_picker/country_code.dart';
 import 'package:carclenx_vendor_app/controller/auth_controller.dart';
-import 'package:carclenx_vendor_app/controller/localization_controller.dart';
-import 'package:carclenx_vendor_app/controller/splash_controller.dart';
 import 'package:carclenx_vendor_app/helper/route_helper.dart';
-import 'package:carclenx_vendor_app/util/app_constants.dart';
 import 'package:carclenx_vendor_app/util/dimensions.dart';
 import 'package:carclenx_vendor_app/util/images.dart';
 import 'package:carclenx_vendor_app/util/styles.dart';
 import 'package:carclenx_vendor_app/view/base/custom_button.dart';
 import 'package:carclenx_vendor_app/view/base/custom_snackbar.dart';
 import 'package:carclenx_vendor_app/view/base/custom_text_field.dart';
-import 'package:carclenx_vendor_app/view/screens/auth/widget/code_picker_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:phone_number/phone_number.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 class SignInScreen extends StatelessWidget {
   final FocusNode _phoneFocus = FocusNode();
@@ -25,8 +18,8 @@ class SignInScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String _countryDialCode = "+91";
-    _nameController.text = "akhil.dev.franchise";
-    _passwordController.text = "akhil.dev.franchise";
+    _nameController.text = "akhil.dev.vendor";
+    _passwordController.text = "akhil.dev.vendor";
 
     // _nameController.text = Get.find<AuthController>().getUserName() ?? '';
     // _passwordController.text =
@@ -44,14 +37,23 @@ class SignInScreen extends StatelessWidget {
                 width: 1170,
                 child: GetBuilder<AuthController>(builder: (authController) {
                   return Column(children: [
-                    Image.asset(Images.logo, width: 100),
-                    SizedBox(height: Dimensions.PADDING_SIZE_SMALL),
-                    Image.asset(Images.logo_name, width: 100),
+                    Column(
+                      children: [
+                        Image.asset(Images.logo, width: 100),
+                        SizedBox(height: Dimensions.PADDING_SIZE_SMALL),
+                        Image.asset(Images.logo_name, width: 100),
+                      ],
+                    ),
                     SizedBox(height: Dimensions.PADDING_SIZE_EXTRA_LARGE),
                     SizedBox(height: Dimensions.PADDING_SIZE_EXTRA_LARGE),
-                    Text('sign_in'.tr.toUpperCase(),
-                        style: robotoBlack.copyWith(fontSize: 30)),
-                    SizedBox(height: 50),
+                    Container(
+                      padding: EdgeInsets.all(8),
+                      alignment: Alignment.centerLeft,
+                      child: Text('sign_in'.tr.toUpperCase(),
+                          style: robotoBlack.copyWith(
+                              fontSize: Dimensions.FONT_SIZE_EXTRA_LARGE)),
+                    ),
+                    // SizedBox(height: 50),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Container(
@@ -97,29 +99,29 @@ class SignInScreen extends StatelessWidget {
                         ]),
                       ),
                     ),
-                    SizedBox(height: 10),
-                    Row(children: [
-                      Expanded(
-                        child: ListTile(
-                          onTap: () => authController.toggleRememberMe(),
-                          leading: Checkbox(
-                            activeColor: Theme.of(context).primaryColor,
-                            value: authController.isActiveRememberMe,
-                            onChanged: (bool isChecked) =>
-                                authController.toggleRememberMe(),
-                          ),
-                          title: Text('remember_me'.tr),
-                          contentPadding: EdgeInsets.zero,
-                          dense: true,
-                          horizontalTitleGap: 0,
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () =>
-                            Get.toNamed(RouteHelper.getForgotPassRoute()),
-                        child: Text('${'forgot_password'.tr}?'),
-                      ),
-                    ]),
+                    // SizedBox(height: 10),
+                    // Row(children: [
+                    //   Expanded(
+                    //     child: ListTile(
+                    //       onTap: () => authController.toggleRememberMe(),
+                    //       leading: Checkbox(
+                    //         activeColor: Theme.of(context).primaryColor,
+                    //         value: authController.isActiveRememberMe,
+                    //         onChanged: (bool isChecked) =>
+                    //             authController.toggleRememberMe(),
+                    //       ),
+                    //       title: Text('remember_me'.tr),
+                    //       contentPadding: EdgeInsets.zero,
+                    //       dense: true,
+                    //       horizontalTitleGap: 0,
+                    //     ),
+                    //   ),
+                    //   // TextButton(
+                    //   //   onPressed: () =>
+                    //   //       Get.toNamed(RouteHelper.getForgotPassRoute()),
+                    //   //   child: Text('${'forgot_password'.tr}?'),
+                    //   // ),
+                    // ]),
                     SizedBox(height: 50),
                     !authController.isLoading
                         ? Padding(
@@ -135,18 +137,23 @@ class SignInScreen extends StatelessWidget {
                             ),
                           )
                         : Center(child: CircularProgressIndicator()),
-                    // SizedBox(height: Dimensions.PADDING_SIZE_SMALL),
+                    SizedBox(height: Dimensions.PADDING_SIZE_SMALL),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: CustomButton(
+                        buttonText: "Join Up As Pexa Partner",
+                        backgroundColor: Colors.blue,
+                        onPressed: () {
+                          Get.toNamed(RouteHelper.signUp);
+                        },
+                      ),
+                    ),
                     // TextButton(
                     //   style: TextButton.styleFrom(
                     //     minimumSize: Size(1, 40),
                     //   ),
                     //   onPressed: () async {
-                    //     if (await canLaunchUrlString(
-                    //         '${AppConstants.BASE_URL}/deliveryman/apply')) {
-                    //       launchUrlString(
-                    //           '${AppConstants.BASE_URL}/deliveryman/apply',
-                    //           mode: LaunchMode.externalApplication);
-                    //     }
+                    //     Get.toNamed(RouteHelper.signUp);
                     //   },
                     //   child: RichText(
                     //       text: TextSpan(children: [
@@ -155,16 +162,16 @@ class SignInScreen extends StatelessWidget {
                     //         style: robotoRegular.copyWith(
                     //             color: Theme.of(context).disabledColor)),
                     //     TextSpan(
-                    //         text: 'delivery_man'.tr,
+                    //         text: 'Pexa Partner',
                     //         style: robotoMedium.copyWith(
                     //             color: Theme.of(context)
                     //                 .textTheme
                     //                 .bodyText1
                     //                 .color)),
                     //   ])),
-                    // )
-                    SizedBox(height: Dimensions.PADDING_SIZE_EXTRA_LARGE),
-                    SizedBox(height: Dimensions.PADDING_SIZE_EXTRA_LARGE),
+                    // ),
+                    // SizedBox(height: Dimensions.PADDING_SIZE_EXTRA_LARGE),
+                    // SizedBox(height: Dimensions.PADDING_SIZE_EXTRA_LARGE),
                   ]);
                 }),
               ),
@@ -202,7 +209,9 @@ class SignInScreen extends StatelessWidget {
           }
           await Get.find<AuthController>()
               .getProfile(userID: authController.userModel.id);
-          Get.offAllNamed(RouteHelper.getInitialRoute());
+          Get.find<AuthController>()
+              .getWorkerWorkDetails()
+              .then((value) => Get.offAllNamed(RouteHelper.getInitialRoute()));
         } else {
           showCustomSnackBar(status.message);
         }
