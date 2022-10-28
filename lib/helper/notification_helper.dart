@@ -16,6 +16,21 @@ class NotificationHelper {
     var initializationsSettings = new InitializationSettings(
         android: androidInitialize, iOS: iOSInitialize);
     flutterLocalNotificationsPlugin.initialize(initializationsSettings);
+
+    // const AndroidNotificationChannel channel = AndroidNotificationChannel(
+    //     'pexapartner', // id
+    //     'High Importance Notifications', // title
+    //     description: 'For recieving order',
+    //     enableLights: true,
+    //     enableVibration: true,
+    //     importance: Importance.high,
+    //     playSound: true,
+    //     sound: RawResourceAndroidNotificationSound('notification'),
+    //     showBadge: true);
+    // await flutterLocalNotificationsPlugin
+    //     .resolvePlatformSpecificImplementation<
+    //         AndroidFlutterLocalNotificationsPlugin>()
+    //     ?.createNotificationChannel(channel);
   }
 
   static Future<void> showNotification(RemoteMessage message,
@@ -73,8 +88,8 @@ class NotificationHelper {
       String orderID, FlutterLocalNotificationsPlugin fln) async {
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
-      'stackfood_delivery',
-      'stackfood_delivery name',
+      'pexapartner',
+      'pexapartner',
       playSound: true,
       importance: Importance.max,
       priority: Priority.max,
@@ -95,8 +110,8 @@ class NotificationHelper {
     );
     AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
-      'stackfood_delivery channel id',
-      'stackfood_delivery name',
+      'pexapartner',
+      'pexapartner',
       importance: Importance.max,
       styleInformation: bigTextStyleInformation,
       priority: Priority.max,
@@ -128,8 +143,8 @@ class NotificationHelper {
     );
     final AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
-      'stackfood_delivery',
-      'stackfood_delivery name',
+      'pexapartner',
+      'pexapartner',
       largeIcon: FilePathAndroidBitmap(largeIconPath),
       priority: Priority.max,
       playSound: true,
@@ -156,10 +171,14 @@ class NotificationHelper {
 Future<dynamic> myBackgroundMessageHandler(RemoteMessage message) async {
   print(
       "onBackground: ${message.notification.title}/${message.notification.body}/${message.notification.titleLocKey}");
-  // var androidInitialize = new AndroidInitializationSettings('notification_icon');
+  // var androidInitialize =
+  //     new AndroidInitializationSettings('notification_icon');
   // var iOSInitialize = new IOSInitializationSettings();
-  // var initializationsSettings = new InitializationSettings(android: androidInitialize, iOS: iOSInitialize);
-  // FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  // var initializationsSettings = new InitializationSettings(
+  //     android: androidInitialize, iOS: iOSInitialize);
+  // FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  //     FlutterLocalNotificationsPlugin();
   // flutterLocalNotificationsPlugin.initialize(initializationsSettings);
-  // NotificationHelper.showNotification(message, flutterLocalNotificationsPlugin, true);
+  // NotificationHelper.showNotification(
+  //     message, flutterLocalNotificationsPlugin, true);
 }

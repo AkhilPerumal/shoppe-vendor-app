@@ -1,13 +1,9 @@
-import 'dart:async';
-
-import 'package:carclenx_vendor_app/controller/my_tab_controller.dart';
-import 'package:carclenx_vendor_app/controller/order_controller.dart';
-import 'package:carclenx_vendor_app/data/model/response/service_order_list_model.dart';
+import 'package:carclenx_vendor_app/controller/active_order_tab_controller.dart';
+import 'package:carclenx_vendor_app/helper/enums.dart';
 import 'package:carclenx_vendor_app/util/dimensions.dart';
 import 'package:carclenx_vendor_app/util/images.dart';
 import 'package:carclenx_vendor_app/util/styles.dart';
-import 'package:carclenx_vendor_app/view/screens/request/widget/order_tab_page.dart';
-import 'package:carclenx_vendor_app/view/screens/request/widget/order_requset_widget.dart';
+import 'package:carclenx_vendor_app/view/screens/order/order_tab_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -15,14 +11,15 @@ class OrderRequestScreen extends StatelessWidget {
   final Function onTap;
   OrderRequestScreen({@required this.onTap});
 
-  final MyTabController _tabx = Get.put(MyTabController(length: 4));
+  final ActiveOrderTabController _tabx =
+      Get.put(ActiveOrderTabController(length: 4));
   double tab_height = 0;
   @override
   Widget build(BuildContext context) {
     var height = Get.height;
     var width = Get.width;
     tab_height = width * 0.2;
-    return GetBuilder<MyTabController>(builder: (_tbx) {
+    return GetBuilder<ActiveOrderTabController>(builder: (_tbx) {
       return Scaffold(
         appBar: AppBar(
           title: Text('order_request'.tr,
@@ -47,33 +44,33 @@ class OrderRequestScreen extends StatelessWidget {
                         topLeft: Radius.circular(5),
                         topRight: Radius.circular(5)),
                   ),
-                  onTap: (value) {
-                    _tabx.setTabIndex(value);
-                  },
                   tabs: [
                     Container(
                       height: tab_height,
                       child: Tab(
-                        child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(3.0),
-                                child: Image.asset(
-                                  Images.shoppe_icon,
-                                  width: _tabx.tabIndex == 0 ? 25 : 40,
+                        child: Builder(builder: (context) {
+                          return Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(3.0),
+                                  child: Image.asset(
+                                    Images.shoppe_icon,
+                                    width: _tabx.tabIndex == 0 ? 25 : 40,
+                                  ),
                                 ),
-                              ),
-                              _tabx.tabIndex == 0
-                                  ? Text('car_shoppe'.tr,
-                                      style: robotoRegular.copyWith(
-                                          fontSize: Dimensions.FONT_SIZE_SMALL,
-                                          color: Theme.of(context)
-                                              .textTheme
-                                              .bodyText1
-                                              .color))
-                                  : SizedBox()
-                            ]),
+                                _tabx.tabIndex == 0
+                                    ? Text('car_shoppe'.tr,
+                                        style: robotoRegular.copyWith(
+                                            fontSize:
+                                                Dimensions.FONT_SIZE_SMALL,
+                                            color: Theme.of(context)
+                                                .textTheme
+                                                .bodyText1
+                                                .color))
+                                    : SizedBox()
+                              ]);
+                        }),
                       ),
                     ),
                     Container(
@@ -158,12 +155,11 @@ class OrderRequestScreen extends StatelessWidget {
         ),
         body: TabBarView(
           controller: _tabx.tabController,
-          physics: NeverScrollableScrollPhysics(),
           children: [
-            OrderTabPage(category: 'car_shoppe'.tr),
-            OrderTabPage(category: 'car_spa'.tr),
-            OrderTabPage(category: 'car_mechanical'.tr),
-            OrderTabPage(category: 'quick_help'.tr)
+            OrderTabPage(category: CategoryType.CAR_SHOPPE),
+            OrderTabPage(category: CategoryType.CAR_SPA),
+            OrderTabPage(category: CategoryType.CAR_MECHANIC),
+            OrderTabPage(category: CategoryType.QUICK_HELP)
           ],
         ),
       );

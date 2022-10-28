@@ -1,8 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:carclenx_vendor_app/data/api/api_checker.dart';
+import 'package:carclenx_vendor_app/data/api/api_client.dart';
 import 'package:carclenx_vendor_app/data/model/body/record_location_body.dart';
+import 'package:carclenx_vendor_app/data/model/body/sign_up_body_model.dart';
+import 'package:carclenx_vendor_app/data/model/response/all_service_work_details_model.dart';
 import 'package:carclenx_vendor_app/data/model/response/response_model.dart';
 import 'package:carclenx_vendor_app/data/model/response/user_model/user_model.dart';
 import 'package:carclenx_vendor_app/data/repository/auth_repo.dart';
@@ -11,6 +15,7 @@ import 'package:carclenx_vendor_app/util/images.dart';
 import 'package:carclenx_vendor_app/view/base/confirmation_dialog.dart';
 import 'package:carclenx_vendor_app/view/base/custom_alert_dialog.dart';
 import 'package:carclenx_vendor_app/view/base/custom_snackbar.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -27,18 +32,83 @@ class AuthController extends GetxController implements GetxService {
 
   bool _isLoading = false;
   bool _notification = true;
+  bool _isShiftTime = false;
+  bool _isCheckedCarWash = false;
+  bool _isCheckedMechanic = false;
+  bool _isCheckedQuickHelp = false;
+  bool _isCheckedShoppe = false;
+  int _isUserNameAvailable = -1;
+  bool _isPasswordConfirmed = true;
   UserModel _userModel;
   XFile _pickedFile;
   Timer _timer;
   Location _location = Location();
+  List<File> pickedImageList = [];
+  XFile pickedRegImage;
+
+  TextEditingController nameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+  TextEditingController workinglocationController = TextEditingController();
+  TextEditingController stateController = TextEditingController();
+  TextEditingController districtController = TextEditingController();
+  TextEditingController userNameController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
+  TextEditingController experienceController = TextEditingController();
+  TextEditingController scheduleController = TextEditingController();
+
+  FocusNode nameFocusNode = FocusNode();
+  FocusNode emailFocusNode = FocusNode();
+  FocusNode phoneFocusNode = FocusNode();
+  FocusNode workinLocationFocusNode = FocusNode();
+  FocusNode stateFocusNode = FocusNode();
+  FocusNode districtFocusNode = FocusNode();
+  FocusNode userNameFocusNode = FocusNode();
+  FocusNode passwordFocusNode = FocusNode();
+  FocusNode confirmPasswordFocusNode = FocusNode();
+  FocusNode experienceFocusNode = FocusNode();
+  FocusNode scheduleFocusNode = FocusNode();
 
   bool get isLoading => _isLoading;
   bool get notification => _notification;
+  bool get isShiftTime => _isShiftTime;
+  bool get isCheckedCarWash => _isCheckedCarWash;
+  bool get isCheckedMechanic => _isCheckedMechanic;
+  bool get isCheckedQuickHelp => _isCheckedQuickHelp;
+  bool get isCheckedShoppe => _isCheckedShoppe;
+  int get isUserNameAvailable => _isUserNameAvailable;
+  bool get isPasswordConfirmed => _isPasswordConfirmed;
   UserModel get userModel => _userModel;
   XFile get pickedFile => _pickedFile;
 
   updateUserModel(UserModel userModel) {
     this._userModel = userModel;
+    update();
+  }
+
+  setShiftAvailability({bool isShiftTime}) {
+    _isShiftTime = isShiftTime;
+    update();
+  }
+
+  setCarWashStatus({bool status}) {
+    _isCheckedCarWash = status;
+    update();
+  }
+
+  setMechanicStatus({bool status}) {
+    _isCheckedMechanic = status;
+    update();
+  }
+
+  setQuickHelphStatus({bool status}) {
+    _isCheckedQuickHelp = status;
+    update();
+  }
+
+  setshoppeStatus({bool status}) {
+    _isCheckedShoppe = status;
     update();
   }
 
@@ -61,6 +131,33 @@ class AuthController extends GetxController implements GetxService {
     _isLoading = false;
     update();
     return responseModel;
+  }
+
+  setUserNameAvailableStatus(int status) {
+    _isUserNameAvailable = status;
+    update();
+  }
+
+  Future verifyUserName() async {
+    Response response =
+        await authRepo.validateUserName(userNameController.text);
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      var a = response.body['resultData']['username'];
+      print(a);
+      if (response.body['resultData']['username'] != null &&
+          response.body['resultData']['username'] == 0) {
+        setUserNameAvailableStatus(1);
+        showCustomSnackBar('User Name Available', isError: false);
+      } else {
+        setUserNameAvailableStatus(0);
+        showCustomSnackBar('User Name already taken');
+      }
+      update();
+    } else {
+      setUserNameAvailableStatus(-1);
+      update();
+      showCustomSnackBar('Something went wrong');
+    }
   }
 
   Future<void> getProfile({String userID}) async {
@@ -117,6 +214,21 @@ class AuthController extends GetxController implements GetxService {
     }
     update();
     return _isSuccess;
+  }
+
+  Future<void> getWorkerWorkDetails() async {
+    Response response = await authRepo.getWorkerWorkDetails();
+    if (response.statusCode == 200) {
+      AllServiceWorkDetails allServiceWorkDetails =
+          AllServiceWorkDetails.fromJson(response.body['resultData']);
+
+      Get.find<AuthController>()
+          .userModel
+          .setWorkerCounts(allServiceWorkDetails);
+    } else {
+      ApiChecker.checkApi(response);
+    }
+    update();
   }
 
   void pickImage() async {
@@ -303,6 +415,7 @@ class AuthController extends GetxController implements GetxService {
   }
 
   Future<bool> clearSharedData() async {
+    _userModel = UserModel();
     return await authRepo.clearSharedData();
   }
 
@@ -377,6 +490,146 @@ class AuthController extends GetxController implements GetxService {
           barrierDismissible: false);
     } else {
       callback();
+    }
+  }
+
+  void pickRegImage({bool singleImage}) async {
+    if (singleImage) {
+      FilePickerResult result = await FilePicker.platform.pickFiles(
+          type: FileType.custom,
+          allowMultiple: false,
+          allowedExtensions: ['jpeg', 'png', 'gif']);
+      update();
+    } else {
+      FilePickerResult result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowMultiple: true,
+        allowedExtensions: ['jpeg', 'png', 'gif'],
+      );
+
+      if (result != null) {
+        List<File> files = result.paths.map((path) => File(path)).toList();
+        files.forEach(
+          (element) {
+            pickedImageList.add(element);
+          },
+        );
+        update();
+      } else {
+        // User canceled the picker
+      }
+    }
+  }
+
+  void removeImage(int index) {
+    pickedImageList.removeAt(index);
+    update();
+  }
+
+  Future signUp() async {
+    bool isError = false;
+
+    if (nameController.text == '' || nameController.text == null) {
+      isError = true;
+      update();
+      showCustomSnackBar('Please enter your Name');
+    } else if (emailController.text == '' || emailController.text == null) {
+      isError = true;
+      update();
+      showCustomSnackBar('Please enter your Email');
+    } else if (phoneController.text == '' || phoneController.text == null) {
+      isError = true;
+      update();
+      showCustomSnackBar('Please enter your Phone number');
+    } else if (workinglocationController.text == '' ||
+        workinglocationController.text == null) {
+      isError = true;
+      update();
+      showCustomSnackBar('Please enter your prefered working Location');
+    } else if (districtController.text == '' ||
+        districtController.text == null) {
+      isError = true;
+      update();
+      showCustomSnackBar('Please enter your District');
+    } else if (stateController.text == '' || stateController.text == null) {
+      isError = true;
+      update();
+      showCustomSnackBar('Please enter your State');
+    } else if (userNameController.text == '' ||
+        userNameController.text == null) {
+      isError = true;
+      update();
+      showCustomSnackBar('Please enter a User Name');
+    } else if (passwordController.text == '' ||
+        passwordController.text == null) {
+      isError = true;
+      update();
+      showCustomSnackBar('Please enter a Password');
+    } else if (confirmPasswordController.text != passwordController.text) {
+      isError = true;
+      update();
+      showCustomSnackBar('Please Confirm Password');
+    } else if (experienceController.text == '' ||
+        experienceController.text == null) {
+      _isPasswordConfirmed = false;
+      isError = true;
+      update();
+      showCustomSnackBar('Please enter your years of Work Experience');
+    } else if (!isCheckedCarWash && !isCheckedMechanic && !isCheckedQuickHelp) {
+      isError = true;
+      update();
+      showCustomSnackBar('Please check atleast a Experienced Service');
+    } else if (pickedImageList.length == 0) {
+      isError = true;
+      update();
+      showCustomSnackBar('Please attach your Verification Documents');
+    } else {
+      verifyUserName().then((value) async {
+        if (isUserNameAvailable == 1) {
+          Experience experience = Experience(
+              carspa: isCheckedCarWash ? 1 : 0,
+              mechanical: isCheckedMechanic ? 1 : 0,
+              quickhelp: isCheckedQuickHelp ? 1 : 0,
+              shoppe: isCheckedShoppe ? 1 : 0,
+              total: int.parse(experienceController.text));
+          SignUpBody signUpBody = SignUpBody(
+              name: nameController.text,
+              email: emailController.text,
+              phone: phoneController.text,
+              district: districtController.text,
+              experience: experience,
+              place: workinglocationController.text,
+              state: stateController.text,
+              username: userNameController.text,
+              password: passwordController.text,
+              availability: isShiftTime ? 'shift_based' : 'any');
+          Response response = await authRepo.signUp(signUpBody);
+          if (response.statusCode == 200 || response.statusCode == 201) {
+            imageUploader(
+                signUpBody: signUpBody,
+                userId: response.body['resultData']['_id']);
+          } else if (response.statusCode == 409) {
+            showCustomSnackBar("User Already Exists", isError: true);
+          }
+        }
+      });
+    }
+  }
+
+  imageUploader({String userId, SignUpBody signUpBody}) async {
+    List<MultipartBody> newList = [];
+    for (File img in pickedImageList) {
+      if (img != "") {
+        var multipartFile = await MultipartBody('upload', img);
+        newList.add(multipartFile);
+      }
+    }
+    Map<String, String> body = {'id': userId};
+    Response response =
+        await authRepo.uploadRegImageUpload(body: body, images: newList);
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      showCustomSnackBar("Documents Uploaded", isError: false);
+      login(signUpBody.username, signUpBody.password);
     }
   }
 

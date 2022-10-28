@@ -1,28 +1,30 @@
+import 'package:carclenx_vendor_app/data/model/response/add_on_model.dart';
 import 'package:carclenx_vendor_app/data/model/response/cateory_model.dart';
-import 'package:carclenx_vendor_app/data/model/response/order_details_model.dart';
 
 class ServiceModel {
   String id;
   String name;
-  CategoryId categoryId;
+  String categoryId;
+  CategoryId categoryList;
   String carType;
   List<String> images;
   List<String> thumbnails;
   bool isActive;
   int price;
-  List<AddOns> addOns;
+  List<AddOn> addOns;
   String description;
   String list;
   String createdAt;
   String updatedAt;
   int iV;
-  List<String> thumbURL;
-  List<String> imageURL;
+  List<dynamic> thumbURL;
+  List<dynamic> imageURL;
 
   ServiceModel(
       {this.id,
       this.name,
       this.categoryId,
+      this.categoryList,
       this.carType,
       this.images,
       this.thumbnails,
@@ -40,8 +42,9 @@ class ServiceModel {
   ServiceModel.fromJson(Map<String, dynamic> json) {
     id = json['_id'];
     name = json['name'];
-    categoryId = json['categoryId'] != null
-        ? new CategoryId.fromJson(json['categoryId'])
+    categoryId = json['categoryId'];
+    categoryList = json['categoryDetails'] != null
+        ? new CategoryId.fromJson(json['categoryDetails'])
         : null;
     carType = json['carType'];
     images = json['images'].cast<String>();
@@ -49,9 +52,9 @@ class ServiceModel {
     isActive = json['isActive'];
     price = json['price'];
     if (json['addOns'] != null) {
-      addOns = <AddOns>[];
+      addOns = <AddOn>[];
       json['addOns'].forEach((v) {
-        addOns.add(new AddOns.fromJson(v));
+        addOns.add(new AddOn.fromJson(v));
       });
     }
     description = json['description'];
@@ -59,16 +62,17 @@ class ServiceModel {
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
     iV = json['__v'];
-    thumbURL = json['thumbURL'].cast<String>();
-    imageURL = json['imageURL'].cast<String>();
+    thumbURL = json['thumbURL'];
+    imageURL = json['imageURL'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['_id'] = this.id;
     data['name'] = this.name;
-    if (this.categoryId != null) {
-      data['categoryId'] = this.categoryId.toJson();
+    data['categoryId'] = this.categoryId;
+    if (this.categoryList != null) {
+      data['categoryDetails'] = this.categoryList.toJson();
     }
     data['carType'] = this.carType;
     data['images'] = this.images;

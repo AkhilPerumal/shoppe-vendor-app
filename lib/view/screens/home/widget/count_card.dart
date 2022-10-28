@@ -1,15 +1,14 @@
-import 'package:carclenx_vendor_app/data/model/response/user_model/user_model.dart';
+import 'package:carclenx_vendor_app/data/model/response/all_service_work_details_model.dart';
 import 'package:carclenx_vendor_app/util/dimensions.dart';
 import 'package:carclenx_vendor_app/util/images.dart';
 import 'package:carclenx_vendor_app/util/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shimmer_animation/shimmer_animation.dart';
 
 class CountCard extends StatelessWidget {
   final Color backgroundColor;
   final String title;
-  final OrderCount orderCountList;
+  final AllServiceWorkDetails orderCountList;
   final double height;
   CountCard(
       {@required this.backgroundColor,
@@ -74,7 +73,9 @@ class CountCard extends StatelessWidget {
                         height: 10,
                       ),
                       Text(
-                        title == 'todays_orders'.tr ? "0" : "0",
+                        title == 'todays_orders'.tr
+                            ? orderCountList.shoppe.daily.activeCount.toString()
+                            : "0",
                         style: robotoBold.copyWith(
                             fontSize: Dimensions.FONT_SIZE_LARGE,
                             color: Colors.white),
@@ -86,7 +87,9 @@ class CountCard extends StatelessWidget {
                         height: 10,
                       ),
                       Text(
-                        title == 'todays_orders'.tr ? "0" : "0",
+                        title == 'todays_orders'.tr
+                            ? orderCountList.shoppe.daily.newCount.toString()
+                            : "0",
                         style: robotoBold.copyWith(
                             fontSize: Dimensions.FONT_SIZE_LARGE,
                             color: Colors.white),
@@ -112,7 +115,9 @@ class CountCard extends StatelessWidget {
                       height: 10,
                     ),
                     Text(
-                      orderCountList.carspa_todays_order_count.toString(),
+                      orderCountList.carspa.total != null
+                          ? orderCountList.carspa.total.acceptedCount.toString()
+                          : "0",
                       style: robotoBold.copyWith(
                           fontSize: Dimensions.FONT_SIZE_LARGE,
                           color: Colors.white),
@@ -124,7 +129,9 @@ class CountCard extends StatelessWidget {
                       height: 10,
                     ),
                     Text(
-                      orderCountList.carspa_new_count.toString(),
+                      orderCountList.carspa.total != null
+                          ? orderCountList.carspa.total.activeCount.toString()
+                          : "0",
                       style: robotoBold.copyWith(
                           fontSize: Dimensions.FONT_SIZE_LARGE,
                           color: Colors.white),
@@ -149,7 +156,10 @@ class CountCard extends StatelessWidget {
                       height: 10,
                     ),
                     Text(
-                      orderCountList.mechanical_todays_order_count.toString(),
+                      orderCountList.mechanical.total != null
+                          ? orderCountList.mechanical.total.acceptedCount
+                              .toString()
+                          : "0",
                       style: robotoBold.copyWith(
                           fontSize: Dimensions.FONT_SIZE_LARGE,
                           color: Colors.white),
@@ -161,7 +171,10 @@ class CountCard extends StatelessWidget {
                       height: 10,
                     ),
                     Text(
-                      orderCountList.mechanical_new_count.toString(),
+                      orderCountList.mechanical.total != null
+                          ? orderCountList.mechanical.total.activeCount
+                              .toString()
+                          : "0",
                       style: robotoBold.copyWith(
                           fontSize: Dimensions.FONT_SIZE_LARGE,
                           color: Colors.white),
@@ -187,7 +200,10 @@ class CountCard extends StatelessWidget {
                         height: 10,
                       ),
                       Text(
-                        orderCountList.quickhelp_todays_order_count.toString(),
+                        orderCountList.quickhelp.total != null
+                            ? orderCountList.quickhelp.total.acceptedCount
+                                .toString()
+                            : "0",
                         style: robotoBold.copyWith(
                             fontSize: Dimensions.FONT_SIZE_LARGE,
                             color: Colors.white),
@@ -199,7 +215,10 @@ class CountCard extends StatelessWidget {
                         height: 10,
                       ),
                       Text(
-                        orderCountList.quickhelp_new_count.toString(),
+                        orderCountList.quickhelp.total != null
+                            ? orderCountList.quickhelp.total.activeCount
+                                .toString()
+                            : "0",
                         style: robotoBold.copyWith(
                             fontSize: Dimensions.FONT_SIZE_LARGE,
                             color: Colors.white),
@@ -213,9 +232,15 @@ class CountCard extends StatelessWidget {
               )
             : Text(
                 title == 'total_orders_completed'.tr
-                    ? (orderCountList.carspa_active_count +
-                            orderCountList.mechanical_active_count +
-                            orderCountList.quickhelp_active_count)
+                    ? ((orderCountList.carspa.total != null
+                                ? orderCountList.carspa.total.completedCount
+                                : 0.0) +
+                            (orderCountList.mechanical.total != null
+                                ? orderCountList.mechanical.total.completedCount
+                                : 0.0) +
+                            (orderCountList.quickhelp.total != null
+                                ? orderCountList.quickhelp.total.completedCount
+                                : 0.0))
                         .toString()
                     : title == 'cash_in_your_hand'.tr
                         ? "₹ 0"

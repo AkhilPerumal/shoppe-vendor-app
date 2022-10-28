@@ -1,7 +1,8 @@
 import 'package:carclenx_vendor_app/controller/order_controller.dart';
+import 'package:carclenx_vendor_app/helper/enums.dart';
 import 'package:carclenx_vendor_app/util/dimensions.dart';
 import 'package:carclenx_vendor_app/view/screens/order/widget/history_order_widget.dart';
-import 'package:carclenx_vendor_app/view/screens/request/widget/order_requset_widget.dart';
+import 'package:carclenx_vendor_app/view/screens/shoppe_order/widget/order_product_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -13,62 +14,31 @@ class OrderHistoryTabPage extends StatelessWidget {
     this.category,
   }) : super(key: key);
 
-  final String category;
+  final CategoryType category;
   RefreshController _controller = RefreshController();
 
-  loadOrders({String category, bool reload, bool loadMore}) async {
-    if (category == 'car_spa'.tr) {
-      var pageNo = 1;
-      if (loadMore) {
-        pageNo = pageNo + 1;
+  loadOrders({bool reload, bool loadMore}) async {
+    var pageNo = 1;
+    if (loadMore && Get.find<OrderController>().totalPage <= pageNo) {
+      pageNo = pageNo + 1;
+      Get.find<OrderController>()
+          .setCurrentOrderList(category: category, pageNo: pageNo.toString());
+      if (Get.find<OrderController>().totalPage == pageNo) {
+        _controller.loadNoData();
       }
-      await Get.find<OrderController>().getLatestOrders(
-          category: 'car_spa'.tr,
-          pageNo: pageNo.toString(),
-          status: "all",
-          fromPage: "Order History");
-    } else if (category == 'car_mechanical'.tr) {
-      var pageNo = 1;
-      if (loadMore) {
-        pageNo = pageNo + 1;
-      }
-      await Get.find<OrderController>().getLatestOrders(
-          category: 'car_mechanical'.tr,
-          pageNo: pageNo.toString(),
-          status: "all",
-          fromPage: "Order History");
-    } else if (category == 'quick_help'.tr) {
-      var pageNo = 1;
-      if (loadMore) {
-        pageNo = pageNo + 1;
-      }
-      await Get.find<OrderController>().getLatestOrders(
-          category: 'quick_help'.tr,
-          pageNo: pageNo.toString(),
-          status: "all",
-          fromPage: "Order History");
-    } else {
-      var pageNo = 1;
-      if (loadMore) {
-        pageNo = pageNo + 1;
-      }
-      await Get.find<OrderController>().getLatestOrders(
-          category: 'car_shoppe'.tr,
-          pageNo: pageNo.toString(),
-          status: "all",
-          fromPage: "Order History");
-    }
-    if (reload) {
-      _controller.refreshCompleted();
-    }
-    if (loadMore) {
       _controller.loadComplete();
+    }
+
+    if (reload) {
+      pageNo = 1;
+      Get.find<OrderController>()
+          .setCurrentOrderList(category: category, pageNo: pageNo.toString());
+      _controller.refreshCompleted();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    loadOrders(category: category, reload: false, loadMore: false);
     return GetBuilder<OrderController>(builder: (orderController) {
       return !orderController.isLoading
           ? SmartRefresher(
@@ -76,13 +46,12 @@ class OrderHistoryTabPage extends StatelessWidget {
               enablePullUp: true,
               onLoading: () {
                 if (orderController.currentOrderList.length > 0) {
-                  loadOrders(category: category, reload: false, loadMore: true);
+                  loadOrders(reload: false, loadMore: true);
                 } else {
                   _controller.loadNoData();
                 }
               },
-              onRefresh: () =>
-                  loadOrders(category: category, reload: true, loadMore: false),
+              onRefresh: () => loadOrders(reload: true, loadMore: false),
               controller: _controller,
               header: WaterDropHeader(),
               footer: CustomFooter(
@@ -118,44 +87,77 @@ class OrderHistoryTabPage extends StatelessWidget {
                           ),
                           children: orderController.fliterListOrderHistory,
                           onPressed: (int index) {
-                            orderController.updateFiltertype(
-                                index: index,
-                                category: category,
-                                fromPage: "Order History");
+                            orderController.updateSubTab(
+                                index == 0
+                                    ? SubTabType.COMPELTED
+                                    : SubTabType.CANCELLED,
+                                category);
                           },
                           isSelected:
                               orderController.selectedFilterOrderHistory,
                         );
                       }),
                     ),
-                    orderController.currentOrderList != null
-                        ? orderController.currentOrderList.length > 0
-                            ? ListView.builder(
-                                shrinkWrap: true,
-                                itemCount:
-                                    orderController.currentOrderList.length,
-                                padding: EdgeInsets.all(
-                                    Dimensions.PADDING_SIZE_SMALL),
-                                physics: NeverScrollableScrollPhysics(),
-                                itemBuilder: (context, index) {
-                                  return HistoryOrderWidget(
-                                    orderModel:
-                                        orderController.currentOrderList[index],
-                                    index: index,
-                                    isRunning: false,
-                                  );
-                                },
-                              )
+                    category == CategoryType.CAR_SHOPPE
+                        ? orderController.shoppeOrderList != null
+                            ? orderController.shoppeOrderList.length > 0
+                                ? ListView.builder(
+                                    shrinkWrap: true,
+                                    itemCount:
+                                        orderController.shoppeOrderList.length,
+                                    padding: EdgeInsets.all(
+                                        Dimensions.PADDING_SIZE_SMALL),
+                                    physics: NeverScrollableScrollPhysics(),
+                                    itemBuilder: (context, index) {
+                                      return OrderProductWidget(
+                                          orderdetails: orderController
+                                              .shoppeOrderList[index]);
+                                    },
+                                  )
+                                : Container(
+                                    height: MediaQuery.of(context).size.height /
+                                        1.5,
+                                    child: Center(
+                                      child:
+                                          Text('no_order_request_available'.tr),
+                                    ),
+                                  )
                             : Container(
                                 height:
                                     MediaQuery.of(context).size.height / 1.5,
-                                child: Center(
-                                  child: Text('no_order_request_available'.tr),
-                                ),
-                              )
-                        : Container(
-                            height: MediaQuery.of(context).size.height / 1.5,
-                            child: Center(child: CircularProgressIndicator())),
+                                child:
+                                    Center(child: CircularProgressIndicator()))
+                        : orderController.currentOrderList != null
+                            ? orderController.currentOrderList.length > 0
+                                ? ListView.builder(
+                                    shrinkWrap: true,
+                                    itemCount:
+                                        orderController.currentOrderList.length,
+                                    padding: EdgeInsets.all(
+                                        Dimensions.PADDING_SIZE_SMALL),
+                                    physics: NeverScrollableScrollPhysics(),
+                                    itemBuilder: (context, index) {
+                                      return HistoryOrderWidget(
+                                        orderModel: orderController
+                                            .currentOrderList[index],
+                                        index: index,
+                                        isRunning: false,
+                                      );
+                                    },
+                                  )
+                                : Container(
+                                    height: MediaQuery.of(context).size.height /
+                                        1.5,
+                                    child: Center(
+                                      child:
+                                          Text('no_order_request_available'.tr),
+                                    ),
+                                  )
+                            : Container(
+                                height:
+                                    MediaQuery.of(context).size.height / 1.5,
+                                child:
+                                    Center(child: CircularProgressIndicator())),
                   ],
                 ),
               ),

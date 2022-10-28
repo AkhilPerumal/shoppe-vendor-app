@@ -7,7 +7,7 @@ import 'package:carclenx_vendor_app/data/model/response/error_response.dart';
 import 'package:carclenx_vendor_app/util/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path/path.dart';
 import 'package:flutter/foundation.dart' as Foundation;
@@ -19,13 +19,14 @@ class ApiClient extends GetxService {
   static final String noInternetMessage =
       'Connection to API server failed due to internet connection';
   final int timeoutInSeconds = 30;
+  Logger _logger = Logger();
 
   String token;
   Map<String, String> _mainHeaders;
 
   ApiClient({@required this.appBaseUrl, @required this.sharedPreferences}) {
     token = sharedPreferences.getString(AppConstants.TOKEN);
-    debugPrint('Token: $token');
+    _logger.i('Token: $token');
     updateHeader(
         token, sharedPreferences.getString(AppConstants.LANGUAGE_CODE));
   }
@@ -44,10 +45,10 @@ class ApiClient extends GetxService {
       Map<String, dynamic> query,
       Map<String, String> headers}) async {
     try {
-      debugPrint('====> API Call: $uri\nHeader: $_mainHeaders');
+      _logger.i('====> API Call: $uri\nHeader: $_mainHeaders');
       Http.Response _response = await Http.get(
         Uri.parse(appBaseUrl + uri),
-        headers: headers ?? _mainHeaders,
+        headers: headers != null ? headers : _mainHeaders,
       ).timeout(Duration(seconds: timeoutInSeconds));
       return handleResponse(_response, uri);
     } catch (e) {
@@ -55,8 +56,10 @@ class ApiClient extends GetxService {
     }
   }
 
-  Future<Response> postData(String uri,
-      {Map<String, String> headers, Map<String, dynamic> body}) async {
+  Future<Response> postData(
+      {String uri,
+      Map<String, String> headers,
+      Map<String, dynamic> body}) async {
     var encBody;
     try {
       if (body != null) {
@@ -64,25 +67,29 @@ class ApiClient extends GetxService {
       } else {
         encBody = "";
       }
-      debugPrint('====> API Call: $uri\nHeader: $_mainHeaders');
-      debugPrint('====> API Body: $body');
+      _logger.i('====> API Call: URI : $uri\nHeader:' +
+          (headers != null ? headers.toString() : _mainHeaders.toString()));
+      _logger.i('====> API Body: $body');
       Http.Response _response = await Http.post(
         Uri.parse(appBaseUrl + uri),
         body: encBody,
-        headers: headers ?? _mainHeaders,
+        headers: headers != null ? headers : _mainHeaders,
       ).timeout(Duration(seconds: timeoutInSeconds));
       return handleResponse(_response, uri);
     } catch (e) {
+      _logger.e(e);
       return Response(statusCode: 1, statusText: noInternetMessage);
     }
   }
 
   Future<Response> postMultipartData(
-      String uri, Map<String, String> body, List<MultipartBody> multipartBody,
-      {Map<String, String> headers}) async {
+      {String uri,
+      Map<String, String> body,
+      List<MultipartBody> multipartBody,
+      Map<String, String> headers}) async {
     try {
-      debugPrint('====> API Call: $uri\nHeader: $_mainHeaders');
-      debugPrint('====> API Body: $body');
+      _logger.i('====> API Call: $uri\nHeader: $_mainHeaders');
+      _logger.i('====> API Body: $body');
       Http.MultipartRequest _request =
           Http.MultipartRequest('POST', Uri.parse(appBaseUrl + uri));
       _request.headers.addAll(headers ?? _mainHeaders);
@@ -100,12 +107,19 @@ class ApiClient extends GetxService {
             _request.files.add(_part);
           } else {
             File _file = File(multipart.file.path);
-            _request.files.add(Http.MultipartFile(
-              multipart.key,
-              _file.readAsBytes().asStream(),
-              _file.lengthSync(),
-              filename: _file.path.split('/').last,
-            ));
+            // _request.files.add(Http.MultipartFile(
+            //   multipart.key,
+            //   _file.readAsBytes().asStream(),
+            //   _file.lengthSync(),
+            //   filename: _file.path.split('/').last,
+            // ));
+            var multipartFile = await Http.MultipartFile.fromPath(
+              'upload',
+              _file.path,
+              contentType:
+                  MediaType('image', _file.path.split(".").last.toString()),
+            );
+            _request.files.add(multipartFile);
           }
         }
       }
@@ -129,8 +143,8 @@ class ApiClient extends GetxService {
       } else {
         encBody = "";
       }
-      debugPrint('====> API Call: $uri\nHeader: $_mainHeaders');
-      debugPrint('====> API Body: $body');
+      _logger.i('====> API Call: $uri\nHeader: $_mainHeaders');
+      _logger.i('====> API Body: $body');
       Http.Response _response = await Http.put(
         Uri.parse(appBaseUrl + uri),
         body: encBody,
@@ -144,13 +158,14 @@ class ApiClient extends GetxService {
 
   Future<Response> deleteData(String uri, {Map<String, String> headers}) async {
     try {
-      debugPrint('====> API Call: $uri\nHeader: $_mainHeaders');
+      _logger.i('====> API Call: $uri\nHeader: $_mainHeaders');
       Http.Response _response = await Http.delete(
         Uri.parse(appBaseUrl + uri),
         headers: headers ?? _mainHeaders,
       ).timeout(Duration(seconds: timeoutInSeconds));
       return handleResponse(_response, uri);
     } catch (e) {
+      _logger.e(e);
       return Response(statusCode: 1, statusText: noInternetMessage);
     }
   }
@@ -159,7 +174,9 @@ class ApiClient extends GetxService {
     dynamic _body;
     try {
       _body = jsonDecode(response.body);
-    } catch (e) {}
+    } catch (e) {
+      _logger.e("Handling response : " + e);
+    }
     Response _response = Response(
       body: _body != null ? _body : response.body,
       bodyString: response.body.toString(),
@@ -185,7 +202,7 @@ class ApiClient extends GetxService {
     } else if (_response.statusCode != 200 && _response.body == null) {
       _response = Response(statusCode: 0, statusText: noInternetMessage);
     }
-    debugPrint(
+    _logger.d(
         '====> API Response: [${_response.statusCode}] $uri\n${_response.body}');
     return _response;
   }
@@ -193,7 +210,7 @@ class ApiClient extends GetxService {
 
 class MultipartBody {
   String key;
-  PickedFile file;
+  File file;
 
   MultipartBody(this.key, this.file);
 }

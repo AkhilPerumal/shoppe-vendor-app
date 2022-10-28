@@ -5,9 +5,8 @@ class AppConstants {
   static const String APP_NAME = 'Pexa Partner App';
   static const String APP_VERSION = '1.0.1';
 
-  // static const String BASE_URL = 'https://stackfood-admin.6amtech.com';
-  // static const String BASE_URL = 'https://stagingshoppe.carclenx.com/v1.0';
-  static const String BASE_URL = 'https://shoppe.carclenx.com/v1.0';
+  static const String BASE_URL = 'https://stagingshoppe.carclenx.com/v1.0';
+  // static const String BASE_URL = 'https://shoppe.carclenx.com/v1.0';
   static const String CONFIG_URI = '/api/v1/config';
   static const String FORGET_PASSWORD_URI =
       '/api/v1/auth/delivery-man/forgot-password';
@@ -16,12 +15,25 @@ class AppConstants {
   static const String RESET_PASSWORD_URI =
       '/api/v1/auth/delivery-man/reset-password';
   static const String LOGIN_URI = '/auth/sign-in';
-  static const String TOKEN_URI = '/api/v1/delivery-man/update-fcm-token';
+  static const String SIGNUP_URI = '/partner/partner-registration';
+  static const String TOKEN_URI = '/notification';
   static const String CURRENT_ORDERS_URI =
       '/api/v1/delivery-man/current-orders?token=';
-  static const String ALL_ORDERS_URI = '/mechanical-order/franchise/all';
+  static const String ALL_ORDERS_URI = '/partner/franchise/all';
+  static const String WORKER_WORK_DETAILS =
+      '/partner/mechanical-order/franchise/all-data-combined';
+  static const String ALL_CATEGORY_LIST =
+      '/partner/consolidated/makes-models-cats-subcats';
   static const String LATEST_ORDERS_URI =
       '/api/v1/delivery-man/latest-orders?token=';
+  static const String MY_PRODUCT_LIST = '/partner/product/vendor/';
+  static const String SINGLE_PRODUCT = '/partner/product/id/';
+  static const String UPDATE_PRODUCT_QUANTITY = '/partner/product/id/';
+  static const String UPDATE_PRODUCT = '/partner/product/id/';
+  static const String CREATE_PRODUCT = '/partner/product/';
+  static const String UPLOAD_PRODUCT_IMAGE = '/partner/product/upload';
+  static const String UPLOAD_REG_DOC_IMAGE =
+      '/partner/partner-registration/upload';
   static const String RECORD_LOCATION_URI =
       '/api/v1/delivery-man/record-location-data';
   static const String PROFILE_URI = '/user/id/';
@@ -32,12 +44,17 @@ class AppConstants {
   static const String ORDER_DETAILS_URI =
       '/api/v1/delivery-man/order-details?token=';
   static const String ACCEPT_ORDER_URI = '/api/v1/delivery-man/accept-order';
+  static const String CARSPA_ACCEPT_ORDER_URI = '/partner/carspa-order/status/';
+  static const String MECHANICS_ACCEPT_ORDER_URI =
+      '/partner/mechanical-order/status/';
+  static const String QUICKHELP_ACCEPT_ORDER_URI =
+      '/partner/quickhelp-order/status/';
+  static const String SHOPPE_ACCEPT_ORDER_URI = '/partner/order/id/';
   static const String ACTIVE_STATUS_URI =
       '/api/v1/delivery-man/update-active-status';
   static const String UPDATE_PROFILE_URI =
       '/api/v1/delivery-man/update-profile';
-  static const String NOTIFICATION_URI =
-      '/api/v1/delivery-man/notifications?token=';
+  static const String NOTIFICATION_URI = '/notification/user/all?type=';
   static const String DRIVER_REMOVE =
       '/api/v1/delivery-man/remove-account?token=';
   static const String CURRENT_ORDER_URI = '/api/v1/delivery-man/order?token=';
@@ -50,6 +67,7 @@ class AppConstants {
   static const String LOGIN_USER_PASSWORD = 'login_user_password';
   static const String LOGIN_USER_NAME = 'login_user_name';
   static const String USER_NAME = 'user_name';
+  static const String USER_ID = 'user_id';
   static const String USER_ADDRESS = 'user_address';
   static const String USER_NUMBER = 'user_number';
   static const String USER_EMAIL = 'user_email';

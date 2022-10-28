@@ -1,4 +1,5 @@
-import 'package:carclenx_vendor_app/data/model/response/service_order_list_model.dart';
+import 'package:carclenx_vendor_app/controller/order_controller.dart';
+import 'package:carclenx_vendor_app/data/model/response/order_model.dart';
 import 'package:carclenx_vendor_app/helper/route_helper.dart';
 import 'package:carclenx_vendor_app/util/dimensions.dart';
 import 'package:carclenx_vendor_app/util/images.dart';
@@ -105,10 +106,10 @@ class OrderWidget extends StatelessWidget {
           Expanded(
               child: TextButton(
             onPressed: () {
+              Get.find<OrderController>().setServiceSelectedOrder(orderModel);
               Get.toNamed(
-                RouteHelper.orderDetails,
+                RouteHelper.serviceOrderDetails,
                 arguments: {
-                  'orderModel': orderModel,
                   'isRunningOrder': isRunningOrder,
                   'orderIndex': orderIndex
                 },

@@ -1,5 +1,7 @@
-import 'package:carclenx_vendor_app/controller/my_tab_controller.dart';
+import 'package:carclenx_vendor_app/controller/active_order_tab_controller.dart';
 import 'package:carclenx_vendor_app/controller/order_controller.dart';
+import 'package:carclenx_vendor_app/controller/order_history_tab_controller.dart';
+import 'package:carclenx_vendor_app/helper/enums.dart';
 import 'package:carclenx_vendor_app/util/dimensions.dart';
 import 'package:carclenx_vendor_app/util/images.dart';
 import 'package:carclenx_vendor_app/util/styles.dart';
@@ -9,14 +11,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class OrderScreen extends StatelessWidget {
-  final MyTabController _tabx = Get.put(MyTabController(length: 4));
-  double tab_height = 0;
+  final OrderHistoryTabController _tabx =
+      Get.put(OrderHistoryTabController(length: 4));
+  double tabHeight = 0;
   @override
   Widget build(BuildContext context) {
-    var height = Get.height;
     var width = Get.width;
-    tab_height = width * 0.2;
-    return GetBuilder<MyTabController>(builder: (_tbx) {
+    tabHeight = width * 0.2;
+    return GetBuilder<OrderHistoryTabController>(builder: (_tbx) {
       return Scaffold(
         appBar: AppBar(
           title: Text('order_history'.tr,
@@ -27,9 +29,9 @@ class OrderScreen extends StatelessWidget {
           // backgroundColor: Theme.of(context).cardColor,
           elevation: 0,
           bottom: PreferredSize(
-            preferredSize: Size(100, tab_height),
+            preferredSize: Size(100, tabHeight),
             child: Container(
-              height: tab_height,
+              height: tabHeight,
               child: TabBar(
                   isScrollable: false,
                   controller: _tabx.tabController,
@@ -41,12 +43,9 @@ class OrderScreen extends StatelessWidget {
                         topLeft: Radius.circular(5),
                         topRight: Radius.circular(5)),
                   ),
-                  onTap: (value) {
-                    _tabx.setTabIndex(value);
-                  },
                   tabs: [
                     Container(
-                      height: tab_height,
+                      height: tabHeight,
                       child: Tab(
                         child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -71,7 +70,7 @@ class OrderScreen extends StatelessWidget {
                       ),
                     ),
                     Container(
-                      height: tab_height,
+                      height: tabHeight,
                       child: Tab(
                         child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -96,7 +95,7 @@ class OrderScreen extends StatelessWidget {
                       ),
                     ),
                     Container(
-                      height: tab_height,
+                      height: tabHeight,
                       child: Tab(
                         child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -121,7 +120,7 @@ class OrderScreen extends StatelessWidget {
                       ),
                     ),
                     Container(
-                      height: tab_height,
+                      height: tabHeight,
                       child: Tab(
                         child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -152,12 +151,11 @@ class OrderScreen extends StatelessWidget {
         ),
         body: TabBarView(
           controller: _tabx.tabController,
-          physics: NeverScrollableScrollPhysics(),
           children: [
-            OrderHistoryTabPage(category: 'car_shoppe'.tr),
-            OrderHistoryTabPage(category: 'car_spa'.tr),
-            OrderHistoryTabPage(category: 'car_mechanical'.tr),
-            OrderHistoryTabPage(category: 'quick_help'.tr)
+            OrderHistoryTabPage(category: CategoryType.CAR_SHOPPE),
+            OrderHistoryTabPage(category: CategoryType.CAR_SPA),
+            OrderHistoryTabPage(category: CategoryType.CAR_MECHANIC),
+            OrderHistoryTabPage(category: CategoryType.QUICK_HELP)
           ],
         ),
       );

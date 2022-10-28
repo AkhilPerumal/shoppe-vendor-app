@@ -1,15 +1,21 @@
+import 'package:carclenx_vendor_app/controller/active_order_tab_controller.dart';
 import 'package:carclenx_vendor_app/controller/auth_controller.dart';
 import 'package:carclenx_vendor_app/controller/order_controller.dart';
+import 'package:carclenx_vendor_app/controller/order_history_tab_controller.dart';
+import 'package:carclenx_vendor_app/controller/shoppe_controller.dart';
+import 'package:carclenx_vendor_app/helper/enums.dart';
 import 'package:carclenx_vendor_app/helper/notification_helper.dart';
 import 'package:carclenx_vendor_app/helper/route_helper.dart';
 import 'package:carclenx_vendor_app/util/dimensions.dart';
+import 'package:carclenx_vendor_app/util/images.dart';
 import 'package:carclenx_vendor_app/view/base/custom_alert_dialog.dart';
 import 'package:carclenx_vendor_app/view/screens/dashboard/widget/bottom_nav_item.dart';
 import 'package:carclenx_vendor_app/view/screens/dashboard/widget/new_request_dialog.dart';
 import 'package:carclenx_vendor_app/view/screens/home/home_screen.dart';
+import 'package:carclenx_vendor_app/view/screens/order/order_request_screen.dart';
 import 'package:carclenx_vendor_app/view/screens/profile/profile_screen.dart';
-import 'package:carclenx_vendor_app/view/screens/request/order_request_screen.dart';
 import 'package:carclenx_vendor_app/view/screens/order/order_screen.dart';
+import 'package:carclenx_vendor_app/view/screens/shoppe_product_manage/shoppe_screen.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -29,7 +35,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   int _pageIndex = 0;
   List<Widget> _screens;
   final _channel = const MethodChannel('com.pexa/app_retain');
-  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+  // FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
   //Timer _timer;
   //int _orderCount;
 
@@ -44,44 +50,42 @@ class _DashboardScreenState extends State<DashboardScreen> {
     _screens = [
       HomeScreen(),
       OrderRequestScreen(onTap: () => _setPage(0)),
+      ShoppeScreen(),
       OrderScreen(),
       ProfileScreen(),
     ];
 
-    var androidInitialize = AndroidInitializationSettings('notification_icon');
-    var iOSInitialize = IOSInitializationSettings();
-    var initializationsSettings =
-        InitializationSettings(android: androidInitialize, iOS: iOSInitialize);
-    flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-    flutterLocalNotificationsPlugin.initialize(initializationsSettings);
+    // var androidInitialize = AndroidInitializationSettings('notification_icon');
+    // var iOSInitialize = IOSInitializationSettings();
+    // var initializationsSettings =
+    //     InitializationSettings(android: androidInitialize, iOS: iOSInitialize);
+    // flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    // flutterLocalNotificationsPlugin.initialize(initializationsSettings);
 
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      // if(Get.find<OrderController>().latestOrderList != null) {
-      //   _orderCount = Get.find<OrderController>().latestOrderList.length;
-      // }
-      print("onMessage: ${message.data}");
-      String _type = message.notification.bodyLocKey;
-      String _orderID = message.notification.titleLocKey;
-      if (_type != 'assign' && _type != 'new_order') {
-        NotificationHelper.showNotification(
-            message, flutterLocalNotificationsPlugin, false);
-      }
-      // Get.find<OrderController>().getCurrentOrders();
-      Get.find<OrderController>().getLatestOrders();
-      //Get.find<OrderController>().getAllOrders();
-      if (_type == 'new_order') {
-        //_orderCount = _orderCount + 1;
-        Get.dialog(NewRequestDialog(
-            isRequest: true, onTap: () => _navigateRequestPage()));
-      } else if (_type == 'assign' && _orderID != null && _orderID.isNotEmpty) {
-        Get.dialog(
-            NewRequestDialog(isRequest: false, onTap: () => _setPage(0)));
-      } else if (_type == 'block') {
-        Get.find<AuthController>().clearSharedData();
-        Get.find<AuthController>().stopLocationRecord();
-        Get.offAllNamed(RouteHelper.getSignInRoute());
-      }
-    });
+    // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    //   // if(Get.find<OrderController>().latestOrderList != null) {
+    //   //   _orderCount = Get.find<OrderController>().latestOrderList.length;
+    //   // }
+    //   print("onMessage: ${message.data}");
+    //   String _type = message.notification.bodyLocKey;
+    //   String _orderID = message.notification.titleLocKey;
+    //   if (_type != 'assign' && _type != 'new_order') {
+    //     NotificationHelper.showNotification(
+    //         message, flutterLocalNotificationsPlugin, false);
+    //   }
+    //   if (_type == 'new_order') {
+    //     //_orderCount = _orderCount + 1;
+    //     Get.dialog(NewRequestDialog(
+    //         isRequest: true, onTap: () => _navigateRequestPage()));
+    //   } else if (_type == 'assign' && _orderID != null && _orderID.isNotEmpty) {
+    //     Get.dialog(
+    //         NewRequestDialog(isRequest: false, onTap: () => _setPage(0)));
+    //   } else if (_type == 'block') {
+    //     Get.find<AuthController>().clearSharedData();
+    //     Get.find<AuthController>().stopLocationRecord();
+    //     Get.offAllNamed(RouteHelper.getSignInRoute());
+    //   }
+    // });
 
     // _timer = Timer.periodic(Duration(seconds: 30), (timer) async {
     //   await Get.find<OrderController>().getLatestOrders();
@@ -137,36 +141,65 @@ class _DashboardScreenState extends State<DashboardScreen> {
         }
       },
       child: Scaffold(
-        bottomNavigationBar: GetPlatform.isDesktop
-            ? SizedBox()
-            : BottomAppBar(
+        floatingActionButton: !GetPlatform.isMobile
+            ? null
+            : FloatingActionButton(
                 elevation: 5,
-                notchMargin: 5,
-                shape: CircularNotchedRectangle(),
-                child: Padding(
-                  padding: EdgeInsets.all(Dimensions.PADDING_SIZE_EXTRA_SMALL),
-                  child: Row(children: [
-                    BottomNavItem(
-                        iconData: Icons.home,
-                        isSelected: _pageIndex == 0,
-                        onTap: () => _setPage(0)),
-                    BottomNavItem(
-                        iconData: Icons.list_alt_rounded,
-                        isSelected: _pageIndex == 1,
-                        onTap: () {
-                          _navigateRequestPage();
-                        }),
-                    BottomNavItem(
-                        iconData: Icons.history,
-                        isSelected: _pageIndex == 2,
-                        onTap: () => _setPage(2)),
-                    BottomNavItem(
-                        iconData: Icons.person,
-                        isSelected: _pageIndex == 3,
-                        onTap: () => _setPage(3)),
-                  ]),
+                backgroundColor: _pageIndex == 2
+                    ? Theme.of(context).primaryColor
+                    : Theme.of(context).cardColor,
+                onPressed: () {
+                  Get.find<ShoppeController>().getMyProducts("1");
+                  _setPage(2);
+                },
+                child: Icon(
+                  Icons.add_business_rounded,
+                  size: 20,
+                  color: _pageIndex == 2
+                      ? Theme.of(context).cardColor
+                      : Theme.of(context).disabledColor,
                 ),
               ),
+        floatingActionButtonLocation: !GetPlatform.isMobile
+            ? null
+            : FloatingActionButtonLocation.centerDocked,
+        bottomNavigationBar: BottomAppBar(
+          elevation: 5,
+          notchMargin: 5,
+          shape: CircularNotchedRectangle(),
+          child: Padding(
+            padding: EdgeInsets.all(Dimensions.PADDING_SIZE_EXTRA_SMALL),
+            child: Row(children: [
+              BottomNavItem(
+                  iconData: Icons.home,
+                  isSelected: _pageIndex == 0,
+                  onTap: () => _setPage(0)),
+              BottomNavItem(
+                  iconData: Icons.list_alt_rounded,
+                  isSelected: _pageIndex == 1,
+                  onTap: () {
+                    Get.find<ActiveOrderTabController>()
+                        .setTabIndex(index: 0, subTabType: SubTabType.NEW);
+                    _setPage(1);
+                    // _navigateRequestPage();
+                  }),
+              Expanded(child: SizedBox()),
+              BottomNavItem(
+                  iconData: Icons.history,
+                  isSelected: _pageIndex == 3,
+                  onTap: () {
+                    Get.find<OrderHistoryTabController>().setTabIndex(
+                        index: 0, subTabType: SubTabType.COMPELTED);
+
+                    _setPage(3);
+                  }),
+              BottomNavItem(
+                  iconData: Icons.person,
+                  isSelected: _pageIndex == 4,
+                  onTap: () => _setPage(4)),
+            ]),
+          ),
+        ),
         body: PageView.builder(
           controller: _pageController,
           itemCount: _screens.length,

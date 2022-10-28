@@ -39,7 +39,10 @@ class NotificationDialog extends StatelessWidget {
                 borderRadius: BorderRadius.circular(Dimensions.RADIUS_SMALL),
                 child: FadeInImage.assetNetwork(
                   placeholder: Images.placeholder,
-                  image: '/${notificationModel.image}',
+                  image: notificationModel.thumbUrl != null &&
+                          notificationModel.thumbUrl.length > 0
+                      ? '${notificationModel.thumbUrl[0]}'
+                      : '',
                   height: 150,
                   width: MediaQuery.of(context).size.width,
                   fit: BoxFit.cover,

@@ -40,4 +40,9 @@ class PriceConverter {
       String price, String discount, String discountType) {
     return '$discount${discountType == 'percent' ? '%' : '₹'} OFF';
   }
+
+  static String percentageCalculationWithDiscountAmount(
+      double price, double discountPrice) {
+    return ((price - discountPrice) / price * 100).toString();
+  }
 }

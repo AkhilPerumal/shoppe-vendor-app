@@ -1,11 +1,8 @@
-import 'dart:async';
-
 import 'package:carclenx_vendor_app/controller/auth_controller.dart';
 import 'package:carclenx_vendor_app/controller/localization_controller.dart';
 import 'package:carclenx_vendor_app/controller/order_controller.dart';
-import 'package:carclenx_vendor_app/controller/splash_controller.dart';
-import 'package:carclenx_vendor_app/data/model/response/service_order_list_model.dart';
-import 'package:carclenx_vendor_app/helper/date_converter.dart';
+import 'package:carclenx_vendor_app/helper/enums.dart';
+import 'package:carclenx_vendor_app/helper/price_converter.dart';
 import 'package:carclenx_vendor_app/util/dimensions.dart';
 import 'package:carclenx_vendor_app/util/images.dart';
 import 'package:carclenx_vendor_app/util/styles.dart';
@@ -13,88 +10,42 @@ import 'package:carclenx_vendor_app/view/base/confirmation_dialog.dart';
 import 'package:carclenx_vendor_app/view/base/custom_app_bar.dart';
 import 'package:carclenx_vendor_app/view/base/custom_button.dart';
 import 'package:carclenx_vendor_app/view/base/custom_snackbar.dart';
-import 'package:carclenx_vendor_app/view/screens/order/widget/order_product_widget.dart';
-import 'package:carclenx_vendor_app/view/screens/order/widget/verify_delivery_sheet.dart';
 import 'package:carclenx_vendor_app/view/screens/order/widget/info_card.dart';
-import 'package:carclenx_vendor_app/view/screens/order/widget/slider_button.dart';
+import 'package:carclenx_vendor_app/view/base/slider_button.dart';
+import 'package:carclenx_vendor_app/view/screens/service_order/widget/verify_check_list_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class OrderDetailsScreen extends StatefulWidget {
-  final OrderModel orderModel;
+class OrderDetailsScreen extends StatelessWidget {
   final bool isRunningOrder;
   final int orderIndex;
   OrderDetailsScreen(
-      {@required this.orderModel,
-      @required this.isRunningOrder,
-      @required this.orderIndex});
-
-  @override
-  State<OrderDetailsScreen> createState() => _OrderDetailsScreenState();
-}
-
-class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
-  Timer _timer;
-  OrderModel orderDetails;
-  @override
-  void initState() {
-    super.initState();
-    orderDetails = widget.orderModel;
-    // Get.find<OrderController>().setOrder(widget.orderModel);
-    // Get.find<OrderController>()
-    //     .getOrderDetails(Get.find<OrderController>().orderModel.orderId);
-
-    _timer = Timer.periodic(Duration(seconds: 10), (timer) {
-      // Get.find<OrderController>()
-      //     .getOrderWithId(Get.find<OrderController>().orderModel.orderId);
-    });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _timer?.cancel();
-  }
+      {@required this.isRunningOrder, @required this.orderIndex});
 
   @override
   Widget build(BuildContext context) {
-    bool _cancelPermission = false;
-    // bool _cancelPermission =
-    //     Get.find<SplashController>().configModel.canceledByDeliveryman;
-
     return Scaffold(
       backgroundColor: Theme.of(context).cardColor,
       appBar: CustomAppBar(title: 'order_details'.tr),
       body: Padding(
         padding: EdgeInsets.all(Dimensions.PADDING_SIZE_SMALL),
         child: GetBuilder<OrderController>(builder: (orderController) {
-          OrderModel controllerOrderModel = widget.orderModel;
-
-          bool _restConfModel = false;
-          // bool _restConfModel =
-          //     Get.find<SplashController>().configModel.orderConfirmationModel !=
-          //         'deliveryman';
-          bool _showBottomView = controllerOrderModel.status == 'accepted' ||
-              controllerOrderModel.status == 'confirmed' ||
-              controllerOrderModel.status == 'processing' ||
-              controllerOrderModel.status == 'handover' ||
-              controllerOrderModel.status == 'picked_up' ||
-              widget.isRunningOrder;
-          bool _showSlider = (controllerOrderModel.mode == 'cod'.tr &&
-                  controllerOrderModel.status == 'accepted' &&
-                  !_restConfModel) ||
-              controllerOrderModel.status == 'handover' ||
-              controllerOrderModel.status == 'picked_up';
-          return orderDetails != null
+          bool _showBottomView =
+              orderController.selectedOrder.status != OrderStatus.CANCELLED ||
+                  isRunningOrder;
+          bool _showSlider =
+              orderController.selectedOrder.status == OrderStatus.IN_PROGRESS ||
+                  orderController.selectedOrder.status == OrderStatus.ACCEPTED;
+          return orderController.selectedOrder != null
               ? Column(children: [
                   Expanded(
                       child: SingleChildScrollView(
                     physics: BouncingScrollPhysics(),
                     child: Column(children: [
-                      // DateConverter.isBeforeTime(controllerOrderModel.timeSlot)
-                      //     ? (controllerOrderModel.status != 'delivered' &&
-                      //             controllerOrderModel.status != 'failed' &&
-                      //             controllerOrderModel.status != 'canceled')
+                      // DateConverter.isBeforeTime(orderController.selectedOrder.timeSlot)
+                      //     ? (orderController.selectedOrder.status != 'delivered' &&
+                      //             orderController.selectedOrder.status != 'failed' &&
+                      //             orderController.selectedOrder.status != 'canceled')
                       //         ? Column(children: [
                       //             ClipRRect(
                       //                 borderRadius: BorderRadius.circular(10),
@@ -118,18 +69,18 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                       //             //       children: [
                       //             //         Text(
                       //             //           DateConverter.differenceInMinute(
-                      //             //                       controllerOrderModel
+                      //             //                       orderController.selectedOrder
                       //             //                           .franchiseDeliveryTime,
-                      //             //                       controllerOrderModel
+                      //             //                       orderController.selectedOrder
                       //             //                           .createdAt,
-                      //             //                       controllerOrderModel
+                      //             //                       orderController.selectedOrder
                       //             //                           .processingTime,
-                      //             //                       controllerOrderModel
+                      //             //                       orderController.selectedOrder
                       //             //                           .scheduleAt) <
                       //             //                   5
                       //             //               ? '1 - 5'
-                      //             //               : '${DateConverter.differenceInMinute(controllerOrderModel.franchiseDeliveryTime, controllerOrderModel.createdAt, controllerOrderModel.processingTime, controllerOrderModel.scheduleAt) - 5} '
-                      //             //                   '- ${DateConverter.differenceInMinute(controllerOrderModel.franchiseDeliveryTime, controllerOrderModel.createdAt, controllerOrderModel.processingTime, controllerOrderModel.scheduleAt)}',
+                      //             //               : '${DateConverter.differenceInMinute(orderController.selectedOrder.franchiseDeliveryTime, orderController.selectedOrder.createdAt, orderController.selectedOrder.processingTime, orderController.selectedOrder.scheduleAt) - 5} '
+                      //             //                   '- ${DateConverter.differenceInMinute(orderController.selectedOrder.franchiseDeliveryTime, orderController.selectedOrder.createdAt, orderController.selectedOrder.processingTime, orderController.selectedOrder.scheduleAt)}',
                       //             //           style: robotoBold.copyWith(
                       //             //               fontSize: Dimensions
                       //             //                   .FONT_SIZE_EXTRA_LARGE),
@@ -154,7 +105,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                       Row(children: [
                         Text('${'order_id'.tr}:', style: robotoRegular),
                         SizedBox(width: Dimensions.PADDING_SIZE_EXTRA_SMALL),
-                        Text(controllerOrderModel.orderId.toString(),
+                        Text(orderController.selectedOrder.orderId.toString(),
                             style: robotoMedium),
                         SizedBox(width: Dimensions.PADDING_SIZE_EXTRA_SMALL),
                         Expanded(child: SizedBox()),
@@ -165,23 +116,32 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                 shape: BoxShape.circle, color: Colors.green)),
                         SizedBox(width: Dimensions.PADDING_SIZE_EXTRA_SMALL),
                         Text(
-                          controllerOrderModel.status.tr,
+                          EnumConverter.orderStatusToTitle(
+                                  orderController.selectedOrder.status)
+                              .toString()
+                              .toUpperCase(),
                           style: robotoRegular,
                         ),
                       ]),
                       SizedBox(height: Dimensions.PADDING_SIZE_LARGE),
                       InfoCard(
                         title: 'customer_contact_details'.tr,
-                        addressModel: controllerOrderModel.address,
+                        addressModel: orderController.selectedOrder.address,
                         isDelivery: true,
                         image: '',
-                        name: controllerOrderModel.address.name,
-                        phone: controllerOrderModel.address.mobile.toString(),
-                        latitude:
-                            controllerOrderModel.address.location[0].toString(),
-                        longitude:
-                            controllerOrderModel.address.location[1].toString(),
-                        showButton: controllerOrderModel.status != 'delivered',
+                        name: orderController.selectedOrder.address.name,
+                        phone: orderController.selectedOrder.address.mobile
+                            .toString(),
+                        latitude: orderController
+                            .selectedOrder.address.location[0]
+                            .toString(),
+                        longitude: orderController
+                            .selectedOrder.address.location[1]
+                            .toString(),
+                        showButton: orderController.selectedOrder.status !=
+                                OrderStatus.COMPLETED &&
+                            orderController.selectedOrder.status !=
+                                OrderStatus.CANCELLED,
                       ),
                       SizedBox(height: Dimensions.PADDING_SIZE_LARGE),
                       Column(
@@ -192,338 +152,399 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                   vertical:
                                       Dimensions.PADDING_SIZE_EXTRA_SMALL),
                               child: Row(children: [
-                                Text('${'item'.tr}:', style: robotoRegular),
-                                SizedBox(
-                                    width: Dimensions.PADDING_SIZE_EXTRA_SMALL),
-                                Text(
-                                  orderDetails.addOn.length.toString(),
-                                  style: robotoMedium.copyWith(
-                                      color: Theme.of(context).primaryColor),
-                                ),
-                                Expanded(child: SizedBox()),
-                                Container(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: Dimensions.PADDING_SIZE_SMALL,
-                                      vertical:
-                                          Dimensions.PADDING_SIZE_EXTRA_SMALL),
-                                  decoration: BoxDecoration(
-                                      color: Theme.of(context).primaryColor,
-                                      borderRadius: BorderRadius.circular(5)),
-                                  child: Text(
-                                    controllerOrderModel.paymentStatus ==
-                                            'cod'.tr
-                                        ? 'cod'.tr
-                                        : controllerOrderModel.paymentStatus ==
-                                                'wallet'
-                                            ? 'wallet_payment'.tr
-                                            : 'digitally_paid'.tr,
-                                    style: robotoRegular.copyWith(
-                                        fontSize:
-                                            Dimensions.FONT_SIZE_EXTRA_SMALL,
-                                        color: Theme.of(context).cardColor),
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(
+                                      Dimensions.RADIUS_SMALL),
+                                  child: FadeInImage.assetNetwork(
+                                    placeholder: Images.placeholder,
+                                    height: 50,
+                                    width: 50,
+                                    fit: BoxFit.cover,
+                                    image: orderController
+                                        .selectedOrder.serviceId.thumbURL[0],
+                                    imageErrorBuilder: (c, o, s) => Image.asset(
+                                        Images.placeholder,
+                                        height: 50,
+                                        width: 50,
+                                        fit: BoxFit.cover),
                                   ),
+                                ),
+                                SizedBox(width: Dimensions.PADDING_SIZE_SMALL),
+                                Expanded(
+                                  child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    orderController
+                                                        .selectedOrder
+                                                        .serviceId
+                                                        .name,
+                                                    style: robotoMedium.copyWith(
+                                                        fontSize: Dimensions
+                                                            .FONT_SIZE_SMALL),
+                                                    maxLines: 2,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  ),
+                                                  SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  Text(
+                                                    PriceConverter.convertPrice(
+                                                        orderController
+                                                            .selectedOrder
+                                                            .grandTotal
+                                                            .toDouble()),
+                                                    style: robotoMedium,
+                                                  ),
+                                                ],
+                                              ),
+                                              Column(
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      Text('Addon :',
+                                                          style: robotoRegular
+                                                              .copyWith(
+                                                                  fontSize:
+                                                                      Dimensions
+                                                                          .FONT_SIZE_SMALL)),
+                                                      Text(
+                                                        orderController
+                                                            .selectedOrder
+                                                            .addOn
+                                                            .length
+                                                            .toString(),
+                                                        style: robotoMedium.copyWith(
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .primaryColor,
+                                                            fontSize: Dimensions
+                                                                .FONT_SIZE_SMALL),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  Container(
+                                                    padding: EdgeInsets.symmetric(
+                                                        horizontal: Dimensions
+                                                            .PADDING_SIZE_SMALL,
+                                                        vertical: Dimensions
+                                                            .PADDING_SIZE_EXTRA_SMALL),
+                                                    decoration: BoxDecoration(
+                                                        color: Theme.of(context)
+                                                            .primaryColor,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(5)),
+                                                    child: Text(
+                                                      orderController
+                                                                  .selectedOrder
+                                                                  .paymentStatus ==
+                                                              'cod'.tr
+                                                          ? 'cod'.tr
+                                                          : orderController
+                                                                      .selectedOrder
+                                                                      .paymentStatus ==
+                                                                  'wallet'
+                                                              ? 'wallet_payment'
+                                                                  .tr
+                                                              : 'digitally_paid'
+                                                                  .tr,
+                                                      style: robotoRegular.copyWith(
+                                                          fontSize: Dimensions
+                                                              .FONT_SIZE_EXTRA_SMALL,
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .cardColor),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ]),
+                                        SizedBox(
+                                            height: Dimensions
+                                                .PADDING_SIZE_EXTRA_SMALL),
+                                      ]),
                                 ),
                               ]),
                             ),
                             Divider(height: Dimensions.PADDING_SIZE_LARGE),
                             SizedBox(height: Dimensions.PADDING_SIZE_SMALL),
-                            ListView.builder(
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              itemCount: controllerOrderModel.addOn.length,
-                              itemBuilder: (context, index) {
-                                return OrderProductWidget(
-                                    order: controllerOrderModel);
-                              },
-                            ),
-                            Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text('additional_note'.tr,
-                                      style: robotoRegular),
-                                  SizedBox(
-                                      height: Dimensions.PADDING_SIZE_SMALL),
-                                  Container(
-                                    width: 1170,
-                                    padding: EdgeInsets.all(
-                                        Dimensions.PADDING_SIZE_SMALL),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5),
-                                      border: Border.all(
-                                          width: 1,
-                                          color:
-                                              Theme.of(context).disabledColor),
-                                    ),
-                                    child: Text(
-                                      "Description note",
-                                      style: robotoRegular.copyWith(
-                                          fontSize: Dimensions.FONT_SIZE_SMALL,
-                                          color:
-                                              Theme.of(context).disabledColor),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                      height: Dimensions.PADDING_SIZE_LARGE),
-                                ]),
+                            ListView.separated(
+                                separatorBuilder:
+                                    (BuildContext context, int index) =>
+                                        const Divider(),
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                itemCount:
+                                    orderController.selectedOrder.addOn.length,
+                                itemBuilder: (context, index) {
+                                  if (orderController.selectedOrder.status ==
+                                      OrderStatus.IN_PROGRESS) {
+                                    return CheckboxListTile(
+                                      value: orderController.selectedOrder
+                                          .addOn[index].isSelected,
+                                      onChanged: ((value) {
+                                        orderController.updateAddOnStatus(
+                                            selectedIndex: index);
+                                      }),
+                                      title: Text(orderController
+                                          .selectedOrder.addOn[index].name
+                                          .toString()),
+                                      subtitle: Text(
+                                          PriceConverter.convertPrice(
+                                              orderController.selectedOrder
+                                                  .addOn[index].price
+                                                  .toDouble())),
+                                    );
+                                  } else {
+                                    return ListTile(
+                                      leading: Icon(Icons.radio_button_checked),
+                                      title: Text(orderController
+                                          .selectedOrder.addOn[index].name
+                                          .toString()),
+                                      subtitle: Text(
+                                          PriceConverter.convertPrice(
+                                              orderController.selectedOrder
+                                                  .addOn[index].price
+                                                  .toDouble())),
+                                    );
+                                  }
+                                }),
                           ]),
                     ]),
                   )),
                   _showBottomView
-                      ? ((controllerOrderModel.status == 'accepted' &&
-                                  (controllerOrderModel.paymentStatus !=
-                                          'cash_on_delivery' ||
-                                      _restConfModel)) ||
-                              controllerOrderModel.status == 'processing' ||
-                              controllerOrderModel.status == 'confirmed')
-                          ? Container(
-                              padding: EdgeInsets.all(
-                                  Dimensions.PADDING_SIZE_DEFAULT),
-                              width: MediaQuery.of(context).size.width,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(
-                                    Dimensions.RADIUS_SMALL),
-                                border: Border.all(width: 1),
-                              ),
-                              alignment: Alignment.center,
-                              child: Text(
-                                controllerOrderModel.status == 'processing'
-                                    ? 'food_is_preparing'.tr
-                                    : 'food_waiting_for_cook'.tr,
-                                style: robotoMedium,
-                              ),
-                            )
+                      ? orderController.selectedOrder.status ==
+                                  OrderStatus.ACTIVE ||
+                              orderController.selectedOrder.status ==
+                                  OrderStatus.REASSIGNED
+                          ? Row(children: [
+                              Expanded(
+                                  child: TextButton(
+                                onPressed: () => Get.dialog(
+                                    ConfirmationDialog(
+                                      icon: Images.warning,
+                                      title: 'are_you_sure_to_ignore'.tr,
+                                      description:
+                                          'you_want_to_ignore_this_order'.tr,
+                                      onYesPressed: () {
+                                        orderController
+                                            .serviceOrderStatusUpdate(
+                                                orderID: orderController
+                                                    .selectedOrder.id,
+                                                orderModel: orderController
+                                                    .selectedOrder,
+                                                status: OrderStatus.REJECTED)
+                                            .then((isSuccess) {
+                                          if (isSuccess) {
+                                            Get.back();
+                                            orderController.selectedOrder
+                                                .status = OrderStatus.REJECTED;
+                                            orderController
+                                                .setServiceSelectedOrder(
+                                                    orderController
+                                                        .selectedOrder);
+                                            showCustomSnackBar(
+                                                'order_ignored'.tr,
+                                                isError: false);
+                                          } else {
+                                            Get.back();
+                                            showCustomSnackBar(
+                                                'Something went wrong!',
+                                                isError: false);
+                                          }
+                                        });
+                                      },
+                                    ),
+                                    barrierDismissible: false),
+                                style: TextButton.styleFrom(
+                                  minimumSize: Size(1170, 40),
+                                  padding: EdgeInsets.zero,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(
+                                        Dimensions.RADIUS_SMALL),
+                                    side: BorderSide(
+                                        width: 1,
+                                        color: Theme.of(context)
+                                            .textTheme
+                                            .bodyText1
+                                            .color),
+                                  ),
+                                ),
+                                child: Text('ignore'.tr,
+                                    textAlign: TextAlign.center,
+                                    style: robotoRegular.copyWith(
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .bodyText1
+                                          .color,
+                                      fontSize: Dimensions.FONT_SIZE_LARGE,
+                                    )),
+                              )),
+                              SizedBox(width: Dimensions.PADDING_SIZE_SMALL),
+                              Expanded(
+                                  child: CustomButton(
+                                height: 40,
+                                buttonText: 'accept'.tr,
+                                onPressed: () => Get.dialog(
+                                    ConfirmationDialog(
+                                      icon: Images.warning,
+                                      title: 'are_you_sure_to_accept'.tr,
+                                      description:
+                                          'you_want_to_accept_this_order'.tr,
+                                      onYesPressed: () {
+                                        orderController
+                                            .serviceOrderStatusUpdate(
+                                                orderID: orderController
+                                                    .selectedOrder.id,
+                                                orderModel: orderController
+                                                    .selectedOrder,
+                                                status: orderController
+                                                                .selectedOrder
+                                                                .status ==
+                                                            OrderStatus
+                                                                .ACTIVE ||
+                                                        orderController
+                                                                .selectedOrder
+                                                                .status ==
+                                                            OrderStatus
+                                                                .REASSIGNED
+                                                    ? OrderStatus.ACCEPTED
+                                                    : OrderStatus.COMPLETED)
+                                            .then((isSuccess) {
+                                          if (isSuccess) {
+                                            orderController
+                                                .setServiceSelectedOrder(
+                                                    orderController
+                                                        .selectedOrder);
+                                          } else {
+                                            showCustomSnackBar(
+                                                'Something went wrong!',
+                                                isError: false);
+                                          }
+                                        });
+                                      },
+                                    ),
+                                    barrierDismissible: false),
+                              )),
+                            ])
                           : _showSlider
-                              ? (controllerOrderModel.paymentStatus ==
-                                          'cash_on_delivery' &&
-                                      controllerOrderModel.status ==
-                                          'accepted' &&
-                                      !_restConfModel &&
-                                      _cancelPermission)
-                                  ? Row(children: [
-                                      Expanded(
-                                          child: TextButton(
-                                        onPressed: () => Get.dialog(
-                                            ConfirmationDialog(
-                                              icon: Images.warning,
-                                              title:
-                                                  'are_you_sure_to_cancel'.tr,
-                                              description:
-                                                  'you_want_to_cancel_this_order'
-                                                      .tr,
-                                              onYesPressed: () {
-                                                orderController
-                                                    .updateOrderStatus(
-                                                        widget.orderIndex,
-                                                        'canceled',
-                                                        back: true)
-                                                    .then((success) {
-                                                  if (success) {
-                                                    Get.find<AuthController>()
-                                                        .getProfile();
-                                                    // Get.find<OrderController>()
-                                                    //     .getCurrentOrders();
-                                                  }
-                                                });
-                                              },
-                                            ),
-                                            barrierDismissible: false),
-                                        style: TextButton.styleFrom(
-                                          minimumSize: Size(1170, 40),
-                                          padding: EdgeInsets.zero,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                                Dimensions.RADIUS_SMALL),
-                                            side: BorderSide(
-                                                width: 1,
-                                                color: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyText1
-                                                    .color),
-                                          ),
-                                        ),
-                                        child: Text('cancel'.tr,
-                                            textAlign: TextAlign.center,
-                                            style: robotoRegular.copyWith(
-                                              color: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyText1
-                                                  .color,
-                                              fontSize:
-                                                  Dimensions.FONT_SIZE_LARGE,
-                                            )),
-                                      )),
-                                      SizedBox(
-                                          width: Dimensions.PADDING_SIZE_SMALL),
-                                      Expanded(
+                              ? (orderController.selectedOrder.status ==
+                                      OrderStatus.ACCEPTED)
+                                  ? Container(
+                                      height: 40,
+                                      width: Get.width * 0.9,
+                                      child: Expanded(
                                           child: CustomButton(
-                                        buttonText: 'confirm'.tr,
+                                        buttonText: 'start'.tr,
                                         height: 40,
                                         onPressed: () {
                                           Get.dialog(
                                               ConfirmationDialog(
-                                                icon: Images.warning,
-                                                title: 'are_you_sure_to_confirm'
-                                                    .tr,
-                                                description:
-                                                    'you_want_to_confirm_this_order'
-                                                        .tr,
-                                                onYesPressed: () {
-                                                  orderController
-                                                      .updateOrderStatus(
-                                                          widget.orderIndex,
-                                                          'confirmed',
-                                                          back: true)
-                                                      .then((success) {
-                                                    if (success) {
-                                                      Get.find<AuthController>()
-                                                          .getProfile();
-                                                      // Get.find<
-                                                      //         OrderController>()
-                                                      //     .getCurrentOrders();
-                                                    }
-                                                  });
-                                                },
-                                              ),
+                                                  icon: Images.warning,
+                                                  title: 'are_you_sure_to_start'
+                                                      .tr,
+                                                  description:
+                                                      'order_start_alert_description'
+                                                          .tr,
+                                                  onYesPressed: () {
+                                                    orderController
+                                                        .serviceOrderStatusUpdate(
+                                                            orderID:
+                                                                orderController
+                                                                    .selectedOrder
+                                                                    .id,
+                                                            orderModel:
+                                                                orderController
+                                                                    .selectedOrder,
+                                                            status: OrderStatus
+                                                                .IN_PROGRESS)
+                                                        .then((isSuccess) {
+                                                      if (isSuccess) {
+                                                        orderController
+                                                                .selectedOrder
+                                                                .status =
+                                                            OrderStatus
+                                                                .IN_PROGRESS;
+                                                        orderController
+                                                            .setServiceSelectedOrder(
+                                                                orderController
+                                                                    .selectedOrder);
+                                                      } else {
+                                                        showCustomSnackBar(
+                                                            'Something went wrong!',
+                                                            isError: false);
+                                                      }
+                                                    });
+                                                  }),
                                               barrierDismissible: false);
                                         },
                                       )),
-                                    ])
-                                  : SliderButton(
-                                      action: () {
-                                        if (controllerOrderModel
-                                                    .paymentStatus ==
-                                                'cash_on_delivery' &&
-                                            controllerOrderModel.status ==
-                                                'accepted' &&
-                                            !_restConfModel) {
-                                          Get.dialog(
-                                              ConfirmationDialog(
-                                                icon: Images.warning,
-                                                title: 'are_you_sure_to_confirm'
-                                                    .tr,
-                                                description:
-                                                    'you_want_to_confirm_this_order'
-                                                        .tr,
-                                                onYesPressed: () {
-                                                  orderController
-                                                      .updateOrderStatus(
-                                                          widget.orderIndex,
-                                                          'confirmed',
-                                                          back: true)
-                                                      .then((success) {
-                                                    if (success) {
-                                                      Get.find<AuthController>()
-                                                          .getProfile();
-                                                      // Get.find<
-                                                      //         OrderController>()
-                                                      //     .getCurrentOrders();
-                                                    }
-                                                  });
-                                                },
-                                              ),
-                                              barrierDismissible: false);
-                                        } else if (controllerOrderModel
-                                                .status ==
-                                            'picked_up') {
-                                          if (controllerOrderModel
-                                                  .paymentStatus ==
-                                              'cash_on_delivery') {
-                                            Get.bottomSheet(
-                                                VerifyDeliverySheet(
-                                                  orderIndex: widget.orderIndex,
-                                                  verify: true,
-                                                  orderAmount:
-                                                      controllerOrderModel
-                                                          .grandTotal
-                                                          .toDouble(),
-                                                  cod: controllerOrderModel
-                                                          .paymentStatus ==
-                                                      'cash_on_delivery',
-                                                ),
-                                                isScrollControlled: true);
-                                          } else {
-                                            Get.find<OrderController>()
-                                                .updateOrderStatus(
-                                                    widget.orderIndex,
-                                                    'delivered')
-                                                .then((success) {
-                                              if (success) {
-                                                Get.find<AuthController>()
-                                                    .getProfile();
-                                                // Get.find<OrderController>()
-                                                //     .getCurrentOrders();
-                                              }
-                                            });
-                                          }
-                                        } else if (controllerOrderModel
-                                                .status ==
-                                            'handover') {
-                                          if (Get.find<AuthController>()
-                                              .userModel
-                                              .isActive) {
-                                            Get.find<OrderController>()
-                                                .updateOrderStatus(
-                                                    widget.orderIndex,
-                                                    'picked_up')
-                                                .then((success) {
-                                              if (success) {
-                                                Get.find<AuthController>()
-                                                    .getProfile();
-                                                // Get.find<OrderController>()
-                                                //     .getCurrentOrders();
-                                              }
-                                            });
-                                          } else {
-                                            showCustomSnackBar(
-                                                'make_yourself_online_first'
-                                                    .tr);
-                                          }
-                                        }
-                                      },
-                                      label: Text(
-                                        (controllerOrderModel.paymentStatus ==
-                                                    'cash_on_delivery' &&
-                                                controllerOrderModel.status ==
-                                                    'accepted' &&
-                                                !_restConfModel)
-                                            ? 'swipe_to_confirm_order'.tr
-                                            : controllerOrderModel.status ==
-                                                    'picked_up'
-                                                ? 'swipe_to_deliver_order'.tr
-                                                : controllerOrderModel.status ==
-                                                        'handover'
-                                                    ? 'swipe_to_pick_up_order'
-                                                        .tr
-                                                    : '',
-                                        style: robotoMedium.copyWith(
-                                            fontSize:
-                                                Dimensions.FONT_SIZE_LARGE,
-                                            color:
-                                                Theme.of(context).primaryColor),
-                                      ),
-                                      dismissThresholds: 0.5,
-                                      dismissible: false,
-                                      shimmer: true,
-                                      width: 1170,
-                                      height: 60,
-                                      buttonSize: 50,
-                                      radius: 10,
-                                      icon: Center(
-                                          child: Icon(
-                                        Get.find<LocalizationController>().isLtr
-                                            ? Icons.double_arrow_sharp
-                                            : Icons.keyboard_arrow_left,
-                                        color: Colors.white,
-                                        size: 20.0,
-                                      )),
-                                      isLtr: Get.find<LocalizationController>()
-                                          .isLtr,
-                                      boxShadow: BoxShadow(blurRadius: 0),
-                                      buttonColor:
-                                          Theme.of(context).primaryColor,
-                                      backgroundColor: Color(0xffF4F7FC),
-                                      baseColor: Theme.of(context).primaryColor,
                                     )
+                                  : orderController.selectedOrder.status ==
+                                          OrderStatus.IN_PROGRESS
+                                      ? SliderButton(
+                                          action: () {
+                                            if (Get.find<AuthController>()
+                                                .userModel
+                                                .isActive) {
+                                              Get.bottomSheet(
+                                                  VerifyCheckListSheet(),
+                                                  isScrollControlled: true);
+                                            } else {
+                                              showCustomSnackBar(
+                                                  'make_yourself_online_first'
+                                                      .tr);
+                                            }
+                                          },
+                                          label: Text(
+                                            'swipe_to_to_complete_order'.tr,
+                                            style: robotoMedium.copyWith(
+                                                fontSize:
+                                                    Dimensions.FONT_SIZE_LARGE,
+                                                color: Theme.of(context)
+                                                    .primaryColor),
+                                          ),
+                                          dismissThresholds: 0.5,
+                                          dismissible: false,
+                                          shimmer: true,
+                                          width: 1170,
+                                          height: 60,
+                                          buttonSize: 50,
+                                          radius: 10,
+                                          icon: Center(
+                                              child: Icon(
+                                            Get.find<LocalizationController>()
+                                                    .isLtr
+                                                ? Icons.double_arrow_sharp
+                                                : Icons.keyboard_arrow_left,
+                                            color: Colors.white,
+                                            size: 20.0,
+                                          )),
+                                          isLtr:
+                                              Get.find<LocalizationController>()
+                                                  .isLtr,
+                                          boxShadow: BoxShadow(blurRadius: 0),
+                                          buttonColor:
+                                              Theme.of(context).primaryColor,
+                                          backgroundColor: Color(0xffF4F7FC),
+                                          baseColor:
+                                              Theme.of(context).primaryColor,
+                                        )
+                                      : SizedBox()
                               : SizedBox()
                       : SizedBox(),
                 ])

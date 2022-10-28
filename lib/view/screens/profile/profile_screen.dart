@@ -1,6 +1,7 @@
 import 'package:carclenx_vendor_app/controller/auth_controller.dart';
 import 'package:carclenx_vendor_app/controller/splash_controller.dart';
 import 'package:carclenx_vendor_app/controller/theme_controller.dart';
+import 'package:carclenx_vendor_app/data/model/response/user_model/user_model.dart';
 import 'package:carclenx_vendor_app/helper/route_helper.dart';
 import 'package:carclenx_vendor_app/util/app_constants.dart';
 import 'package:carclenx_vendor_app/util/dimensions.dart';
@@ -31,6 +32,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       backgroundColor: Theme.of(context).cardColor,
       body: GetBuilder<AuthController>(builder: (authController) {
+        List<String> userRole = [];
+        authController.userModel.role.forEach((element) {
+          userRole.add(element.name);
+        });
         return authController.userModel == null
             ? Center(child: CircularProgressIndicator())
             : ProfileBgWidget(
@@ -73,19 +78,62 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         SizedBox(height: 30),
                         Row(children: [
                           ProfileCard(
-                              title: 'since_joining'.tr,
-                              data:
-                                  '${authController.userModel.memberSinceDays} ${'days'.tr}'),
+                              title: 'User As',
+                              data: userRole.join(",").toString()),
                           SizedBox(width: Dimensions.PADDING_SIZE_SMALL),
                           ProfileCard(
                               title: 'total_order'.tr,
-                              data: (authController.userModel.orderCount
-                                          .carspa_completed_count +
-                                      authController.userModel.orderCount
-                                          .mechanical_completed_count +
-                                      authController.userModel.orderCount
-                                          .quickhelp_completed_count)
-                                  .toString()),
+                              data: authController.userModel.allServiceWorkDetails !=
+                                      null
+                                  ? ((authController
+                                                      .userModel
+                                                      .allServiceWorkDetails
+                                                      .carspa !=
+                                                  null
+                                              ? authController
+                                                          .userModel
+                                                          .allServiceWorkDetails
+                                                          .carspa
+                                                          .total !=
+                                                      null
+                                                  ? authController
+                                                      .userModel
+                                                      .allServiceWorkDetails
+                                                      .carspa
+                                                      .total
+                                                      .completedCount
+                                                  : 0
+                                              : 0) +
+                                          (authController
+                                                      .userModel
+                                                      .allServiceWorkDetails
+                                                      .mechanical !=
+                                                  null
+                                              ? authController
+                                                          .userModel
+                                                          .allServiceWorkDetails
+                                                          .mechanical
+                                                          .total !=
+                                                      null
+                                                  ? authController
+                                                      .userModel
+                                                      .allServiceWorkDetails
+                                                      .mechanical
+                                                      .total
+                                                      .completedCount
+                                                  : 0
+                                              : 0) +
+                                          (authController
+                                                      .userModel
+                                                      .allServiceWorkDetails
+                                                      .quickhelp !=
+                                                  null
+                                              ? authController.userModel.allServiceWorkDetails.quickhelp.total != null
+                                                  ? authController.userModel.allServiceWorkDetails.quickhelp.total.completedCount
+                                                  : 0
+                                              : 0))
+                                      .toString()
+                                  : '0'),
                         ]),
                         SizedBox(height: 30),
                         ProfileButton(

@@ -10,7 +10,6 @@ import 'package:carclenx_vendor_app/util/styles.dart';
 import 'package:carclenx_vendor_app/view/base/confirmation_dialog.dart';
 import 'package:carclenx_vendor_app/view/base/custom_alert_dialog.dart';
 import 'package:carclenx_vendor_app/view/base/custom_snackbar.dart';
-import 'package:carclenx_vendor_app/view/base/order_shimmer.dart';
 import 'package:carclenx_vendor_app/view/base/order_widget.dart';
 import 'package:carclenx_vendor_app/view/base/title_widget.dart';
 import 'package:carclenx_vendor_app/view/screens/home/widget/count_card.dart';
@@ -24,11 +23,10 @@ import 'package:shimmer_animation/shimmer_animation.dart';
 
 class HomeScreen extends StatelessWidget {
   Future<void> _loadData() async {
-    Get.find<OrderController>().getIgnoreList();
-    Get.find<OrderController>().removeFromIgnoreList();
-    await Get.find<AuthController>().getProfile();
+    // await Get.find<AuthController>().getProfile();
     // await Get.find<OrderController>().getCurrentOrders();
     // await Get.find<NotificationController>().getNotificationList();
+    Get.find<AuthController>().getWorkerWorkDetails();
     bool _isBatteryOptimizationDisabled =
         await DisableBatteryOptimization.isBatteryOptimizationDisabled;
     if (!_isBatteryOptimizationDisabled) {
@@ -87,7 +85,10 @@ class HomeScreen extends StatelessWidget {
                     : SizedBox(),
               ]);
             }),
-            onPressed: () => Get.toNamed(RouteHelper.getNotificationRoute()),
+            onPressed: () {
+              Get.find<NotificationController>().getNotificationList();
+              Get.toNamed(RouteHelper.getNotificationRoute());
+            },
           ),
           GetBuilder<AuthController>(builder: (authController) {
             return GetBuilder<OrderController>(builder: (orderController) {
@@ -103,8 +104,8 @@ class HomeScreen extends StatelessWidget {
                       value: authController.userModel.isActive == true,
                       onToggle: (bool isActive) async {
                         if (!isActive &&
-                            orderController.activeOrderList != null &&
-                            orderController.activeOrderList.length > 0) {
+                            orderController.runningOrderList != null &&
+                            orderController.runningOrderList.length > 0) {
                           showCustomSnackBar('you_can_not_go_offline_now'.tr);
                         } else {
                           if (!isActive) {
@@ -169,10 +170,10 @@ class HomeScreen extends StatelessWidget {
             return Column(children: [
               GetBuilder<OrderController>(builder: (orderController) {
                 bool _hasActiveOrder =
-                    orderController.activeOrderList != null &&
-                        orderController.activeOrderList.length > 0;
-                bool _hasMoreOrder = orderController.activeOrderList != null &&
-                    orderController.activeOrderList.length > 1;
+                    orderController.runningOrderList != null &&
+                        orderController.runningOrderList.length > 0;
+                bool _hasMoreOrder = orderController.runningOrderList != null &&
+                    orderController.runningOrderList.length > 1;
                 return Column(children: [
                   _hasActiveOrder
                       ? TitleWidget(
@@ -242,14 +243,31 @@ class HomeScreen extends StatelessWidget {
                                               Dimensions.PADDING_SIZE_SMALL),
                                       authController.userModel != null
                                           ? Text(
-                                              PriceConverter.convertPrice(
-                                                  authController.userModel
-                                                              .earnings !=
-                                                          null
-                                                      ? authController.userModel
-                                                          .earnings.total_earned
-                                                          .toDouble()
-                                                      : 0),
+                                              PriceConverter.convertPrice((authController.userModel.allServiceWorkDetails.carspa != null && authController.userModel.allServiceWorkDetails.carspa.total != null ? double.tryParse(authController.userModel.allServiceWorkDetails.carspa.total.earning.toString()) : 0.0) +
+                                                  (authController.userModel.allServiceWorkDetails.shoppe != null && authController.userModel.allServiceWorkDetails.shoppe.total != null
+                                                      ? double.tryParse(authController
+                                                          .userModel
+                                                          .allServiceWorkDetails
+                                                          .shoppe
+                                                          .total
+                                                          .earning
+                                                          .toString())
+                                                      : 0.0) +
+                                                  (authController.userModel.allServiceWorkDetails.mechanical != null && authController.userModel.allServiceWorkDetails.mechanical.total != null
+                                                      ? double.tryParse(
+                                                          authController
+                                                              .userModel
+                                                              .allServiceWorkDetails
+                                                              .mechanical
+                                                              .total
+                                                              .earning
+                                                              .toString())
+                                                      : 0.0) +
+                                                  (authController.userModel.allServiceWorkDetails.quickhelp !=
+                                                              null &&
+                                                          authController.userModel.allServiceWorkDetails.quickhelp.total != null
+                                                      ? double.tryParse(authController.userModel.allServiceWorkDetails.quickhelp.total.earning.toString())
+                                                      : 0.0)),
                                               style: robotoBold.copyWith(
                                                   fontSize: 24,
                                                   color: Theme.of(context)
@@ -267,11 +285,32 @@ class HomeScreen extends StatelessWidget {
                           Row(children: [
                             EarningWidget(
                               title: 'today'.tr,
-                              amount: authController.userModel.earnings != null
-                                  ? (authController
-                                      .userModel.earnings.today_earning
-                                      .toDouble())
-                                  : null,
+                              amount: (authController.userModel.allServiceWorkDetails.carspa != null && authController.userModel.allServiceWorkDetails.carspa.total != null ? double.tryParse(authController.userModel.allServiceWorkDetails.carspa.daily.earning.all.toString()) : 0.0) +
+                                  (authController.userModel.allServiceWorkDetails.shoppe != null && authController.userModel.allServiceWorkDetails.shoppe.daily != null
+                                      ? double.tryParse(authController
+                                          .userModel
+                                          .allServiceWorkDetails
+                                          .shoppe
+                                          .daily
+                                          .earning
+                                          .all
+                                          .toString())
+                                      : 0.0) +
+                                  (authController.userModel.allServiceWorkDetails.mechanical != null && authController.userModel.allServiceWorkDetails.mechanical.daily != null
+                                      ? double.tryParse(authController
+                                          .userModel
+                                          .allServiceWorkDetails
+                                          .mechanical
+                                          .daily
+                                          .earning
+                                          .all
+                                          .toString())
+                                      : 0.0) +
+                                  (authController.userModel.allServiceWorkDetails.quickhelp !=
+                                              null &&
+                                          authController.userModel.allServiceWorkDetails.quickhelp.daily != null
+                                      ? double.tryParse(authController.userModel.allServiceWorkDetails.quickhelp.daily.earning.all.toString())
+                                      : 0.0),
                             ),
                             Container(
                                 height: 30,
@@ -279,11 +318,32 @@ class HomeScreen extends StatelessWidget {
                                 color: Theme.of(context).cardColor),
                             EarningWidget(
                               title: 'this_week'.tr,
-                              amount: authController.userModel.earnings != null
-                                  ? authController
-                                      .userModel.earnings.week_earning
-                                      .toDouble()
-                                  : null,
+                              amount: (authController.userModel.allServiceWorkDetails.carspa != null && authController.userModel.allServiceWorkDetails.carspa.weekly != null ? double.tryParse(authController.userModel.allServiceWorkDetails.carspa.weekly.earning.all.toString()) : 0.0) +
+                                  (authController.userModel.allServiceWorkDetails.shoppe != null && authController.userModel.allServiceWorkDetails.shoppe.weekly != null
+                                      ? double.tryParse(authController
+                                          .userModel
+                                          .allServiceWorkDetails
+                                          .shoppe
+                                          .weekly
+                                          .earning
+                                          .all
+                                          .toString())
+                                      : 0.0) +
+                                  (authController.userModel.allServiceWorkDetails.mechanical != null && authController.userModel.allServiceWorkDetails.mechanical.weekly != null
+                                      ? double.tryParse(authController
+                                          .userModel
+                                          .allServiceWorkDetails
+                                          .mechanical
+                                          .weekly
+                                          .earning
+                                          .all
+                                          .toString())
+                                      : 0.0) +
+                                  (authController.userModel.allServiceWorkDetails.quickhelp !=
+                                              null &&
+                                          authController.userModel.allServiceWorkDetails.quickhelp.weekly != null
+                                      ? double.tryParse(authController.userModel.allServiceWorkDetails.quickhelp.weekly.earning.all.toString())
+                                      : 0.0),
                             ),
                             Container(
                                 height: 30,
@@ -291,11 +351,39 @@ class HomeScreen extends StatelessWidget {
                                 color: Theme.of(context).cardColor),
                             EarningWidget(
                               title: 'this_month'.tr,
-                              amount: authController.userModel.earnings != null
-                                  ? authController
-                                      .userModel.earnings.month_earning
-                                      .toDouble()
-                                  : null,
+                              amount: double.parse(((authController.userModel.allServiceWorkDetails.carspa != null ? (authController.userModel.allServiceWorkDetails.carspa.monthly != null ? (authController.userModel.allServiceWorkDetails.carspa.monthly.earning.cod + authController.userModel.allServiceWorkDetails.carspa.monthly.earning.online) : 0.0) : 0.0) +
+                                      (authController.userModel.allServiceWorkDetails.shoppe != null
+                                          ? (authController.userModel.allServiceWorkDetails.shoppe.monthly != null
+                                              ? (authController.userModel.allServiceWorkDetails.shoppe.monthly.earning.cod +
+                                                  authController
+                                                      .userModel
+                                                      .allServiceWorkDetails
+                                                      .shoppe
+                                                      .monthly
+                                                      .earning
+                                                      .online)
+                                              : 0.0)
+                                          : 0.0) +
+                                      (authController.userModel.allServiceWorkDetails.mechanical != null
+                                          ? (authController.userModel.allServiceWorkDetails.mechanical.monthly != null
+                                              ? (authController
+                                                      .userModel
+                                                      .allServiceWorkDetails
+                                                      .mechanical
+                                                      .monthly
+                                                      .earning
+                                                      .cod +
+                                                  authController
+                                                      .userModel
+                                                      .allServiceWorkDetails
+                                                      .mechanical
+                                                      .monthly
+                                                      .earning
+                                                      .online)
+                                              : 0.0)
+                                          : 0.0) +
+                                      (authController.userModel.allServiceWorkDetails.quickhelp != null ? (authController.userModel.allServiceWorkDetails.quickhelp.monthly != null ? (authController.userModel.allServiceWorkDetails.quickhelp.monthly.earning.cod + authController.userModel.allServiceWorkDetails.quickhelp.monthly.earning.online) : 0.0) : 0.0))
+                                  .toString()),
                             ),
                           ]),
                         ]),
@@ -308,10 +396,8 @@ class HomeScreen extends StatelessWidget {
               CountCard(
                 title: 'todays_orders'.tr,
                 backgroundColor: Theme.of(context).secondaryHeaderColor,
-                height: 180,
-                orderCountList: authController.userModel != null
-                    ? authController.userModel.orderCount
-                    : null,
+                height: 160,
+                orderCountList: authController.userModel.allServiceWorkDetails,
               ),
               SizedBox(height: Dimensions.PADDING_SIZE_SMALL),
               Row(
@@ -319,11 +405,10 @@ class HomeScreen extends StatelessWidget {
                   Expanded(
                     child: CountCard(
                       title: 'total_orders_completed'.tr,
-                      backgroundColor: Theme.of(context).primaryColor,
+                      backgroundColor: Colors.amber,
                       height: 140,
-                      orderCountList: authController.userModel != null
-                          ? authController.userModel.orderCount
-                          : null,
+                      orderCountList:
+                          authController.userModel.allServiceWorkDetails,
                     ),
                   ),
                   SizedBox(width: Dimensions.PADDING_SIZE_SMALL),
@@ -332,10 +417,9 @@ class HomeScreen extends StatelessWidget {
                         title: 'cash_in_your_hand'.tr,
                         backgroundColor: Colors.green,
                         height: 140,
-                        orderCountList: authController.userModel != null
-                            ? authController.userModel.orderCount
-                            : null),
-                  ),
+                        orderCountList:
+                            authController.userModel.allServiceWorkDetails),
+                  )
                 ],
               ),
               SizedBox(

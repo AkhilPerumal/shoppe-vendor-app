@@ -66,12 +66,13 @@ class _SplashScreenState extends State<SplashScreen> {
       //   Get.ofnamed(RouteHelper.getUpdateRoute(false));
       // } else {
       if (Get.find<AuthController>().isLoggedIn()) {
-        Get.find<AuthController>().updateToken();
         await Get.find<AuthController>().getProfile();
-        await Get.find<OrderController>()
-            .getAllOrders()
+        Get.find<AuthController>().updateToken();
+        await Get.find<AuthController>()
+            .getWorkerWorkDetails()
             .then((value) => Get.offNamed(RouteHelper.getInitialRoute()));
       } else {
+        // Get.offNamed(RouteHelper.approvalWaiting);
         Get.offNamed(RouteHelper.getSignInRoute());
       }
       // }

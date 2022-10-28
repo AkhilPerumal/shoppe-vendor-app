@@ -1,11 +1,12 @@
-import 'package:carclenx_vendor_app/controller/splash_controller.dart';
-import 'package:carclenx_vendor_app/data/model/response/service_order_list_model.dart';
+import 'package:carclenx_vendor_app/controller/order_controller.dart';
+import 'package:carclenx_vendor_app/data/model/response/order_model.dart';
 import 'package:carclenx_vendor_app/helper/date_converter.dart';
+import 'package:carclenx_vendor_app/helper/enums.dart';
 import 'package:carclenx_vendor_app/helper/route_helper.dart';
 import 'package:carclenx_vendor_app/util/dimensions.dart';
 import 'package:carclenx_vendor_app/util/images.dart';
 import 'package:carclenx_vendor_app/util/styles.dart';
-import 'package:carclenx_vendor_app/view/screens/order/order_details_screen.dart';
+import 'package:carclenx_vendor_app/view/base/custom_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -21,14 +22,17 @@ class HistoryOrderWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => Get.toNamed(
-        RouteHelper.orderDetails,
-        arguments: {
-          'orderModel': orderModel,
-          'isRunningOrder': isRunning,
-          'orderIndex': index
-        },
-      ),
+      onTap: () {
+        Get.find<OrderController>().setServiceSelectedOrder(orderModel);
+        Get.toNamed(
+          RouteHelper.serviceOrderDetails,
+          arguments: {
+            'orderModel': orderModel,
+            'isRunningOrder': isRunning,
+            'orderIndex': index
+          },
+        );
+      },
       child: Container(
         padding: EdgeInsets.all(Dimensions.PADDING_SIZE_SMALL),
         margin: EdgeInsets.only(bottom: Dimensions.PADDING_SIZE_SMALL),
@@ -45,14 +49,11 @@ class HistoryOrderWidget extends StatelessWidget {
         child: Row(children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(Dimensions.RADIUS_SMALL),
-            child: FadeInImage.assetNetwork(
-              placeholder: Images.placeholder,
+            child: CustomImage(
+              image: orderModel.serviceId.thumbURL[0].toString(),
+              fit: BoxFit.cover,
               height: 70,
               width: 70,
-              fit: BoxFit.cover,
-              image: orderModel.serviceId.thumbURL[0].toString(),
-              imageErrorBuilder: (c, o, s) => Image.asset(Images.placeholder,
-                  height: 70, width: 70, fit: BoxFit.cover),
             ),
           ),
           SizedBox(width: Dimensions.PADDING_SIZE_SMALL),
@@ -72,7 +73,10 @@ class HistoryOrderWidget extends StatelessWidget {
               ]),
               SizedBox(height: Dimensions.PADDING_SIZE_EXTRA_SMALL),
               Text(
-                'status : '.tr + orderModel.status,
+                'status : '.tr +
+                    EnumConverter.orderStatusToTitle(orderModel.status)
+                        .toString()
+                        .toUpperCase(),
                 style: robotoMedium.copyWith(
                     fontSize: Dimensions.FONT_SIZE_SMALL,
                     color: Theme.of(context).primaryColor),
@@ -83,7 +87,7 @@ class HistoryOrderWidget extends StatelessWidget {
                 SizedBox(width: Dimensions.PADDING_SIZE_EXTRA_SMALL),
                 Text(
                   DateConverter.dateTimeStringToDateTime(
-                      DateTime.parse(orderModel.createdAt).toString()),
+                      orderModel.createdAt.toString()),
                   style: robotoRegular.copyWith(
                       color: Theme.of(context).disabledColor,
                       fontSize: Dimensions.FONT_SIZE_SMALL),

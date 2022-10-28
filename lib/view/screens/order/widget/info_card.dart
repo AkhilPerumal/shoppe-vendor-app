@@ -73,31 +73,8 @@ class InfoCard extends StatelessWidget {
                           style: robotoRegular.copyWith(
                               fontSize: Dimensions.FONT_SIZE_SMALL)),
                       SizedBox(height: Dimensions.PADDING_SIZE_EXTRA_SMALL),
-                      addressModel.house != null
-                          ? Text(
-                              addressModel.house.toString(),
-                              style: robotoRegular.copyWith(
-                                  fontSize: Dimensions.FONT_SIZE_SMALL,
-                                  color: Theme.of(context).disabledColor),
-                            )
-                          : SizedBox(),
                       isDelivery
                           ? Wrap(children: [
-                              (addressModel.street != null &&
-                                      addressModel.street.isNotEmpty)
-                                  ? Text(
-                                      'street_number'.tr +
-                                          ': ' +
-                                          addressModel.street +
-                                          ', ' +
-                                          addressModel.city,
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: robotoRegular.copyWith(
-                                          fontSize: Dimensions.FONT_SIZE_SMALL,
-                                          color: Theme.of(context).hintColor),
-                                    )
-                                  : SizedBox(),
                               (addressModel.house != null &&
                                       addressModel.house.isNotEmpty)
                                   ? Text(
@@ -112,18 +89,63 @@ class InfoCard extends StatelessWidget {
                                           color: Theme.of(context).hintColor),
                                     )
                                   : SizedBox(),
-                              (addressModel.house != null &&
-                                      addressModel.house.isNotEmpty)
+                              (addressModel.street != null &&
+                                      addressModel.street.isNotEmpty)
                                   ? Text(
-                                      'floor'.tr + ': ' + addressModel.house,
-                                      maxLines: 1,
+                                      'Street' +
+                                          ': ' +
+                                          addressModel.street +
+                                          ', ' +
+                                          addressModel.city,
+                                      maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
                                       style: robotoRegular.copyWith(
                                           fontSize: Dimensions.FONT_SIZE_SMALL,
                                           color: Theme.of(context).hintColor),
                                     )
                                   : SizedBox(),
+
+                              // (addressModel.house != null &&
+                              //         addressModel.house.isNotEmpty)
+                              //     ? Text(
+                              //         'floor'.tr + ': ' + addressModel.house,
+                              //         maxLines: 1,
+                              //         overflow: TextOverflow.ellipsis,
+                              //         style: robotoRegular.copyWith(
+                              //             fontSize: Dimensions.FONT_SIZE_SMALL,
+                              //             color: Theme.of(context).hintColor),
+                              //       )
+                              //     : SizedBox(),
                             ])
+                          : SizedBox(),
+                      SizedBox(
+                        height: Dimensions.PADDING_SIZE_EXTRA_SMALL,
+                      ),
+                      (!showButton &&
+                              addressModel.mobile != null &&
+                              addressModel.mobile.isNotEmpty)
+                          ? Text(
+                              'Phone ' + ': ' + addressModel.mobile,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: robotoRegular.copyWith(
+                                  fontSize: Dimensions.FONT_SIZE_SMALL,
+                                  color: Theme.of(context).hintColor),
+                            )
+                          : SizedBox(),
+                      SizedBox(
+                        height: Dimensions.PADDING_SIZE_EXTRA_SMALL,
+                      ),
+                      (addressModel.pincode != null &&
+                              addressModel.pincode.isNotEmpty)
+                          ? Text(
+                              'Pincode ' + ': ' + addressModel.pincode,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: robotoRegular.copyWith(
+                                  fontSize: Dimensions.FONT_SIZE_SMALL,
+                                  color: Theme.of(context).hintColor),
+                            )
                           : SizedBox(),
                       showButton
                           ? Row(children: [

@@ -2,6 +2,7 @@ class AddOnsModel {
   String name;
   int price;
   String sId;
+  bool isSelected = false;
 
   AddOnsModel({this.name, this.price, this.sId});
 

@@ -1,4 +1,4 @@
-import 'package:carclenx_vendor_app/data/model/response/add_ons_model.dart';
+import 'package:carclenx_vendor_app/data/model/response/add_on_model.dart';
 import 'package:carclenx_vendor_app/data/model/response/address_model.dart';
 import 'package:carclenx_vendor_app/data/model/response/service_model.dart';
 
@@ -42,7 +42,7 @@ class OrderModel {
   String mode;
   String status;
   AddressModel address;
-  List<AddOnsModel> addOn;
+  List<AddOn> addOn;
   String date;
   int discountAmount;
   int grandTotal;
@@ -89,9 +89,9 @@ class OrderModel {
         ? new AddressModel.fromJson(json['address'])
         : null;
     if (json['addOn'] != null) {
-      addOn = <AddOnsModel>[];
+      addOn = <AddOn>[];
       json['addOn'].forEach((v) {
-        addOn.add(AddOnsModel.fromJson(v));
+        addOn.add(AddOn.fromJson(v));
       });
     }
     date = json['date'];
