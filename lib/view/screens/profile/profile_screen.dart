@@ -161,21 +161,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               Get.toNamed(RouteHelper.getLanguageRoute());
                             }),
                         SizedBox(height: Dimensions.PADDING_SIZE_SMALL),
-                        ProfileButton(
-                            icon: Icons.lock,
-                            title: 'change_password'.tr,
-                            onTap: () {
-                              Get.toNamed(RouteHelper.getResetPasswordRoute(
-                                  '', '', 'password-change'));
-                            }),
-                        SizedBox(height: Dimensions.PADDING_SIZE_SMALL),
-                        ProfileButton(
-                            icon: Icons.edit,
-                            title: 'edit_profile'.tr,
-                            onTap: () {
-                              Get.toNamed(RouteHelper.getUpdateProfileRoute());
-                            }),
-                        SizedBox(height: Dimensions.PADDING_SIZE_SMALL),
+                        // ProfileButton(
+                        //     icon: Icons.lock,
+                        //     title: 'change_password'.tr,
+                        //     onTap: () {
+                        //       Get.toNamed(RouteHelper.getResetPasswordRoute(
+                        //           '', '', 'password-change'));
+                        //     }),
+                        // SizedBox(height: Dimensions.PADDING_SIZE_SMALL),
+                        // ProfileButton(
+                        //     icon: Icons.edit,
+                        //     title: 'edit_profile'.tr,
+                        //     onTap: () {
+                        //       Get.toNamed(RouteHelper.getUpdateProfileRoute());
+                        //     }),
+                        // SizedBox(height: Dimensions.PADDING_SIZE_SMALL),
                         ProfileButton(
                             icon: Icons.list,
                             title: 'terms_condition'.tr,
@@ -190,24 +190,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               Get.toNamed(RouteHelper.getPrivacyRoute());
                             }),
                         SizedBox(height: Dimensions.PADDING_SIZE_SMALL),
-                        ProfileButton(
-                          icon: Icons.delete,
-                          title: 'delete_account'.tr,
-                          onTap: () {
-                            Get.dialog(
-                                ConfirmationDialog(
-                                    icon: Images.warning,
-                                    title: 'are_you_sure_to_delete_account'.tr,
-                                    description:
-                                        'it_will_remove_your_all_information'
-                                            .tr,
-                                    isLogOut: true,
-                                    onYesPressed: () =>
-                                        authController.removeDriver()),
-                                useSafeArea: false);
-                          },
-                        ),
-                        SizedBox(height: Dimensions.PADDING_SIZE_SMALL),
+                        // ProfileButton(
+                        //   icon: Icons.delete,
+                        //   title: 'delete_account'.tr,
+                        //   onTap: () {
+                        //     Get.dialog(
+                        //         ConfirmationDialog(
+                        //             icon: Images.warning,
+                        //             title: 'are_you_sure_to_delete_account'.tr,
+                        //             description:
+                        //                 'it_will_remove_your_all_information'
+                        //                     .tr,
+                        //             isLogOut: true,
+                        //             onYesPressed: () =>
+                        //                 authController.removeDriver()),
+                        //         useSafeArea: false);
+                        //   },
+                        // ),
+                        // SizedBox(height: Dimensions.PADDING_SIZE_SMALL),
                         ProfileButton(
                             icon: Icons.logout,
                             title: 'logout'.tr,
