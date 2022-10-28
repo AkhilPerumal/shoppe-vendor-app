@@ -74,7 +74,10 @@ class CountCard extends StatelessWidget {
                       ),
                       Text(
                         title == 'todays_orders'.tr
-                            ? orderCountList.shoppe.daily.activeCount.toString()
+                            ? orderCountList.shoppe.daily != null
+                                ? orderCountList.shoppe.daily.activeCount
+                                    .toString()
+                                : "0"
                             : "0",
                         style: robotoBold.copyWith(
                             fontSize: Dimensions.FONT_SIZE_LARGE,
@@ -88,7 +91,10 @@ class CountCard extends StatelessWidget {
                       ),
                       Text(
                         title == 'todays_orders'.tr
-                            ? orderCountList.shoppe.daily.newCount.toString()
+                            ? orderCountList.shoppe.daily != null
+                                ? orderCountList.shoppe.daily.newCount
+                                    .toString()
+                                : "0"
                             : "0",
                         style: robotoBold.copyWith(
                             fontSize: Dimensions.FONT_SIZE_LARGE,
