@@ -14,6 +14,7 @@ import 'package:carclenx_vendor_app/helper/route_helper.dart';
 import 'package:carclenx_vendor_app/util/images.dart';
 import 'package:carclenx_vendor_app/view/base/confirmation_dialog.dart';
 import 'package:carclenx_vendor_app/view/base/custom_alert_dialog.dart';
+import 'package:carclenx_vendor_app/view/base/custom_dialog.dart';
 import 'package:carclenx_vendor_app/view/base/custom_snackbar.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -161,8 +162,10 @@ class AuthController extends GetxController implements GetxService {
   }
 
   Future<void> getProfile({String userID}) async {
-    if (userModel != null) {
-      if (_userModel.isActive) {
+    Response response = await authRepo.getProfileInfo(userID: userID);
+    if (response.statusCode == 200) {
+      _userModel = UserModel.fromJson(response.body['resultData']);
+      if (_userModel.isActive && _userModel.status == "Approved") {
         LocationPermission permission = await Geolocator.checkPermission();
         if (permission == LocationPermission.denied ||
             permission == LocationPermission.deniedForever ||
@@ -187,8 +190,6 @@ class AuthController extends GetxController implements GetxService {
       } else {
         stopLocationRecord();
       }
-    } else {
-      getUserDetails();
     }
     update();
   }
@@ -427,6 +428,10 @@ class AuthController extends GetxController implements GetxService {
     return authRepo.getUserName() ?? "";
   }
 
+  String getUserId() {
+    return authRepo.getUserId() ?? "";
+  }
+
   String getUserNumber() {
     return authRepo.getUserNumber() ?? "";
   }
@@ -526,7 +531,7 @@ class AuthController extends GetxController implements GetxService {
     update();
   }
 
-  Future signUp() async {
+  validateFormField(bool isSignUp) {
     bool isError = false;
 
     if (nameController.text == '' || nameController.text == null) {
@@ -555,17 +560,24 @@ class AuthController extends GetxController implements GetxService {
       isError = true;
       update();
       showCustomSnackBar('Please enter your State');
-    } else if (userNameController.text == '' ||
-        userNameController.text == null) {
+    } else if ((userNameController.text == '' ||
+            userNameController.text == null) &&
+        isSignUp) {
       isError = true;
       update();
       showCustomSnackBar('Please enter a User Name');
-    } else if (passwordController.text == '' ||
-        passwordController.text == null) {
+    } else if ((passwordController.text == '' ||
+            passwordController.text == null) &&
+        isSignUp) {
       isError = true;
       update();
       showCustomSnackBar('Please enter a Password');
-    } else if (confirmPasswordController.text != passwordController.text) {
+    } else if (passwordController.text.length < 6) {
+      isError = true;
+      update();
+      showCustomSnackBar('Password should be greater than 6 letter');
+    } else if ((confirmPasswordController.text != passwordController.text) &&
+        isSignUp) {
       isError = true;
       update();
       showCustomSnackBar('Please Confirm Password');
@@ -575,62 +587,129 @@ class AuthController extends GetxController implements GetxService {
       isError = true;
       update();
       showCustomSnackBar('Please enter your years of Work Experience');
-    } else if (!isCheckedCarWash && !isCheckedMechanic && !isCheckedQuickHelp) {
+    } else if (!isCheckedShoppe &&
+        !isCheckedCarWash &&
+        !isCheckedMechanic &&
+        !isCheckedQuickHelp) {
       isError = true;
       update();
       showCustomSnackBar('Please check atleast a Experienced Service');
-    } else if (pickedImageList.length == 0) {
+    } else if (pickedImageList.length == 0 && isSignUp) {
       isError = true;
       update();
       showCustomSnackBar('Please attach your Verification Documents');
-    } else {
+    } else if (isSignUp) {
       verifyUserName().then((value) async {
-        if (isUserNameAvailable == 1) {
-          Experience experience = Experience(
-              carspa: isCheckedCarWash ? 1 : 0,
-              mechanical: isCheckedMechanic ? 1 : 0,
-              quickhelp: isCheckedQuickHelp ? 1 : 0,
-              shoppe: isCheckedShoppe ? 1 : 0,
-              total: int.parse(experienceController.text));
-          SignUpBody signUpBody = SignUpBody(
-              name: nameController.text,
-              email: emailController.text,
-              phone: phoneController.text,
-              district: districtController.text,
-              experience: experience,
-              place: workinglocationController.text,
-              state: stateController.text,
-              username: userNameController.text,
-              password: passwordController.text,
-              availability: isShiftTime ? 'shift_based' : 'any');
-          Response response = await authRepo.signUp(signUpBody);
-          if (response.statusCode == 200 || response.statusCode == 201) {
-            imageUploader(
-                signUpBody: signUpBody,
-                userId: response.body['resultData']['_id']);
-          } else if (response.statusCode == 409) {
-            showCustomSnackBar("User Already Exists", isError: true);
-          }
+        if (isUserNameAvailable != 1) {
+          isError = true;
+          update();
         }
       });
     }
+    return isError;
   }
 
-  imageUploader({String userId, SignUpBody signUpBody}) async {
+  Future signUp(bool isSignUp) async {
+    _isLoading = true;
+    update();
+
+    if (!validateFormField(isSignUp)) {
+      SignUpBody signUpBody = SignUpBody();
+      Experience experience = Experience(
+          carspa: isCheckedCarWash ? 1 : 0,
+          mechanical: isCheckedMechanic ? 1 : 0,
+          quickhelp: isCheckedQuickHelp ? 1 : 0,
+          shoppe: isCheckedShoppe ? 1 : 0,
+          total: int.parse(experienceController.text));
+
+      Response response;
+      if (isSignUp) {
+        signUpBody = SignUpBody(
+            name: nameController.text,
+            email: emailController.text,
+            phone: phoneController.text,
+            district: districtController.text,
+            experience: experience,
+            place: workinglocationController.text,
+            state: stateController.text,
+            username: userNameController.text,
+            password: passwordController.text,
+            availability: isShiftTime ? 'shift_based' : 'any');
+        response = await authRepo.signUp(signUpBody);
+      } else {
+        signUpBody = SignUpBody(
+            name: nameController.text,
+            email: emailController.text,
+            district: districtController.text,
+            experience: experience,
+            place: workinglocationController.text,
+            state: stateController.text,
+            username: userNameController.text,
+            availability: isShiftTime ? 'shift_based' : 'any');
+        response = await authRepo.updateDocumentation(
+            signUpBody, userModel.partnerApplicationId.id);
+      }
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        _isLoading = false;
+        update();
+        if (pickedImageList.length > 0) {
+          imageUploader(
+              signUpBody: signUpBody,
+              userId: response.body['resultData']['partner_application_id']
+                  ['_id'],
+              isSignUp: isSignUp);
+        } else {
+          if (isSignUp) {
+            login(signUpBody.username, signUpBody.password);
+          } else {
+            getProfile(userID: userModel.id).then((value) {
+              setForEditApplication();
+              Get.back();
+            });
+          }
+        }
+      } else if (response.statusCode == 409) {
+        _isLoading = false;
+        update();
+        showCustomSnackBar("User Already Exists", isError: true);
+      }
+    }
+
+    _isLoading = false;
+    update();
+  }
+
+  imageUploader({String userId, SignUpBody signUpBody, bool isSignUp}) async {
     List<MultipartBody> newList = [];
     for (File img in pickedImageList) {
-      if (img != "") {
-        var multipartFile = await MultipartBody('upload', img);
+      if (img != null) {
+        var multipartFile = MultipartBody('upload', img);
         newList.add(multipartFile);
       }
     }
     Map<String, String> body = {'id': userId};
+    _isLoading = true;
+    update();
     Response response =
         await authRepo.uploadRegImageUpload(body: body, images: newList);
     if (response.statusCode == 200 || response.statusCode == 201) {
-      showCustomSnackBar("Documents Uploaded", isError: false);
-      login(signUpBody.username, signUpBody.password);
+      CustomDialog(
+        buttonText: "OK",
+        descriptions:
+            "Thank you for joining with us. Your Document will be verified within 1-2 business days.",
+        isLoading: isLoading,
+        title: "Document Submitted",
+        onPressed: () => Get.toNamed(RouteHelper.getInitialRoute()),
+      );
+      // showCustomSnackBar("Documents Uploaded", isError: false);
+      if (isSignUp) {
+        login(signUpBody.username, signUpBody.password);
+      } else {
+        getProfile(userID: userModel.id);
+      }
     }
+    _isLoading = false;
+    update();
   }
 
   Future removeDriver() async {
@@ -647,5 +726,27 @@ class AuthController extends GetxController implements GetxService {
       Get.back();
       ApiChecker.checkApi(response);
     }
+  }
+
+  void setForEditApplication() {
+    _isCheckedCarWash = userModel.partnerApplicationId.experience.carspa == 1;
+    _isCheckedMechanic =
+        userModel.partnerApplicationId.experience.mechanical == 1;
+    _isCheckedQuickHelp =
+        userModel.partnerApplicationId.experience.quickhelp == 1;
+    _isCheckedShoppe = userModel.partnerApplicationId.experience.shoppe == 1;
+    _isShiftTime = userModel.partnerApplicationId.availability == "shift_based";
+    workinglocationController.text = userModel.partnerApplicationId.place;
+    nameController.text = userModel.partnerApplicationId.name;
+    emailController.text = userModel.partnerApplicationId.email;
+    phoneController.text = userModel.partnerApplicationId.phone != null
+        ? userModel.partnerApplicationId.phone
+        : "";
+    districtController.text = userModel.partnerApplicationId.district;
+    stateController.text = userModel.partnerApplicationId.state;
+    userNameController.text = userModel.partnerApplicationId.username;
+    experienceController.text =
+        userModel.partnerApplicationId.experience.total.toString();
+    update();
   }
 }

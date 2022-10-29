@@ -49,9 +49,14 @@ class AuthRepo {
 
   Future<Response> uploadRegImageUpload(
       {Map<String, String> body, List<MultipartBody> images}) {
+    Map<String, String> header = {
+      'Content-Type': 'application/json; charset=UTF-8',
+      AppConstants.LOCALIZATION_KEY: AppConstants.languages[0].languageCode,
+    };
     return apiClient.postMultipartData(
         uri: AppConstants.UPLOAD_REG_DOC_IMAGE,
         body: body,
+        // headers: header,
         multipartBody: images);
   }
 
@@ -352,5 +357,12 @@ class AuthRepo {
   Future<Response> deleteDriver() async {
     return await apiClient
         .deleteData(AppConstants.DRIVER_REMOVE + getUserToken());
+  }
+
+  Future<Response> updateDocumentation(
+      SignUpBody signUpBody, String documentationID) async {
+    return await apiClient.putData(
+        uri: AppConstants.UPDATE_DOCUMENTATION + documentationID,
+        body: signUpBody.toJson());
   }
 }

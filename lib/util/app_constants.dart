@@ -16,6 +16,8 @@ class AppConstants {
       '/api/v1/auth/delivery-man/reset-password';
   static const String LOGIN_URI = '/auth/sign-in';
   static const String SIGNUP_URI = '/partner/partner-registration';
+  static const String UPDATE_DOCUMENTATION =
+      '/partner/partner-registration/id/';
   static const String TOKEN_URI = '/notification';
   static const String CURRENT_ORDERS_URI =
       '/api/v1/delivery-man/current-orders?token=';
@@ -36,7 +38,7 @@ class AppConstants {
       '/partner/partner-registration/upload';
   static const String RECORD_LOCATION_URI =
       '/api/v1/delivery-man/record-location-data';
-  static const String PROFILE_URI = '/user/id/';
+  static const String PROFILE_URI = '/partner/user/id/';
   static const String UPDATE_ORDER_STATUS_URI =
       '/api/v1/delivery-man/update-order-status';
   static const String UPDATE_PAYMENT_STATUS_URI =

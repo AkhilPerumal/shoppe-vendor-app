@@ -1,4 +1,5 @@
 import 'package:carclenx_vendor_app/data/model/response/all_service_work_details_model.dart';
+import 'package:carclenx_vendor_app/data/model/response/user_model/partner_application_model.dart';
 
 import 'role.dart';
 
@@ -16,6 +17,7 @@ class UserModel {
   int ratingCount;
   int memberSinceDays;
   AllServiceWorkDetails allServiceWorkDetails;
+  PartnerApplicationId partnerApplicationId;
   int todaysOrderCount;
   int thisWeekOrderCount;
   double cashInHands;
@@ -23,7 +25,8 @@ class UserModel {
   double todaysEarning;
   double thisWeekEarning;
   double thisMonthEarning;
-
+  List<dynamic> statusUpdates;
+  String status;
   bool isActive;
   List<Role> role;
   List<String> provides;
@@ -41,6 +44,7 @@ class UserModel {
     this.avgRating = 0,
     this.memberSinceDays,
     this.allServiceWorkDetails,
+    this.partnerApplicationId,
     this.todaysOrderCount = 0,
     this.thisWeekOrderCount = 0,
     this.cashInHands = 0,
@@ -49,9 +53,11 @@ class UserModel {
     this.todaysEarning = 0,
     this.thisWeekEarning = 0,
     this.thisMonthEarning = 0,
-    this.isActive,
+    this.isActive = false,
     this.role,
     this.provides,
+    this.status,
+    this.statusUpdates,
   });
 
   setWorkerCounts(AllServiceWorkDetails allServiceWorkDetails) {
@@ -66,7 +72,14 @@ class UserModel {
         username: json['username'] as String,
         password: json['password'] as String,
         userToken: json['userToken'] as String,
-        isActive: json['isActive'] as bool,
+        isActive: json['isActive'] != null ? json['isActive'] : false,
+        partnerApplicationId: json["partner_application_id"] == null
+            ? null
+            : PartnerApplicationId.fromJson(json["partner_application_id"]),
+        status: json["status"] == null ? null : json["status"],
+        statusUpdates: json["status_updates"] == null
+            ? null
+            : List<dynamic>.from(json["status_updates"].map((x) => x)),
         role: (json['role'] as List<dynamic>)
             ?.map((e) => Role.fromJson(e as Map<String, dynamic>))
             ?.toList(),

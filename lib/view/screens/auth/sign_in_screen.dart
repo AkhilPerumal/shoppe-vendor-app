@@ -144,7 +144,8 @@ class SignInScreen extends StatelessWidget {
                         buttonText: "Join Up As Pexa Partner",
                         backgroundColor: Colors.blue,
                         onPressed: () {
-                          Get.toNamed(RouteHelper.signUp);
+                          Get.toNamed(RouteHelper.signUp,
+                              arguments: {"fromSignIn": true});
                         },
                       ),
                     ),

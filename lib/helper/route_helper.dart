@@ -1,3 +1,4 @@
+import 'package:carclenx_vendor_app/controller/auth_controller.dart';
 import 'package:carclenx_vendor_app/view/screens/auth/approval_waiting_screen.dart';
 import 'package:carclenx_vendor_app/view/screens/auth/registration_screen.dart';
 import 'package:carclenx_vendor_app/view/screens/auth/sign_in_screen.dart';
@@ -63,7 +64,17 @@ class RouteHelper {
     GetPage(name: initial, page: () => DashboardScreen(pageIndex: 0)),
     GetPage(name: splash, page: () => SplashScreen()),
     GetPage(name: signIn, page: () => SignInScreen()),
-    GetPage(name: signUp, page: () => RegistrationScreen()),
+    GetPage(
+        name: signUp,
+        page: () {
+          bool fromSignIn = true;
+          if (Get.arguments['fromSignIn'] != null) {
+            fromSignIn = Get.arguments['fromSignIn'];
+          }
+          return RegistrationScreen(
+            fromSignIn: fromSignIn,
+          );
+        }),
     GetPage(name: approvalWaiting, page: () => ApprovalWaitingScreen()),
     GetPage(
         name: main,

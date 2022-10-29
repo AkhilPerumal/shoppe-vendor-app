@@ -1,23 +1,26 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:carclenx_vendor_app/controller/auth_controller.dart';
+import 'package:carclenx_vendor_app/data/model/body/sign_up_body_model.dart';
 import 'package:carclenx_vendor_app/util/dimensions.dart';
 import 'package:carclenx_vendor_app/util/images.dart';
 import 'package:carclenx_vendor_app/util/styles.dart';
 import 'package:carclenx_vendor_app/view/base/custom_app_bar.dart';
 import 'package:carclenx_vendor_app/view/base/custom_button.dart';
+import 'package:carclenx_vendor_app/view/base/custom_image.dart';
 import 'package:carclenx_vendor_app/view/base/custom_snackbar.dart';
 import 'package:carclenx_vendor_app/view/base/my_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class RegistrationScreen extends StatelessWidget {
-  const RegistrationScreen({Key key}) : super(key: key);
-
+  RegistrationScreen({Key key, this.fromSignIn = true}) : super(key: key);
+  bool fromSignIn;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: "Sign up"),
+      appBar: CustomAppBar(title: fromSignIn ? "Sign up" : "Edit Application"),
       body: GetBuilder<AuthController>(builder: (authController) {
         return Column(
           children: [
@@ -53,6 +56,9 @@ class RegistrationScreen extends StatelessWidget {
                       controller: authController.phoneController,
                       focusNode: authController.phoneFocusNode,
                       maxLines: 1,
+                      isEnabled: fromSignIn,
+                      fillColor:
+                          fromSignIn ? null : Colors.black.withOpacity(0.1),
                       inputType: TextInputType.phone,
                       capitalization: TextCapitalization.words,
                       inputAction: TextInputAction.next,
@@ -101,12 +107,16 @@ class RegistrationScreen extends StatelessWidget {
                         flex: 3,
                         child: MyTextField(
                             hintText: 'User Name',
+                            isEnabled: fromSignIn,
                             isError: authController.isUserNameAvailable == 1
                                 ? false
                                 : authController.isUserNameAvailable == -1
                                     ? false
                                     : true,
                             controller: authController.userNameController,
+                            fillColor: fromSignIn
+                                ? null
+                                : Colors.black.withOpacity(0.1),
                             focusNode: authController.userNameFocusNode,
                             capitalization: TextCapitalization.words,
                             inputAction: TextInputAction.next,
@@ -116,65 +126,77 @@ class RegistrationScreen extends StatelessWidget {
                             nextFocus: authController.passwordFocusNode),
                       ),
                       SizedBox(
-                        width: Dimensions.FONT_SIZE_EXTRA_SMALL,
+                        width:
+                            fromSignIn ? Dimensions.FONT_SIZE_EXTRA_SMALL : 0,
                       ),
-                      Expanded(
-                        flex: 1,
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: authController.isUserNameAvailable == 1
-                              ? Row(
-                                  children: [
-                                    Icon(
-                                      Icons.check_box,
-                                      color: Colors.green,
-                                    ),
-                                    Text(
-                                      "Available",
-                                      style: robotoRegular.copyWith(
-                                          color: Colors.green),
-                                    )
-                                  ],
-                                )
-                              : CustomButton(
-                                  margin: EdgeInsets.only(top: 8.0),
-                                  // width: Get.width * 0.2,
-                                  height: 30,
-                                  buttonText: 'Check',
-                                  onPressed: () {
-                                    authController.verifyUserName();
-                                  },
-                                ),
-                        ),
-                      )
+                      fromSignIn
+                          ? Expanded(
+                              flex: 1,
+                              child: Align(
+                                alignment: Alignment.center,
+                                child: authController.isUserNameAvailable == 1
+                                    ? Row(
+                                        children: [
+                                          Icon(
+                                            Icons.check_box,
+                                            color: Colors.green,
+                                          ),
+                                          Text(
+                                            "Available",
+                                            style: robotoRegular.copyWith(
+                                                color: Colors.green),
+                                          )
+                                        ],
+                                      )
+                                    : CustomButton(
+                                        margin: EdgeInsets.only(top: 8.0),
+                                        // width: Get.width * 0.2,
+                                        height: 30,
+                                        buttonText: 'Check',
+                                        onPressed: () {
+                                          authController.verifyUserName();
+                                        },
+                                      ),
+                              ),
+                            )
+                          : SizedBox()
                     ],
                   ),
                   SizedBox(
                     height: Dimensions.PADDING_SIZE_SMALL,
                   ),
-                  MyTextField(
-                      hintText: 'Password',
-                      controller: authController.passwordController,
-                      focusNode: authController.passwordFocusNode,
-                      capitalization: TextCapitalization.words,
-                      inputType: TextInputType.visiblePassword,
-                      inputAction: TextInputAction.next,
-                      isPassword: true,
-                      nextFocus: authController.confirmPasswordFocusNode),
-                  SizedBox(
-                    height: Dimensions.PADDING_SIZE_SMALL,
-                  ),
-                  MyTextField(
-                      hintText: 'Confirm Password',
-                      controller: authController.confirmPasswordController,
-                      focusNode: authController.confirmPasswordFocusNode,
-                      capitalization: TextCapitalization.words,
-                      isPassword: true,
-                      inputAction: TextInputAction.next,
-                      nextFocus: authController.experienceFocusNode),
-                  SizedBox(
-                    height: Dimensions.PADDING_SIZE_SMALL,
-                  ),
+                  fromSignIn
+                      ? Column(
+                          children: [
+                            MyTextField(
+                                hintText: 'Password',
+                                controller: authController.passwordController,
+                                focusNode: authController.passwordFocusNode,
+                                capitalization: TextCapitalization.words,
+                                inputType: TextInputType.visiblePassword,
+                                inputAction: TextInputAction.next,
+                                isPassword: true,
+                                nextFocus:
+                                    authController.confirmPasswordFocusNode),
+                            SizedBox(
+                              height: Dimensions.PADDING_SIZE_SMALL,
+                            ),
+                            MyTextField(
+                                hintText: 'Confirm Password',
+                                controller:
+                                    authController.confirmPasswordController,
+                                focusNode:
+                                    authController.confirmPasswordFocusNode,
+                                capitalization: TextCapitalization.words,
+                                isPassword: true,
+                                inputAction: TextInputAction.next,
+                                nextFocus: authController.experienceFocusNode),
+                            SizedBox(
+                              height: Dimensions.PADDING_SIZE_SMALL,
+                            ),
+                          ],
+                        )
+                      : SizedBox(),
                   MyTextField(
                     hintText: 'Years of Experience',
                     controller: authController.experienceController,
@@ -304,29 +326,73 @@ class RegistrationScreen extends StatelessWidget {
                   ]),
                   Column(
                     children: [
-                      Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
                             'Attach verification ID Document',
                             style: robotoRegular.copyWith(
                                 fontSize: Dimensions.FONT_SIZE_SMALL,
                                 color: Theme.of(context).disabledColor),
-                          )),
+                          ),
+                          CustomButton(
+                            buttonText: "Re-Upload",
+                            width: Get.width * 0.25,
+                            height: 28,
+                            backgroundColor: Colors.black,
+                            icon: Icons.document_scanner_rounded,
+                            fontSize: 12,
+                            onPressed: () {
+                              if (authController.pickedImageList.length >= 0 &&
+                                  authController.pickedImageList.length < 3) {
+                                authController.pickRegImage(singleImage: false);
+                              } else {
+                                showCustomSnackBar(
+                                    'Maximum image you can select is 2');
+                              }
+                            },
+                          )
+                        ],
+                      ),
                       Container(
                         height: 150,
                         child: Row(
                           children: [
                             Expanded(
                               child: ListView.builder(
-                                  shrinkWrap: true,
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount:
-                                      authController.pickedImageList.length > 0
-                                          ? authController
-                                                  .pickedImageList.length +
-                                              1
-                                          : 1,
-                                  itemBuilder: ((context, index) {
+                                shrinkWrap: true,
+                                scrollDirection: Axis.horizontal,
+                                itemCount: fromSignIn
+                                    ? authController.pickedImageList.length > 0
+                                        ? authController
+                                                    .pickedImageList.length >
+                                                2
+                                            ? 2
+                                            : authController
+                                                    .pickedImageList.length +
+                                                1
+                                        : 1
+                                    : authController
+                                                .userModel
+                                                .partnerApplicationId
+                                                .imageUrl
+                                                .length >
+                                            0
+                                        ? authController
+                                                    .userModel
+                                                    .partnerApplicationId
+                                                    .imageUrl
+                                                    .length >
+                                                2
+                                            ? 2
+                                            : authController
+                                                .userModel
+                                                .partnerApplicationId
+                                                .imageUrl
+                                                .length
+                                        : 0,
+                                itemBuilder: ((context, index) {
+                                  if (fromSignIn) {
                                     if (index == 0) {
                                       return imagePickerButton(
                                           authController, context);
@@ -334,7 +400,18 @@ class RegistrationScreen extends StatelessWidget {
                                       return imageHolder(
                                           authController, context, index - 1);
                                     }
-                                  })),
+                                  } else {
+                                    if (authController.pickedImageList.length >
+                                        0) {
+                                      return imageHolder(
+                                          authController, context, index);
+                                    } else {
+                                      return applicationImage(
+                                          authController, context, index);
+                                    }
+                                  }
+                                }),
+                              ),
                             ),
                           ],
                         ),
@@ -350,10 +427,12 @@ class RegistrationScreen extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: CustomButton(
-                    buttonText: "Sign Up",
+                    buttonText: fromSignIn ? "Sign Up" : "Update",
                     width: Get.width * 0.8,
                     height: 45,
-                    onPressed: () => authController.signUp(),
+                    onPressed: () {
+                      authController.signUp(fromSignIn);
+                    },
                   ),
                 ),
               ],
@@ -442,10 +521,10 @@ class RegistrationScreen extends StatelessWidget {
             child: InkWell(
               onTap: () {
                 if (authController.pickedImageList.length >= 0 &&
-                    authController.pickedImageList.length < 6) {
+                    authController.pickedImageList.length < 3) {
                   authController.pickRegImage(singleImage: false);
                 } else {
-                  showCustomSnackBar('Maximum image you can select is 5');
+                  showCustomSnackBar('Maximum image you can select is 2');
                 }
               },
               child: Container(
@@ -461,12 +540,33 @@ class RegistrationScreen extends StatelessWidget {
                     border: Border.all(width: 2, color: Colors.white),
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(Icons.camera_alt, color: Colors.white),
+                  child:
+                      Icon(Icons.document_scanner_rounded, color: Colors.white),
                 ),
               ),
             ),
           ),
         ]),
+      ),
+    );
+  }
+
+  Widget applicationImage(
+      AuthController authController, BuildContext context, int index) {
+    return Padding(
+      padding: const EdgeInsets.all(14.0),
+      child: Container(
+        height: 120,
+        width: 150,
+        decoration: BoxDecoration(
+          // color: Colors.black.withOpacity(0.3),
+          borderRadius: BorderRadius.circular(Dimensions.RADIUS_SMALL),
+          border: Border.all(width: 1, color: Theme.of(context).primaryColor),
+        ),
+        child: CustomImage(
+          image: authController.userModel.partnerApplicationId.imageUrl[index],
+          fit: BoxFit.cover,
+        ),
       ),
     );
   }

@@ -6,9 +6,9 @@ import 'package:get/get.dart';
 class ApiChecker {
   static void checkApi(Response response) {
     if (response.statusCode == 401 || response.statusCode == 404) {
-      Get.find<AuthController>().clearSharedData();
-      Get.find<AuthController>().stopLocationRecord();
-      Get.offAllNamed(RouteHelper.getSignInRoute());
+      // Get.find<AuthController>().clearSharedData();
+      // Get.find<AuthController>().stopLocationRecord();
+      // Get.offAllNamed(RouteHelper.getSignInRoute());
     } else {
       showCustomSnackBar(response.statusText);
     }

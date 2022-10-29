@@ -97,29 +97,36 @@ class ApiClient extends GetxService {
         if (multipart.file != null) {
           if (Foundation.kIsWeb) {
             Uint8List _list = await multipart.file.readAsBytes();
-            Http.MultipartFile _part = Http.MultipartFile(
+            Http.MultipartFile _part = await Http.MultipartFile.fromPath(
               multipart.key,
-              multipart.file.readAsBytes().asStream(),
-              _list.length,
+              multipart.file.path,
               filename: basename(multipart.file.path),
               contentType: MediaType('image', 'jpg'),
             );
             _request.files.add(_part);
           } else {
             File _file = File(multipart.file.path);
-            // _request.files.add(Http.MultipartFile(
-            //   multipart.key,
-            //   _file.readAsBytes().asStream(),
-            //   _file.lengthSync(),
-            //   filename: _file.path.split('/').last,
-            // ));
-            var multipartFile = await Http.MultipartFile.fromPath(
-              'upload',
-              _file.path,
-              contentType:
-                  MediaType('image', _file.path.split(".").last.toString()),
-            );
-            _request.files.add(multipartFile);
+            // // _request.files.add(Http.MultipartFile(
+            // //   multipart.key,
+            // //   _file.readAsBytes().asStream(),
+            // //   _file.lengthSync(),
+            // //   filename: _file.path.split('/').last,
+            // // ));
+            // var multipartFile = await Http.MultipartFile.fromPath(
+            //   'upload',
+            //   _file.path,
+            //   contentType:
+            //       MediaType('image', _file.path.split(".").last.toString()),
+            // );
+            // _request.files.add(multipartFile);
+            _request
+              ..files.add(
+                await Http.MultipartFile.fromPath(
+                  'upload',
+                  _file.path,
+                  contentType: MediaType('image', 'jpeg'),
+                ),
+              );
           }
         }
       }
