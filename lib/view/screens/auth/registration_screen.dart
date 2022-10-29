@@ -360,7 +360,12 @@ class RegistrationScreen extends StatelessWidget {
                         ],
                       ),
                       Container(
-                        height: 150,
+                        height: !fromSignIn &&
+                                authController.userModel.partnerApplicationId
+                                        .imageUrl.length >
+                                    0
+                            ? 150
+                            : 20,
                         child: Row(
                           children: [
                             Expanded(

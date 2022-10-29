@@ -209,10 +209,20 @@ class SignInScreen extends StatelessWidget {
             authController.clearUserNameAndPassword();
           }
           await Get.find<AuthController>()
-              .getProfile(userID: authController.userModel.id);
-          Get.find<AuthController>()
-              .getWorkerWorkDetails()
-              .then((value) => Get.offAllNamed(RouteHelper.getInitialRoute()));
+              .getProfile(userID: authController.userModel.id)
+              .then((value) {
+            if (authController.userModel.partnerApplicationId != null) {
+              if (authController.userModel.status == "Approved") {
+                Get.find<AuthController>().getWorkerWorkDetails().then(
+                    (value) => Get.offAllNamed(RouteHelper.getInitialRoute()));
+              } else {
+                Get.offNamed(RouteHelper.approvalWaiting);
+              }
+            } else {
+              Get.find<AuthController>().getWorkerWorkDetails().then(
+                  (value) => Get.offAllNamed(RouteHelper.getInitialRoute()));
+            }
+          });
         } else {
           showCustomSnackBar(status.message);
         }

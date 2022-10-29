@@ -25,23 +25,27 @@ class ApprovalWaitingScreen extends StatelessWidget {
         leading: SizedBox(),
         backgroundColor: Theme.of(context).cardColor,
         actions: [
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Container(
-              decoration: BoxDecoration(
-                  border: Border.all(color: Theme.of(context).primaryColor)),
-              child: TextButton(
-                  onPressed: () {
-                    Get.find<AuthController>().setForEditApplication();
-                    Get.toNamed(RouteHelper.signUp,
-                        arguments: {"fromSignIn": false});
-                  },
-                  child: Text(
-                    "EDIT",
-                    style: robotoBold,
-                  )),
-            ),
-          )
+          Get.find<AuthController>().userModel.partnerApplicationId.status ==
+                  "Unapproved"
+              ? Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        border:
+                            Border.all(color: Theme.of(context).primaryColor)),
+                    child: TextButton(
+                        onPressed: () {
+                          Get.find<AuthController>().setForEditApplication();
+                          Get.toNamed(RouteHelper.signUp,
+                              arguments: {"fromSignIn": false});
+                        },
+                        child: Text(
+                          "EDIT",
+                          style: robotoBold,
+                        )),
+                  ),
+                )
+              : SizedBox(),
         ],
         elevation: 0,
       ),
@@ -88,7 +92,7 @@ class ApprovalWaitingScreen extends StatelessWidget {
                       ),
                     )),
                     SizedBox(
-                      height: Dimensions.PADDING_SIZE_LARGE,
+                      height: Dimensions.PADDING_SIZE_SMALL,
                     ),
                     Card(
                       child: Padding(
@@ -102,12 +106,7 @@ class ApprovalWaitingScreen extends StatelessWidget {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    'Name',
-                                    style: robotoRegular.copyWith(
-                                        color: Theme.of(context).disabledColor),
-                                  ),
-                                  Text(
-                                    ':',
+                                    'Name : ',
                                     style: robotoRegular.copyWith(
                                         color: Theme.of(context).disabledColor),
                                   ),
@@ -126,12 +125,7 @@ class ApprovalWaitingScreen extends StatelessWidget {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    'User Name',
-                                    style: robotoRegular.copyWith(
-                                        color: Theme.of(context).disabledColor),
-                                  ),
-                                  Text(
-                                    ':',
+                                    'User Name : ',
                                     style: robotoRegular.copyWith(
                                         color: Theme.of(context).disabledColor),
                                   ),
@@ -150,12 +144,7 @@ class ApprovalWaitingScreen extends StatelessWidget {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    'Email',
-                                    style: robotoRegular.copyWith(
-                                        color: Theme.of(context).disabledColor),
-                                  ),
-                                  Text(
-                                    ':',
+                                    'Email : ',
                                     style: robotoRegular.copyWith(
                                         color: Theme.of(context).disabledColor),
                                   ),
@@ -244,12 +233,7 @@ class ApprovalWaitingScreen extends StatelessWidget {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    'Years of Experience',
-                                    style: robotoRegular.copyWith(
-                                        color: Theme.of(context).disabledColor),
-                                  ),
-                                  Text(
-                                    ':',
+                                    'Years of Experience : ',
                                     style: robotoRegular.copyWith(
                                         color: Theme.of(context).disabledColor),
                                   ),
@@ -270,22 +254,17 @@ class ApprovalWaitingScreen extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Experienced Services',
-                                    style: robotoRegular.copyWith(
-                                        color: Theme.of(context).disabledColor),
-                                  ),
-                                  Text(
-                                    ':',
+                                    'Experienced Services : ',
                                     style: robotoRegular.copyWith(
                                         color: Theme.of(context).disabledColor),
                                   ),
                                   Container(
                                     alignment: Alignment.topRight,
-                                    width: Get.width * 0.5,
+                                    width: Get.width * 0.4,
                                     child: Text(
                                       (authController.userModel.partnerApplicationId
                                                       .experience.carspa ==
-                                                  0
+                                                  1
                                               ? "Car Wash, "
                                               : "") +
                                           (authController
@@ -293,7 +272,7 @@ class ApprovalWaitingScreen extends StatelessWidget {
                                                       .partnerApplicationId
                                                       .experience
                                                       .mechanical ==
-                                                  0
+                                                  1
                                               ? "Mechanic, "
                                               : "") +
                                           (authController
@@ -301,7 +280,7 @@ class ApprovalWaitingScreen extends StatelessWidget {
                                                       .partnerApplicationId
                                                       .experience
                                                       .quickhelp ==
-                                                  0
+                                                  1
                                               ? "Road Side Assistance, "
                                               : "") +
                                           (authController
@@ -312,7 +291,7 @@ class ApprovalWaitingScreen extends StatelessWidget {
                                                   1
                                               ? "Accessories & Spare Parts, "
                                               : ""),
-                                      maxLines: 4,
+                                      maxLines: 5,
                                       style:
                                           robotoMedium.copyWith(fontSize: 12),
                                     ),
@@ -327,18 +306,18 @@ class ApprovalWaitingScreen extends StatelessWidget {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    'Working Time',
+                                    'Working Time : ',
                                     style: robotoRegular.copyWith(
                                         color: Theme.of(context).disabledColor),
                                   ),
                                   Text(
-                                    ':',
-                                    style: robotoRegular.copyWith(
-                                        color: Theme.of(context).disabledColor),
-                                  ),
-                                  Text(
-                                    authController.userModel
-                                        .partnerApplicationId.availability,
+                                    authController
+                                                .userModel
+                                                .partnerApplicationId
+                                                .availability ==
+                                            "any"
+                                        ? "Any"
+                                        : "Shift Time",
                                     style: robotoMedium,
                                   ),
                                 ],
@@ -373,30 +352,58 @@ class ApprovalWaitingScreen extends StatelessWidget {
                             SizedBox(
                               height: Dimensions.PADDING_SIZE_SMALL,
                             ),
-                            Row(children: [
-                              CustomImage(
-                                image: authController.userModel
-                                            .partnerApplicationId.imageUrl !=
-                                        null
-                                    ? authController.userModel
-                                        .partnerApplicationId.imageUrl[0]
-                                    : "",
-                                height: 120,
-                                width: 120,
-                              ),
-                              SizedBox(
-                                width: Dimensions.PADDING_SIZE_SMALL,
-                              ),
-                              authController.userModel.partnerApplicationId
-                                          .imageUrl.length >
-                                      1
-                                  ? CustomImage(
-                                      image: "image",
+                            authController.userModel.partnerApplicationId
+                                        .imageUrl.length >
+                                    0
+                                ? Row(children: [
+                                    CustomImage(
+                                      image: authController
+                                                      .userModel
+                                                      .partnerApplicationId
+                                                      .imageUrl !=
+                                                  null &&
+                                              authController
+                                                      .userModel
+                                                      .partnerApplicationId
+                                                      .imageUrl
+                                                      .length >
+                                                  0
+                                          ? authController.userModel
+                                              .partnerApplicationId.imageUrl[0]
+                                          : "",
                                       height: 120,
                                       width: 120,
-                                    )
-                                  : SizedBox(),
-                            ]),
+                                    ),
+                                    SizedBox(
+                                      width: Dimensions.PADDING_SIZE_SMALL,
+                                    ),
+                                    authController
+                                                .userModel
+                                                .partnerApplicationId
+                                                .imageUrl
+                                                .length >
+                                            1
+                                        ? CustomImage(
+                                            image: "image",
+                                            height: 120,
+                                            width: 120,
+                                          )
+                                        : SizedBox(),
+                                  ])
+                                : Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        padding: EdgeInsets.all(8),
+                                        child: Text(
+                                          'No image attached!',
+                                          style: robotoMedium.copyWith(
+                                              color: Theme.of(context)
+                                                  .disabledColor),
+                                        ),
+                                      )
+                                    ],
+                                  ),
                           ],
                         ),
                       ),
