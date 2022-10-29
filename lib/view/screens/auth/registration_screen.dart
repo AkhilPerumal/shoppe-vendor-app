@@ -335,23 +335,28 @@ class RegistrationScreen extends StatelessWidget {
                                 fontSize: Dimensions.FONT_SIZE_SMALL,
                                 color: Theme.of(context).disabledColor),
                           ),
-                          CustomButton(
-                            buttonText: "Re-Upload",
-                            width: Get.width * 0.25,
-                            height: 28,
-                            backgroundColor: Colors.black,
-                            icon: Icons.document_scanner_rounded,
-                            fontSize: 12,
-                            onPressed: () {
-                              if (authController.pickedImageList.length >= 0 &&
-                                  authController.pickedImageList.length < 3) {
-                                authController.pickRegImage(singleImage: false);
-                              } else {
-                                showCustomSnackBar(
-                                    'Maximum image you can select is 2');
-                              }
-                            },
-                          )
+                          !fromSignIn
+                              ? CustomButton(
+                                  buttonText: "Re-Upload",
+                                  width: Get.width * 0.25,
+                                  height: 28,
+                                  backgroundColor: Colors.black,
+                                  icon: Icons.document_scanner_rounded,
+                                  fontSize: 12,
+                                  onPressed: () {
+                                    if (authController.pickedImageList.length >=
+                                            0 &&
+                                        authController.pickedImageList.length <
+                                            3) {
+                                      authController.pickRegImage(
+                                          singleImage: false);
+                                    } else {
+                                      showCustomSnackBar(
+                                          'Maximum image you can select is 2');
+                                    }
+                                  },
+                                )
+                              : SizedBox(),
                         ],
                       ),
                       Container(
