@@ -69,13 +69,27 @@ class _SplashScreenState extends State<SplashScreen> {
         await Get.find<AuthController>()
             .getProfile(userID: Get.find<AuthController>().getUserId())
             .then((value) async {
-          if (Get.find<AuthController>().userModel.status == "Approved") {
+          if (Get.find<AuthController>().userModel.partnerApplicationId ==
+              null) {
             Get.find<AuthController>().updateToken();
             await Get.find<AuthController>()
                 .getWorkerWorkDetails()
                 .then((value) => Get.offNamed(RouteHelper.getInitialRoute()));
           } else {
-            Get.offNamed(RouteHelper.approvalWaiting);
+            if (Get.find<AuthController>().userModel.partnerApplicationId !=
+                    null &&
+                Get.find<AuthController>()
+                        .userModel
+                        .partnerApplicationId
+                        .status ==
+                    "Approved") {
+              Get.find<AuthController>().updateToken();
+              await Get.find<AuthController>()
+                  .getWorkerWorkDetails()
+                  .then((value) => Get.offNamed(RouteHelper.getInitialRoute()));
+            } else {
+              Get.offNamed(RouteHelper.approvalWaiting);
+            }
           }
         });
       } else {

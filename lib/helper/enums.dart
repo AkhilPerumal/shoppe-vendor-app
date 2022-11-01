@@ -241,4 +241,65 @@ class EnumConverter {
     }
     return categoryString;
   }
+
+  static getNotificationString(CategoryType categoryType) {
+    var categoryString;
+    switch (categoryType) {
+      case CategoryType.CAR_SHOPPE:
+        categoryString = "Shoppe";
+        break;
+      case CategoryType.CAR_MECHANIC:
+        categoryString = "Mechanical";
+        break;
+      case CategoryType.CAR_SPA:
+        categoryString = "Carspa";
+        break;
+      case CategoryType.QUICK_HELP:
+        categoryString = "Quickhelp";
+        break;
+    }
+    return categoryString;
+  }
+
+  static getNotificationEnum(String categoryType) {
+    if (categoryType == "Shoppe") {
+      return CategoryType.CAR_SHOPPE;
+    }
+    if (categoryType == "Mechanical") {
+      return CategoryType.CAR_MECHANIC;
+    }
+    if (categoryType == "Carspa") {
+      return CategoryType.CAR_SPA;
+    }
+    if (categoryType == "Quickhelp") {
+      return CategoryType.QUICK_HELP;
+    }
+  }
+
+  static getResponseError(int statusCode) {
+    switch (statusCode) {
+      case 400:
+      case 401:
+      case 403:
+        return "Unauthorized Request";
+        break;
+      case 404:
+        return "Not found";
+        break;
+      case 409:
+        return "Error due to a conflict";
+        break;
+      case 408:
+        return "Connection request timeout";
+        break;
+      case 500:
+        return "Internal Server Error";
+        break;
+      case 503:
+        return "Service unavailable";
+        break;
+      default:
+        return "Received invalid status code";
+    }
+  }
 }

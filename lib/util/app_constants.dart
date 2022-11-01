@@ -14,31 +14,56 @@ class AppConstants {
       '/api/v1/auth/delivery-man/verify-token';
   static const String RESET_PASSWORD_URI =
       '/api/v1/auth/delivery-man/reset-password';
+
+  // Auth
   static const String LOGIN_URI = '/auth/sign-in';
   static const String SIGNUP_URI = '/partner/partner-registration';
   static const String UPDATE_DOCUMENTATION =
       '/partner/partner-registration/id/';
+  static const String UPLOAD_REG_DOC_IMAGE =
+      '/partner/partner-registration/upload';
+  static const String PROFILE_URI = '/partner/user/id/';
+
+  // Initial
   static const String TOKEN_URI = '/notification';
-  static const String CURRENT_ORDERS_URI =
-      '/api/v1/delivery-man/current-orders?token=';
   static const String ALL_ORDERS_URI = '/partner/franchise/all';
   static const String WORKER_WORK_DETAILS =
       '/partner/mechanical-order/franchise/all-data-combined';
+
+//shoppe manage
   static const String ALL_CATEGORY_LIST =
       '/partner/consolidated/makes-models-cats-subcats';
-  static const String LATEST_ORDERS_URI =
-      '/api/v1/delivery-man/latest-orders?token=';
   static const String MY_PRODUCT_LIST = '/partner/product/vendor/';
   static const String SINGLE_PRODUCT = '/partner/product/id/';
   static const String UPDATE_PRODUCT_QUANTITY = '/partner/product/id/';
   static const String UPDATE_PRODUCT = '/partner/product/id/';
   static const String CREATE_PRODUCT = '/partner/product/';
   static const String UPLOAD_PRODUCT_IMAGE = '/partner/product/upload';
-  static const String UPLOAD_REG_DOC_IMAGE =
-      '/partner/partner-registration/upload';
+
+  // Order
+  static const String CARSPA_ORDER_STATUS_UPDATE_URI =
+      '/partner/carspa-order/status/';
+  static const String MECHANICS_ORDER_STATUS_UPDATE_URI =
+      '/partner/mechanical-order/status/';
+  static const String QUICKHELP_ORDER_STATUS_UPDATE_URI =
+      '/partner/quickhelp-order/status/';
+  static const String SHOPPE_ORDER_STATUS_UPDATE_URI = '/partner/order/id/';
+  static const String CARSPA_SINGLE_ORDER_DETAILS = '/partner/carspa-order/id/';
+  static const String MECHANICAL_SINGLE_ORDER_DETAILS =
+      '/partner/mechanical-order/id/';
+  static const String QUICKHELP_SINGLE_ORDER_DETAILS =
+      '/partner/quickhelp-order/id/';
+  static const String SHOPPE_SINGLE_ORDER_DETAILS = '/partner/order/id/';
+
+  // Notification
+  static const String NOTIFICATION_URI = '/notification/user/all?type=';
+
+  static const String CURRENT_ORDERS_URI =
+      '/api/v1/delivery-man/current-orders?token=';
+  static const String LATEST_ORDERS_URI =
+      '/api/v1/delivery-man/latest-orders?token=';
   static const String RECORD_LOCATION_URI =
       '/api/v1/delivery-man/record-location-data';
-  static const String PROFILE_URI = '/partner/user/id/';
   static const String UPDATE_ORDER_STATUS_URI =
       '/api/v1/delivery-man/update-order-status';
   static const String UPDATE_PAYMENT_STATUS_URI =
@@ -46,17 +71,10 @@ class AppConstants {
   static const String ORDER_DETAILS_URI =
       '/api/v1/delivery-man/order-details?token=';
   static const String ACCEPT_ORDER_URI = '/api/v1/delivery-man/accept-order';
-  static const String CARSPA_ACCEPT_ORDER_URI = '/partner/carspa-order/status/';
-  static const String MECHANICS_ACCEPT_ORDER_URI =
-      '/partner/mechanical-order/status/';
-  static const String QUICKHELP_ACCEPT_ORDER_URI =
-      '/partner/quickhelp-order/status/';
-  static const String SHOPPE_ACCEPT_ORDER_URI = '/partner/order/id/';
   static const String ACTIVE_STATUS_URI =
       '/api/v1/delivery-man/update-active-status';
   static const String UPDATE_PROFILE_URI =
       '/api/v1/delivery-man/update-profile';
-  static const String NOTIFICATION_URI = '/notification/user/all?type=';
   static const String DRIVER_REMOVE =
       '/api/v1/delivery-man/remove-account?token=';
   static const String CURRENT_ORDER_URI = '/api/v1/delivery-man/order?token=';

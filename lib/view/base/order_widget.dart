@@ -111,7 +111,6 @@ class OrderWidget extends StatelessWidget {
                 RouteHelper.serviceOrderDetails,
                 arguments: {
                   'isRunningOrder': isRunningOrder,
-                  'orderIndex': orderIndex
                 },
               );
             },

@@ -1,4 +1,5 @@
 import 'package:carclenx_vendor_app/controller/order_controller.dart';
+import 'package:carclenx_vendor_app/data/model/response/product_order_details.dart';
 import 'package:carclenx_vendor_app/helper/enums.dart';
 import 'package:carclenx_vendor_app/helper/price_converter.dart';
 import 'package:carclenx_vendor_app/helper/route_helper.dart';
@@ -383,10 +384,18 @@ class ShoppeOrderDetailsScreen extends StatelessWidget {
                                                   : OrderStatus.DISPATCHED)
                                           .then((isSuccess) {
                                         if (isSuccess) {
+                                          ProductOrderDetails orderDetails =
+                                              orderController
+                                                  .selectedShoppeOrder;
+                                          orderDetails.status = orderController
+                                                      .selectedShoppeOrder
+                                                      .status ==
+                                                  OrderStatus.PROCESSING
+                                              ? OrderStatus.CONFIRMED
+                                              : OrderStatus.DISPATCHED;
                                           orderController
                                               .setShoppeSelectedOrder(
-                                                  orderController
-                                                      .selectedShoppeOrder);
+                                                  orderDetails);
                                         } else {
                                           showCustomSnackBar(
                                               'Something went wrong!',

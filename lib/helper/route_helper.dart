@@ -93,7 +93,6 @@ class RouteHelper {
         name: serviceOrderDetails,
         page: () {
           return ServiceOrderDetailsScreen(
-            orderIndex: Get.arguments['orderIndex'],
             isRunningOrder: Get.arguments['isRunningOrder'],
           );
         }),

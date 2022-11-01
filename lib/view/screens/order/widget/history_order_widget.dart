@@ -29,7 +29,6 @@ class HistoryOrderWidget extends StatelessWidget {
           arguments: {
             'orderModel': orderModel,
             'isRunningOrder': isRunning,
-            'orderIndex': index
           },
         );
       },

@@ -1,4 +1,6 @@
+import 'package:carclenx_vendor_app/util/dimensions.dart';
 import 'package:carclenx_vendor_app/util/images.dart';
+import 'package:carclenx_vendor_app/util/styles.dart';
 import 'package:carclenx_vendor_app/view/base/custom_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -64,24 +66,27 @@ contentBox(
           children: <Widget>[
             Text(
               title,
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+              style: robotoBold.copyWith(
+                fontSize: Dimensions.FONT_SIZE_OVER_LARGE,
+              ),
             ),
             SizedBox(
               height: 15,
             ),
             Text(
               descriptions,
-              style: TextStyle(fontSize: 14),
+              style: robotoRegular.copyWith(
+                  fontSize: Dimensions.FONT_SIZE_DEFAULT),
               textAlign: TextAlign.center,
             ),
             SizedBox(
               height: 15,
             ),
-            CustomLoader(),
+            isLoading ? CustomLoader() : SizedBox(),
             SizedBox(
               height: 22,
             ),
-            onPressed.isBlank
+            onPressed != null && !isLoading
                 ? Align(
                     alignment: Alignment.bottomRight,
                     child: ElevatedButton(

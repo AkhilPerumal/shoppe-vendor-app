@@ -37,7 +37,7 @@ class OrderRequestWidget extends StatelessWidget {
       onTap: () {
         Get.find<OrderController>().setServiceSelectedOrder(orderModel);
         Get.toNamed(RouteHelper.serviceOrderDetails,
-            arguments: {'isRunningOrder': true, 'orderIndex': index});
+            arguments: {'isRunningOrder': true});
       },
       child: Card(
         color: orderModel.status == OrderStatus.IN_PROGRESS
@@ -506,9 +506,6 @@ class OrderRequestWidget extends StatelessWidget {
                                     Get.toNamed(RouteHelper.serviceOrderDetails,
                                         arguments: {
                                           'isRunningOrder': true,
-                                          'orderIndex': orderController
-                                                  .currentOrderList.length -
-                                              1
                                         });
                                   } else {
                                     showCustomSnackBar('Something went wrong!',

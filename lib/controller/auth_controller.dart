@@ -513,6 +513,12 @@ class AuthController extends GetxController implements GetxService {
       );
 
       if (result != null) {
+        result.files.forEach((element) {
+          bool approvedExtension = (element.extension == 'jpeg' ||
+              element.extension == 'png' ||
+              element.extension == 'gif');
+        });
+
         List<File> files = result.paths.map((path) => File(path)).toList();
         files.forEach(
           (element) {
@@ -523,6 +529,7 @@ class AuthController extends GetxController implements GetxService {
       } else {
         // User canceled the picker
       }
+      update();
     }
   }
 
@@ -572,7 +579,7 @@ class AuthController extends GetxController implements GetxService {
       isError = true;
       update();
       showCustomSnackBar('Please enter a Password');
-    } else if (passwordController.text.length < 6) {
+    } else if (passwordController.text.length < 6 && isSignUp) {
       isError = true;
       update();
       showCustomSnackBar('Password should be greater than 6 letter');
@@ -655,15 +662,16 @@ class AuthController extends GetxController implements GetxService {
         if (pickedImageList.length > 0) {
           imageUploader(
               signUpBody: signUpBody,
-              userId: response.body['resultData']['partner_application_id']
-                  ['_id'],
+              userId: isSignUp
+                  ? response.body['resultData']['partner_application_id']['_id']
+                  : userModel.partnerApplicationId.id,
               isSignUp: isSignUp);
         } else {
           if (isSignUp) {
             login(signUpBody.username, signUpBody.password);
           } else {
             getProfile(userID: userModel.id).then((value) {
-              setForEditApplication();
+              // setForEditApplication();
               Get.back();
             });
           }
@@ -690,23 +698,37 @@ class AuthController extends GetxController implements GetxService {
     Map<String, String> body = {'id': userId};
     _isLoading = true;
     update();
+
     Response response =
         await authRepo.uploadRegImageUpload(body: body, images: newList);
     if (response.statusCode == 200 || response.statusCode == 201) {
-      CustomDialog(
-        buttonText: "OK",
-        descriptions:
-            "Thank you for joining with us. Your Document will be verified within 1-2 business days.",
-        isLoading: isLoading,
-        title: "Document Submitted",
-        onPressed: () => Get.toNamed(RouteHelper.getInitialRoute()),
-      );
       // showCustomSnackBar("Documents Uploaded", isError: false);
       if (isSignUp) {
-        login(signUpBody.username, signUpBody.password);
+        CustomDialog(
+          buttonText: "OK",
+          descriptions:
+              "Thank you for joining with us. Your Document will be verified within 1-2 business days.",
+          isLoading: isLoading,
+          title: "Document Submitted",
+          onPressed: () => login(signUpBody.username, signUpBody.password),
+        );
       } else {
-        getProfile(userID: userModel.id);
+        getProfile(userID: userModel.id).then((value) {
+          CustomDialog(
+            buttonText: "OK",
+            descriptions:
+                "Thank you for joining with us. Your Document will be verified within 1-2 business days.",
+            isLoading: isLoading,
+            title: "Document Submitted",
+            onPressed: () => Get.toNamed(RouteHelper.approvalWaiting),
+          );
+        });
+        _isLoading = false;
+        update();
       }
+    } else {
+      showCustomSnackBar("Something went wrong with Document Uploading!");
+      print(response.statusText);
     }
     _isLoading = false;
     update();

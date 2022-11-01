@@ -2,7 +2,7 @@ import 'package:carclenx_vendor_app/controller/create_product_controller.dart';
 import 'package:carclenx_vendor_app/util/dimensions.dart';
 import 'package:carclenx_vendor_app/view/base/custom_button.dart';
 import 'package:carclenx_vendor_app/view/base/custom_image.dart';
-import 'package:carclenx_vendor_app/view/screens/shoppe/widget/select_models_sheet.dart';
+import 'package:carclenx_vendor_app/view/screens/shoppe_product_manage/widget/select_models_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

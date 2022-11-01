@@ -218,15 +218,26 @@ class OrderController extends GetxController implements GetxService {
     _offset = offset;
   }
 
-  Future<void> getOrderWithId(String orderId) async {
-    Response response = await orderRepo.getOrderWithId(orderId);
+  Future<void> getOrderWithId(String orderId, CategoryType categoryType) async {
+    _isLoading = true;
+    update();
+    Response response = await orderRepo.getOrderWithId(orderId, categoryType);
     if (response.statusCode == 200) {
-      _selectedOrder = OrderModel.fromJson(response.body);
-      print('order model : ${_selectedOrder.toJson()}');
+      if (categoryType == CategoryType.CAR_SHOPPE) {
+        _selectedShoppeProduct =
+            ProductOrderDetails.fromJson(response.body['resultData']);
+        _isLoading = false;
+        update();
+      } else {
+        _selectedOrder = OrderModel.fromJson(response.body['resultData']);
+        _isLoading = false;
+        update();
+      }
     } else {
+      _isLoading = false;
+      update();
       ApiChecker.checkApi(response);
     }
-    update();
   }
 
   Future<void> getLatestOrders(

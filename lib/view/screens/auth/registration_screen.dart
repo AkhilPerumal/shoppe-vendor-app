@@ -3,11 +3,13 @@ import 'dart:math';
 
 import 'package:carclenx_vendor_app/controller/auth_controller.dart';
 import 'package:carclenx_vendor_app/data/model/body/sign_up_body_model.dart';
+import 'package:carclenx_vendor_app/helper/route_helper.dart';
 import 'package:carclenx_vendor_app/util/dimensions.dart';
 import 'package:carclenx_vendor_app/util/images.dart';
 import 'package:carclenx_vendor_app/util/styles.dart';
 import 'package:carclenx_vendor_app/view/base/custom_app_bar.dart';
 import 'package:carclenx_vendor_app/view/base/custom_button.dart';
+import 'package:carclenx_vendor_app/view/base/custom_dialog.dart';
 import 'package:carclenx_vendor_app/view/base/custom_image.dart';
 import 'package:carclenx_vendor_app/view/base/custom_snackbar.dart';
 import 'package:carclenx_vendor_app/view/base/my_text_field.dart';
@@ -361,9 +363,10 @@ class RegistrationScreen extends StatelessWidget {
                       ),
                       Container(
                         height: !fromSignIn &&
-                                authController.userModel.partnerApplicationId
-                                        .imageUrl.length >
-                                    0
+                                (authController.userModel.partnerApplicationId
+                                            .imageUrl.length >
+                                        0 ||
+                                    authController.pickedImageList.length > 0)
                             ? 150
                             : 20,
                         child: Row(
@@ -382,25 +385,32 @@ class RegistrationScreen extends StatelessWidget {
                                                     .pickedImageList.length +
                                                 1
                                         : 1
-                                    : authController
-                                                .userModel
-                                                .partnerApplicationId
-                                                .imageUrl
-                                                .length >
-                                            0
+                                    : authController.pickedImageList.length > 0
                                         ? authController
+                                                    .pickedImageList.length >
+                                                2
+                                            ? 2
+                                            : authController
+                                                .pickedImageList.length
+                                        : authController
                                                     .userModel
                                                     .partnerApplicationId
                                                     .imageUrl
                                                     .length >
-                                                2
-                                            ? 2
-                                            : authController
-                                                .userModel
-                                                .partnerApplicationId
-                                                .imageUrl
-                                                .length
-                                        : 0,
+                                                0
+                                            ? authController
+                                                        .userModel
+                                                        .partnerApplicationId
+                                                        .imageUrl
+                                                        .length >
+                                                    2
+                                                ? 2
+                                                : authController
+                                                    .userModel
+                                                    .partnerApplicationId
+                                                    .imageUrl
+                                                    .length
+                                            : 0,
                                 itemBuilder: ((context, index) {
                                   if (fromSignIn) {
                                     if (index == 0) {

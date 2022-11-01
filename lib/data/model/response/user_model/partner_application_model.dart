@@ -1,3 +1,5 @@
+import 'package:carclenx_vendor_app/data/model/response/status_update_model.dart';
+
 class PartnerApplicationId {
   PartnerApplicationId({
     this.id,
@@ -31,7 +33,7 @@ class PartnerApplicationId {
   String place;
   String state;
   String status;
-  List<dynamic> statusUpdates;
+  List<StatusUpdate> statusUpdates;
   List<String> thumbnail;
   String username;
   List<dynamic> thumbUrl;
@@ -58,7 +60,8 @@ class PartnerApplicationId {
         status: json["status"] == null ? null : json["status"],
         statusUpdates: json["status_updates"] == null
             ? null
-            : List<dynamic>.from(json["status_updates"].map((x) => x)),
+            : List<StatusUpdate>.from(
+                json["status_updates"].map((x) => StatusUpdate.fromJson(x))),
         thumbnail: json["thumbnail"] == null
             ? null
             : List<String>.from(json["thumbnail"].map((x) => x)),
@@ -87,7 +90,7 @@ class PartnerApplicationId {
         "status": status == null ? null : status,
         "status_updates": statusUpdates == null
             ? null
-            : List<dynamic>.from(statusUpdates.map((x) => x)),
+            : List<dynamic>.from(statusUpdates.map((x) => x.toJson())),
         "thumbnail": thumbnail == null
             ? null
             : List<dynamic>.from(thumbnail.map((x) => x)),

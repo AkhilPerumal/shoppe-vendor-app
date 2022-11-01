@@ -46,22 +46,22 @@ class OrderRepo extends GetxService {
       {String orderID, String status, CategoryType category}) {
     if (category == CategoryType.CAR_SPA) {
       return apiClient.putData(
-          uri: AppConstants.CARSPA_ACCEPT_ORDER_URI + orderID,
+          uri: AppConstants.CARSPA_ORDER_STATUS_UPDATE_URI + orderID,
           body: {"status": status});
     }
     if (category == CategoryType.CAR_MECHANIC) {
       return apiClient.putData(
-          uri: AppConstants.MECHANICS_ACCEPT_ORDER_URI + orderID,
+          uri: AppConstants.MECHANICS_ORDER_STATUS_UPDATE_URI + orderID,
           body: {"status": status});
     }
     if (category == CategoryType.QUICK_HELP) {
       return apiClient.putData(
-          uri: AppConstants.QUICKHELP_ACCEPT_ORDER_URI + orderID,
+          uri: AppConstants.QUICKHELP_ORDER_STATUS_UPDATE_URI + orderID,
           body: {"status": status});
     }
     if (category == CategoryType.CAR_SHOPPE) {
       return apiClient.putData(
-          uri: AppConstants.SHOPPE_ACCEPT_ORDER_URI + orderID,
+          uri: AppConstants.SHOPPE_ORDER_STATUS_UPDATE_URI + orderID,
           body: {"status": status});
     }
     return null;
@@ -89,10 +89,22 @@ class OrderRepo extends GetxService {
     return _ignoreList;
   }
 
-  Future<Response> getOrderWithId(String orderId) {
-    return apiClient.getData(
-        uri:
-            '${AppConstants.CURRENT_ORDER_URI}${getUserToken()}&order_id=$orderId');
+  Future<Response> getOrderWithId(String orderId, CategoryType categoryType) {
+    if (categoryType == CategoryType.CAR_SHOPPE) {
+      return apiClient.getData(
+          uri: '${AppConstants.SHOPPE_SINGLE_ORDER_DETAILS}$orderId');
+    }
+    if (categoryType == CategoryType.CAR_SPA) {
+      return apiClient.getData(
+          uri: '${AppConstants.CARSPA_SINGLE_ORDER_DETAILS}$orderId');
+    }
+    if (categoryType == CategoryType.CAR_MECHANIC) {
+      return apiClient.getData(
+          uri: '${AppConstants.MECHANICAL_SINGLE_ORDER_DETAILS}$orderId');
+    } else {
+      return apiClient.getData(
+          uri: '${AppConstants.QUICKHELP_SINGLE_ORDER_DETAILS}$orderId');
+    }
   }
 
   Future<Response> generateHappyCode(

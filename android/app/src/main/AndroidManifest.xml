@@ -36,6 +36,16 @@
         android:icon="@mipmap/ic_launcher">
         <meta-data android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCaCSJ0BZItSyXqBv8vpD1N4WBffJeKhLQ"/>
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="@string/default_notification_channel_id" />
+        <meta-data 
+        android:name="com.google.firebase.messaging.default_notification_icon" 
+        android:resource="@drawable/ic_stat_notification_icon" />
+        <meta-data
+        android:name="com.google.firebase.messaging.default_notification_color"
+        android:resource="@color/notificationColor" />
+
 
         <activity
             android:name=".MainActivity"
@@ -44,6 +54,8 @@
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
             android:exported="true"
+            android:showWhenLocked="true"
+            android:turnScreenOn="true"
             android:windowSoftInputMode="adjustResize">
             <!-- Specifies an Android theme to apply to this Activity as soon as
                  the Android process has started. This theme is visible to the user
@@ -62,10 +74,6 @@
               android:name="io.flutter.embedding.android.SplashScreenDrawable"
               android:resource="@drawable/launch_background"
               />
-            <!-- <meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@mipmap/ic_launcher" /> -->
-            <meta-data
-                android:name="com.google.firebase.messaging.default_notification_channel_id"
-                android:value="pexapartner" />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -77,10 +85,10 @@
         </activity>
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
-         <!-- <service
-            android:name="com.pexa.partner.BackgroundService"
-            android:enabled="true"
-            android:exported="false" /> -->
+<!--         <service-->
+<!--            android:name="com.pexa.partner.BackgroundService"-->
+<!--            android:enabled="true"-->
+<!--            android:exported="false" />-->
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />

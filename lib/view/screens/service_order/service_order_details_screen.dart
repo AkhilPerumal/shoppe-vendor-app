@@ -18,9 +18,10 @@ import 'package:get/get.dart';
 
 class ServiceOrderDetailsScreen extends StatelessWidget {
   final bool isRunningOrder;
-  final int orderIndex;
-  ServiceOrderDetailsScreen(
-      {@required this.isRunningOrder, @required this.orderIndex});
+
+  ServiceOrderDetailsScreen({
+    @required this.isRunningOrder,
+  });
 
   @override
   Widget build(BuildContext context) {
