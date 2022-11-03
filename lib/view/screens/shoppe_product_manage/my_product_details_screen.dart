@@ -244,28 +244,38 @@ class MyProductDetailsScreen extends StatelessWidget {
                             shoppeController.getAllMakeAndModelCount()[
                                         'modelCount'] !=
                                     0
-                                ? Container(
-                                    height: 20,
-                                    width: 60,
-                                    child: CustomButton(
-                                      buttonText: "View All",
-                                      height: 20,
-                                      width: 60,
-                                      fontSize: 12,
-                                      onPressed: () {
-                                        shoppeController.getMakeList();
-                                        Get.bottomSheet(ProductBrandSheet(),
-                                            backgroundColor: Theme.of(context)
-                                                .cardColor,
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.vertical(
-                                                        top: Radius.circular(
-                                                            25.0))),
-                                            isScrollControlled: true);
-                                      },
-                                    ),
-                                  )
+                                ? shoppeController
+                                            .selectedProduct.modelId[0].name ==
+                                        "GENERAL"
+                                    ? Container(
+                                        child: Text(
+                                          "General",
+                                          style: robotoBold,
+                                        ),
+                                      )
+                                    : Container(
+                                        height: 20,
+                                        width: 60,
+                                        child: CustomButton(
+                                          buttonText: "View All",
+                                          height: 20,
+                                          width: 60,
+                                          fontSize: 12,
+                                          onPressed: () {
+                                            shoppeController.getMakeList();
+                                            Get.bottomSheet(ProductBrandSheet(),
+                                                backgroundColor:
+                                                    Theme.of(context).cardColor,
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.vertical(
+                                                            top:
+                                                                Radius.circular(
+                                                                    25.0))),
+                                                isScrollControlled: true);
+                                          },
+                                        ),
+                                      )
                                 : SizedBox(),
                           ],
                         ),
@@ -274,53 +284,59 @@ class MyProductDetailsScreen extends StatelessWidget {
                       shoppeController
                                   .getAllMakeAndModelCount()['modelCount'] !=
                               0
-                          ? Column(
-                              children: [
-                                Row(
+                          ? shoppeController.selectedProduct.modelId[0].name ==
+                                  "GENERAL"
+                              ? SizedBox()
+                              : Column(
                                   children: [
-                                    Text(
-                                      "No of Brands choosed : ",
-                                      style: robotoRegular.copyWith(
-                                          color:
-                                              Theme.of(context).disabledColor),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          "No of Brands choosed : ",
+                                          style: robotoRegular.copyWith(
+                                              color: Theme.of(context)
+                                                  .disabledColor),
+                                        ),
+                                        SizedBox(
+                                          width:
+                                              Dimensions.PADDING_SIZE_DEFAULT,
+                                        ),
+                                        Text(
+                                          shoppeController
+                                              .getAllMakeAndModelCount()[
+                                                  'makeCount']
+                                              .toString(),
+                                          style: robotoRegular,
+                                        )
+                                      ],
                                     ),
                                     SizedBox(
-                                      width: Dimensions.PADDING_SIZE_DEFAULT,
+                                      height:
+                                          Dimensions.PADDING_SIZE_EXTRA_SMALL,
                                     ),
-                                    Text(
-                                      shoppeController
-                                          .getAllMakeAndModelCount()[
-                                              'makeCount']
-                                          .toString(),
-                                      style: robotoRegular,
-                                    )
+                                    Row(
+                                      children: [
+                                        Text(
+                                          "No of Models choosed : ",
+                                          style: robotoRegular.copyWith(
+                                              color: Theme.of(context)
+                                                  .disabledColor),
+                                        ),
+                                        SizedBox(
+                                          width:
+                                              Dimensions.PADDING_SIZE_DEFAULT,
+                                        ),
+                                        Text(
+                                          shoppeController
+                                              .getAllMakeAndModelCount()[
+                                                  'modelCount']
+                                              .toString(),
+                                          style: robotoRegular,
+                                        )
+                                      ],
+                                    ),
                                   ],
-                                ),
-                                SizedBox(
-                                  height: Dimensions.PADDING_SIZE_EXTRA_SMALL,
-                                ),
-                                Row(
-                                  children: [
-                                    Text(
-                                      "No of Models choosed : ",
-                                      style: robotoRegular.copyWith(
-                                          color:
-                                              Theme.of(context).disabledColor),
-                                    ),
-                                    SizedBox(
-                                      width: Dimensions.PADDING_SIZE_DEFAULT,
-                                    ),
-                                    Text(
-                                      shoppeController
-                                          .getAllMakeAndModelCount()[
-                                              'modelCount']
-                                          .toString(),
-                                      style: robotoRegular,
-                                    )
-                                  ],
-                                ),
-                              ],
-                            )
+                                )
                           : Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
@@ -465,6 +481,14 @@ class MyProductDetailsScreen extends StatelessWidget {
                                               }
                                             });
                                           },
+                                        ),
+                                        CustomButton(
+                                          buttonText: "Cancel",
+                                          width: 60,
+                                          height: 25,
+                                          backgroundColor: Colors.black,
+                                          onPressed: () =>
+                                              shoppeController.setStockEdit(),
                                         )
                                       ],
                                     ),
@@ -541,7 +565,7 @@ class MyProductDetailsScreen extends StatelessWidget {
                     padding:
                         EdgeInsets.only(top: Dimensions.PADDING_SIZE_LARGE),
                     child: Center(
-                        child: Text('no_review_found'.tr,
+                        child: Text('No review available',
                             style: robotoRegular.copyWith(
                                 color: Theme.of(context).disabledColor))),
                   )

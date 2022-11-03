@@ -20,8 +20,13 @@ class ShoppeController extends GetxController implements GetxService {
   List<ProductModel> modelList = [];
 
   setStockUpdatingStatus(int quantity) {
-    isUpdatingStock = !isUpdatingStock;
+    setStockEdit();
     selectedProduct.quantity = quantity;
+    update();
+  }
+
+  setStockEdit() {
+    isUpdatingStock = !isUpdatingStock;
     update();
   }
 

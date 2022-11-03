@@ -519,6 +519,8 @@ class CreateProductController extends GetxController implements GetxService {
         await shoppeRepo.uploadProductImageUpload(body: body, images: newList);
     if (response.statusCode == 200 || response.statusCode == 201) {
       showCustomSnackBar("Images Uploaded", isError: false);
+    } else {
+      showCustomSnackBar("Something went wrong");
     }
   }
 

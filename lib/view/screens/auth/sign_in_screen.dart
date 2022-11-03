@@ -18,8 +18,10 @@ class SignInScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String _countryDialCode = "+91";
-    _nameController.text = "akhil.dev.vendor";
-    _passwordController.text = "akhil.dev.vendor";
+    // _nameController.text = "akhil.test.registration.1";
+    // _passwordController.text = "akhil.test.registration.1";
+    _nameController.text = "akhil.test.2";
+    _passwordController.text = "akhil.test.2";
 
     // _nameController.text = Get.find<AuthController>().getUserName() ?? '';
     // _passwordController.text =
@@ -144,6 +146,7 @@ class SignInScreen extends StatelessWidget {
                         buttonText: "Join Up As Pexa Partner",
                         backgroundColor: Colors.blue,
                         onPressed: () {
+                          authController.setForNewApplication();
                           Get.toNamed(RouteHelper.signUp,
                               arguments: {"fromSignIn": true});
                         },
@@ -208,21 +211,22 @@ class SignInScreen extends StatelessWidget {
           } else {
             authController.clearUserNameAndPassword();
           }
-          await Get.find<AuthController>()
-              .getProfile(userID: authController.userModel.id)
-              .then((value) {
-            if (authController.userModel.partnerApplicationId != null) {
-              if (authController.userModel.status == "Approved") {
-                Get.find<AuthController>().getWorkerWorkDetails().then(
-                    (value) => Get.offAllNamed(RouteHelper.getInitialRoute()));
-              } else {
-                Get.offNamed(RouteHelper.approvalWaiting);
-              }
-            } else {
+          // await Get.find<AuthController>()
+          //     .getProfile(userID: authController.userModel.id)
+          //     .then((value) {
+          if (authController.userModel.partnerApplicationId != null) {
+            if (authController.userModel.partnerApplicationId.status ==
+                "Approved") {
               Get.find<AuthController>().getWorkerWorkDetails().then(
                   (value) => Get.offAllNamed(RouteHelper.getInitialRoute()));
+            } else {
+              Get.offNamed(RouteHelper.approvalWaiting);
             }
-          });
+          } else {
+            Get.find<AuthController>().getWorkerWorkDetails().then(
+                (value) => Get.offAllNamed(RouteHelper.getInitialRoute()));
+          }
+          // });
         } else {
           showCustomSnackBar(status.message);
         }

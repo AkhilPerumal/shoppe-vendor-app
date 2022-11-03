@@ -5,6 +5,7 @@ import 'package:carclenx_vendor_app/util/dimensions.dart';
 import 'package:carclenx_vendor_app/util/images.dart';
 import 'package:carclenx_vendor_app/util/styles.dart';
 import 'package:carclenx_vendor_app/view/base/custom_app_bar.dart';
+import 'package:carclenx_vendor_app/view/base/custom_image.dart';
 import 'package:carclenx_vendor_app/view/base/loading_screen.dart';
 import 'package:carclenx_vendor_app/view/screens/notification/widget/notification_dialog.dart';
 import 'package:flutter/material.dart';
@@ -101,35 +102,23 @@ class NotificationScreen extends StatelessWidget {
                                                           });
                                                     },
                                                     leading: ClipOval(
-                                                        child: FadeInImage
-                                                            .assetNetwork(
-                                                      placeholder:
-                                                          Images.placeholder,
-                                                      height: 40,
-                                                      width: 40,
-                                                      fit: BoxFit.cover,
+                                                        child: CustomImage(
                                                       image: notificationController
                                                                       .notificationList[
                                                                           index]
-                                                                      .thumbUrl !=
+                                                                      .imageUrl !=
                                                                   null &&
                                                               notificationController
                                                                       .notificationList[
                                                                           index]
-                                                                      .thumbUrl
+                                                                      .imageUrl
                                                                       .length >
                                                                   0
-                                                          ? '${notificationController.notificationList[index].thumbUrl[0]}'
+                                                          ? '${notificationController.notificationList[index].imageUrl[0]}'
                                                           : '',
-                                                      imageErrorBuilder: (c, o,
-                                                              s) =>
-                                                          Image.asset(
-                                                              Images
-                                                                  .placeholder,
-                                                              height: 40,
-                                                              width: 40,
-                                                              fit:
-                                                                  BoxFit.cover),
+                                                      height: 40,
+                                                      width: 40,
+                                                      fit: BoxFit.cover,
                                                     )),
                                                     title: Text(
                                                       notificationController
@@ -151,6 +140,19 @@ class NotificationScreen extends StatelessWidget {
                                                           fontSize: Dimensions
                                                               .FONT_SIZE_SMALL),
                                                     ),
+                                                    trailing: Text(
+                                                        DateConverter.timeAgo(
+                                                            dateTime:
+                                                                notificationController
+                                                                    .notificationList[
+                                                                        index]
+                                                                    .updatedAt),
+                                                        style: robotoRegular.copyWith(
+                                                            fontSize: Dimensions
+                                                                .FONT_SIZE_EXTRA_SMALL,
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .disabledColor)),
                                                   ),
                                                   Padding(
                                                     padding: EdgeInsets.symmetric(

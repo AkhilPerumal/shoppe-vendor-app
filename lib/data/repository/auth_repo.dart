@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:carclenx_vendor_app/controller/auth_controller.dart';
 import 'package:carclenx_vendor_app/data/model/body/record_location_body.dart';
 import 'package:carclenx_vendor_app/data/model/body/sign_up_body_model.dart';
@@ -49,10 +48,6 @@ class AuthRepo {
 
   Future<Response> uploadRegImageUpload(
       {Map<String, String> body, List<MultipartBody> images}) {
-    Map<String, String> header = {
-      'Content-Type': 'application/json; charset=UTF-8',
-      AppConstants.LOCALIZATION_KEY: AppConstants.languages[0].languageCode,
-    };
     return apiClient.postMultipartData(
         uri: AppConstants.UPLOAD_REG_DOC_IMAGE,
         body: body,
@@ -151,14 +146,14 @@ class AuthRepo {
         sound: true,
       );
       if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-        _deviceToken = await _saveDeviceToken();
+        _deviceToken = await _saveFCMToken();
       }
       var data = await deviceInfoPlugin.iosInfo;
       device = data.name;
       deviceId = data.identifierForVendor;
       deviceType = 'Ios';
     } else {
-      _deviceToken = await _saveDeviceToken();
+      _deviceToken = await _saveFCMToken();
       AndroidDeviceInfo build = await deviceInfoPlugin.androidInfo;
       device = build.model;
       deviceId = build.id;
@@ -187,20 +182,24 @@ class AuthRepo {
     return apiClient.getData(uri: AppConstants.WORKER_WORK_DETAILS);
   }
 
-  Future<String> _saveDeviceToken() async {
-    String _deviceToken = '';
+  Future<String> _saveFCMToken() async {
+    String _fcmToken = '';
 
-    _deviceToken = await FirebaseMessaging.instance.getToken();
+    _fcmToken = await FirebaseMessaging.instance.getToken();
 
-    if (_deviceToken != null) {
-      print('--------Firebase messaging Token---------- ' + _deviceToken);
+    if (_fcmToken != null) {
+      print('--------Firebase messaging Token---------- ' + _fcmToken);
     }
-    return _deviceToken;
+    return _fcmToken;
   }
 
   Future<Response> forgetPassword(String phone) async {
     return await apiClient.postData(
         uri: AppConstants.FORGET_PASSWORD_URI, body: {"phone": phone});
+  }
+
+  Future<Response> getStateDistrict() async {
+    return await apiClient.getData(uri: AppConstants.STATE_DISTRICT);
   }
 
   Future<Response> verifyToken(String phone, String token) async {
@@ -361,8 +360,13 @@ class AuthRepo {
 
   Future<Response> updateDocumentation(
       SignUpBody signUpBody, String documentationID) async {
+    Map<String, String> header = {
+      'Content-Type': 'application/json; charset=UTF-8',
+      AppConstants.LOCALIZATION_KEY: AppConstants.languages[0].languageCode,
+    };
     return await apiClient.putData(
         uri: AppConstants.UPDATE_DOCUMENTATION + documentationID,
-        body: signUpBody.toJson());
+        body: signUpBody.toJson(),
+        headers: header);
   }
 }

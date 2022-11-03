@@ -93,6 +93,7 @@ class ApiClient extends GetxService {
       Http.MultipartRequest _request =
           Http.MultipartRequest('POST', Uri.parse(appBaseUrl + uri));
       _request.headers.addAll(headers ?? _mainHeaders);
+
       for (MultipartBody multipart in multipartBody) {
         if (multipart.file != null) {
           if (Foundation.kIsWeb) {
@@ -130,7 +131,9 @@ class ApiClient extends GetxService {
           }
         }
       }
-      _request.fields.addAll(body);
+      var id = body['id'];
+      _request.fields['id'] = id;
+      _logger.i(_request);
       Http.Response _response =
           await Http.Response.fromStream(await _request.send());
       return handleResponse(_response, uri);
@@ -159,6 +162,7 @@ class ApiClient extends GetxService {
       ).timeout(Duration(seconds: timeoutInSeconds));
       return handleResponse(_response, uri);
     } catch (e) {
+      _logger.e(e.toString());
       return Response(statusCode: 1, statusText: noInternetMessage);
     }
   }
@@ -181,8 +185,8 @@ class ApiClient extends GetxService {
     dynamic _body;
     try {
       _body = jsonDecode(response.body);
-    } catch (e) {
-      _logger.e("Handling response : " + e);
+    } catch (err) {
+      _logger.e("Handling response : " + err.toString());
     }
     Response _response = Response(
       body: _body != null ? _body : response.body,

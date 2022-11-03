@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:carclenx_vendor_app/data/model/response/user_model/partner_application_model.dart';
+
 SignUpBody signUpBodyFromJson(String str) =>
     SignUpBody.fromJson(json.decode(str));
 
@@ -57,37 +59,5 @@ class SignUpBody {
         "password": password == null ? null : password,
         "experience": experience == null ? null : experience.toJson(),
         "availability": availability == null ? null : availability,
-      };
-}
-
-class Experience {
-  Experience({
-    this.total,
-    this.carspa,
-    this.mechanical,
-    this.quickhelp,
-    this.shoppe,
-  });
-
-  int total;
-  int carspa;
-  int mechanical;
-  int quickhelp;
-  int shoppe;
-
-  factory Experience.fromJson(Map<String, dynamic> json) => Experience(
-        total: json["total"] == null ? null : json["total"],
-        carspa: json["carspa"] == null ? null : json["carspa"],
-        mechanical: json["mechanical"] == null ? null : json["mechanical"],
-        quickhelp: json["quickhelp"] == null ? null : json["quickhelp"],
-        shoppe: json["shoppe"] == null ? null : json["shoppe"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "total": total == null ? null : total,
-        "carspa": carspa == null ? null : carspa,
-        "mechanical": mechanical == null ? null : mechanical,
-        "quickhelp": quickhelp == null ? null : quickhelp,
-        "shoppe": shoppe == null ? null : shoppe,
       };
 }

@@ -13,23 +13,33 @@ class AllServiceWorkDetails {
   ServiceCountDetailsModel quickhelp;
   ShoppeCountDetailModel shoppe;
   ServiceCountDetailsModel carspa;
+  double average_rating = 0;
 
-  factory AllServiceWorkDetails.fromJson(Map<String, dynamic> json) =>
-      AllServiceWorkDetails(
-        mechanical: json["mechanical"] == null
-            ? null
-            : ServiceCountDetailsModel.fromJson(json["mechanical"]),
-        quickhelp: json["quickhelp"] == null
-            ? null
-            : ServiceCountDetailsModel.fromJson(json["quickhelp"]),
-        shoppe: json["shoppe"] == null
-            ? null
-            : ShoppeCountDetailModel.fromJson(json["shoppe"]),
-        carspa: json["carspa"] == null
-            ? null
-            : ServiceCountDetailsModel.fromJson(json["carspa"]),
-      );
+  AllServiceWorkDetails.fromJson(Map<String, dynamic> json) {
+    mechanical = json["mechanical"] == null
+        ? null
+        : ServiceCountDetailsModel.fromJson(json["mechanical"]);
+    quickhelp = json["quickhelp"] == null
+        ? null
+        : ServiceCountDetailsModel.fromJson(json["quickhelp"]);
+    shoppe = json["shoppe"] == null
+        ? null
+        : ShoppeCountDetailModel.fromJson(json["shoppe"]);
+    carspa = json["carspa"] == null
+        ? null
+        : ServiceCountDetailsModel.fromJson(json["carspa"]);
 
+    average_rating = double.parse((((shoppe.total != null
+                    ? shoppe.total.averageRating
+                    : 0) +
+                (carspa.total != null ? carspa.total.averageRating : 0) +
+                (mechanical.total != null
+                    ? mechanical.total.averageRating
+                    : 0) +
+                (quickhelp.total != null ? quickhelp.total.averageRating : 0)) /
+            4)
+        .toString());
+  }
   Map<String, dynamic> toJson() => {
         "mechanical": mechanical == null ? null : mechanical.toJson(),
         "quickhelp": quickhelp == null ? null : quickhelp.toJson(),

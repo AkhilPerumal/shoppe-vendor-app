@@ -7,7 +7,9 @@ import 'package:carclenx_vendor_app/data/api/api_client.dart';
 import 'package:carclenx_vendor_app/data/model/body/record_location_body.dart';
 import 'package:carclenx_vendor_app/data/model/body/sign_up_body_model.dart';
 import 'package:carclenx_vendor_app/data/model/response/all_service_work_details_model.dart';
+import 'package:carclenx_vendor_app/data/model/response/all_state_district_model.dart';
 import 'package:carclenx_vendor_app/data/model/response/response_model.dart';
+import 'package:carclenx_vendor_app/data/model/response/user_model/partner_application_model.dart';
 import 'package:carclenx_vendor_app/data/model/response/user_model/user_model.dart';
 import 'package:carclenx_vendor_app/data/repository/auth_repo.dart';
 import 'package:carclenx_vendor_app/helper/route_helper.dart';
@@ -46,13 +48,15 @@ class AuthController extends GetxController implements GetxService {
   Location _location = Location();
   List<File> pickedImageList = [];
   XFile pickedRegImage;
+  AllStateDistrictModel _allStateDistrictModel;
+  String _selectedState;
+  String _selectedDistrict;
+  List<String> _districtList;
 
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController workinglocationController = TextEditingController();
-  TextEditingController stateController = TextEditingController();
-  TextEditingController districtController = TextEditingController();
   TextEditingController userNameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
@@ -72,6 +76,9 @@ class AuthController extends GetxController implements GetxService {
   FocusNode scheduleFocusNode = FocusNode();
 
   bool get isLoading => _isLoading;
+  String get selectedState => _selectedState;
+  String get selectedDistrict => _selectedDistrict;
+  List<String> get districtList => _districtList;
   bool get notification => _notification;
   bool get isShiftTime => _isShiftTime;
   bool get isCheckedCarWash => _isCheckedCarWash;
@@ -82,6 +89,7 @@ class AuthController extends GetxController implements GetxService {
   bool get isPasswordConfirmed => _isPasswordConfirmed;
   UserModel get userModel => _userModel;
   XFile get pickedFile => _pickedFile;
+  AllStateDistrictModel get allStateDistrictModel => _allStateDistrictModel;
 
   updateUserModel(UserModel userModel) {
     this._userModel = userModel;
@@ -113,20 +121,44 @@ class AuthController extends GetxController implements GetxService {
     update();
   }
 
+  setState(String state) {
+    _selectedState = state;
+    update();
+  }
+
+  setDistrict(String district) {
+    _selectedDistrict = district;
+    update();
+  }
+
+  setDistrictList(String state) {
+    setState(state);
+    _districtList = [];
+    var selectedStateDisrtict = allStateDistrictModel.stateDistrictList
+        .where((element) => element.state == state)
+        .first;
+    _districtList = selectedStateDisrtict.districtList;
+  }
+
   Future<ResponseModel> login(String name, String password) async {
     _isLoading = true;
     update();
     Response response = await authRepo.login(name, password);
     ResponseModel responseModel;
-    if (response.statusCode == 200) {
+    if (response.statusCode == 200 || response.statusCode == 401) {
       _userModel = UserModel.fromJson(response.body['resultData']);
       authRepo.setUserDetails(_userModel);
       authRepo.saveUserToken(
           _userModel.userToken, response.body['zone_wise_topic']);
-
-      await authRepo.updateToken();
+      if (userModel.partnerApplicationId.status == "Approved") {
+        await authRepo.updateToken();
+      }
+      _isLoading = false;
+      update();
       responseModel = ResponseModel(true, 'successful');
     } else {
+      _isLoading = false;
+      update();
       responseModel = ResponseModel(false, response.statusText);
     }
     _isLoading = false;
@@ -162,9 +194,14 @@ class AuthController extends GetxController implements GetxService {
   }
 
   Future<void> getProfile({String userID}) async {
+    _isLoading = true;
+    update();
     Response response = await authRepo.getProfileInfo(userID: userID);
     if (response.statusCode == 200) {
+      _isLoading = false;
+      update();
       _userModel = UserModel.fromJson(response.body['resultData']);
+      getWorkerWorkDetails();
       if (_userModel.isActive && _userModel.status == "Approved") {
         LocationPermission permission = await Geolocator.checkPermission();
         if (permission == LocationPermission.denied ||
@@ -185,12 +222,17 @@ class AuthController extends GetxController implements GetxService {
               ),
               barrierDismissible: false);
         } else {
+          _isLoading = false;
+          update();
           startLocationRecord();
         }
       } else {
+        _isLoading = false;
+        update();
         stopLocationRecord();
       }
     }
+    _isLoading = false;
     update();
   }
 
@@ -218,17 +260,19 @@ class AuthController extends GetxController implements GetxService {
   }
 
   Future<void> getWorkerWorkDetails() async {
+    _isLoading = true;
+    update();
     Response response = await authRepo.getWorkerWorkDetails();
     if (response.statusCode == 200) {
       AllServiceWorkDetails allServiceWorkDetails =
           AllServiceWorkDetails.fromJson(response.body['resultData']);
-
-      Get.find<AuthController>()
-          .userModel
-          .setWorkerCounts(allServiceWorkDetails);
+      userModel.setWorkerCounts(allServiceWorkDetails);
+      _isLoading = false;
+      update();
     } else {
       ApiChecker.checkApi(response);
     }
+    _isLoading = false;
     update();
   }
 
@@ -467,6 +511,21 @@ class AuthController extends GetxController implements GetxService {
     _pickedFile = null;
   }
 
+  Future<void> getStateDistrict() async {
+    _isLoading = true;
+    update();
+    Response resposne = await authRepo.getStateDistrict();
+    if (resposne.statusCode == 200) {
+      _isLoading = false;
+      update();
+      _allStateDistrictModel = AllStateDistrictModel.fromJson(resposne.body);
+    } else {
+      _isLoading = false;
+      update();
+      showCustomSnackBar("Something went wrong");
+    }
+  }
+
   void _checkPermission(Function callback) async {
     LocationPermission permission = await Geolocator.requestPermission();
     permission = await Geolocator.checkPermission();
@@ -552,21 +611,25 @@ class AuthController extends GetxController implements GetxService {
     } else if (phoneController.text == '' || phoneController.text == null) {
       isError = true;
       update();
-      showCustomSnackBar('Please enter your Phone number');
+      showCustomSnackBar('Please enter your Phone Number');
+    } else if (phoneController.text.length < 10 ||
+        phoneController.text.length > 13) {
+      isError = true;
+      update();
+      showCustomSnackBar('Please enter a valid Phone Number');
     } else if (workinglocationController.text == '' ||
         workinglocationController.text == null) {
       isError = true;
       update();
       showCustomSnackBar('Please enter your prefered working Location');
-    } else if (districtController.text == '' ||
-        districtController.text == null) {
+    } else if (selectedState == '' || selectedState == null) {
       isError = true;
       update();
-      showCustomSnackBar('Please enter your District');
-    } else if (stateController.text == '' || stateController.text == null) {
+      showCustomSnackBar('Please select your State');
+    } else if (selectedDistrict == '' || selectedDistrict == null) {
       isError = true;
       update();
-      showCustomSnackBar('Please enter your State');
+      showCustomSnackBar('Please select your District');
     } else if ((userNameController.text == '' ||
             userNameController.text == null) &&
         isSignUp) {
@@ -635,10 +698,10 @@ class AuthController extends GetxController implements GetxService {
             name: nameController.text,
             email: emailController.text,
             phone: phoneController.text,
-            district: districtController.text,
+            district: selectedDistrict,
             experience: experience,
             place: workinglocationController.text,
-            state: stateController.text,
+            state: selectedState,
             username: userNameController.text,
             password: passwordController.text,
             availability: isShiftTime ? 'shift_based' : 'any');
@@ -647,10 +710,10 @@ class AuthController extends GetxController implements GetxService {
         signUpBody = SignUpBody(
             name: nameController.text,
             email: emailController.text,
-            district: districtController.text,
+            district: selectedDistrict,
             experience: experience,
             place: workinglocationController.text,
-            state: stateController.text,
+            state: selectedState,
             username: userNameController.text,
             availability: isShiftTime ? 'shift_based' : 'any');
         response = await authRepo.updateDocumentation(
@@ -710,21 +773,35 @@ class AuthController extends GetxController implements GetxService {
               "Thank you for joining with us. Your Document will be verified within 1-2 business days.",
           isLoading: isLoading,
           title: "Document Submitted",
-          onPressed: () => login(signUpBody.username, signUpBody.password),
+          onPressed: () {
+            Get.back();
+            login(signUpBody.username, signUpBody.password)
+                .then((status) async {
+              if (status.isSuccess) {
+                if (userModel.partnerApplicationId != null) {
+                  Get.offNamed(RouteHelper.approvalWaiting);
+                }
+              }
+            });
+          },
         );
       } else {
-        getProfile(userID: userModel.id).then((value) {
-          CustomDialog(
-            buttonText: "OK",
-            descriptions:
-                "Thank you for joining with us. Your Document will be verified within 1-2 business days.",
-            isLoading: isLoading,
-            title: "Document Submitted",
-            onPressed: () => Get.toNamed(RouteHelper.approvalWaiting),
-          );
-        });
+        userModel.partnerApplicationId =
+            PartnerApplicationId.fromJson(response.body['resultData']);
         _isLoading = false;
         update();
+        Get.back();
+        CustomDialog(
+          buttonText: "OK",
+          descriptions:
+              "Thank you for joining with us. Your Document will be verified within 1-2 business days.",
+          isLoading: isLoading,
+          title: "Document Submitted",
+          onPressed: () {
+            Get.back();
+            Get.offNamed(RouteHelper.approvalWaiting);
+          },
+        );
       }
     } else {
       showCustomSnackBar("Something went wrong with Document Uploading!");
@@ -750,7 +827,8 @@ class AuthController extends GetxController implements GetxService {
     }
   }
 
-  void setForEditApplication() {
+  Future<void> setForEditApplication() async {
+    await getStateDistrict();
     _isCheckedCarWash = userModel.partnerApplicationId.experience.carspa == 1;
     _isCheckedMechanic =
         userModel.partnerApplicationId.experience.mechanical == 1;
@@ -764,11 +842,30 @@ class AuthController extends GetxController implements GetxService {
     phoneController.text = userModel.partnerApplicationId.phone != null
         ? userModel.partnerApplicationId.phone
         : "";
-    districtController.text = userModel.partnerApplicationId.district;
-    stateController.text = userModel.partnerApplicationId.state;
+    _selectedState = userModel.partnerApplicationId.state;
+    setDistrictList(_selectedState);
+    _selectedDistrict = userModel.partnerApplicationId.district;
     userNameController.text = userModel.partnerApplicationId.username;
     experienceController.text =
         userModel.partnerApplicationId.experience.total.toString();
+    update();
+  }
+
+  void setForNewApplication() {
+    getStateDistrict();
+    _isCheckedCarWash = false;
+    _isCheckedMechanic = false;
+    _isCheckedQuickHelp = false;
+    _isCheckedShoppe = false;
+    _isShiftTime = false;
+    workinglocationController.text = '';
+    nameController.text = "";
+    emailController.text = "";
+    phoneController.text = "";
+    _selectedDistrict = "";
+    _selectedState = "";
+    userNameController.text = "";
+    experienceController.text = "";
     update();
   }
 }

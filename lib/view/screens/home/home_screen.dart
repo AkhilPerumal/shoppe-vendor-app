@@ -20,6 +20,7 @@ import 'package:flutter_switch/flutter_switch.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class HomeScreen extends StatelessWidget {
   Future<void> _loadData() async {
@@ -27,17 +28,15 @@ class HomeScreen extends StatelessWidget {
     // await Get.find<OrderController>().getCurrentOrders();
     // await Get.find<NotificationController>().getNotificationList();
     Get.find<AuthController>().getWorkerWorkDetails();
-    bool _isBatteryOptimizationDisabled =
-        await DisableBatteryOptimization.isBatteryOptimizationDisabled;
-    if (!_isBatteryOptimizationDisabled) {
-      DisableBatteryOptimization.showDisableBatteryOptimizationSettings();
-    }
+    // bool _isBatteryOptimizationDisabled =
+    //     await DisableBatteryOptimization.isBatteryOptimizationDisabled;
+    // if (!_isBatteryOptimizationDisabled) {
+    //   DisableBatteryOptimization.showDisableBatteryOptimizationSettings();
+    // }
   }
 
   @override
   Widget build(BuildContext context) {
-    _loadData();
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).cardColor,
@@ -101,7 +100,7 @@ class HomeScreen extends StatelessWidget {
                       activeText: 'online'.tr,
                       inactiveText: 'offline'.tr,
                       activeColor: Theme.of(context).primaryColor,
-                      value: authController.userModel.isActive == true,
+                      value: authController.userModel.status == 'Active',
                       onToggle: (bool isActive) async {
                         if (!isActive &&
                             orderController.runningOrderList != null &&
@@ -111,10 +110,20 @@ class HomeScreen extends StatelessWidget {
                           if (!isActive) {
                             Get.dialog(ConfirmationDialog(
                               icon: Images.warning,
-                              description: 'are_you_sure_to_offline'.tr,
-                              onYesPressed: () {
+                              // description: 'are_you_sure_to_offline'.tr,
+                              description:
+                                  "Currently you can't go offline, Contact customer care",
+                              onYesPressed: () async {
                                 Get.back();
-                                authController.updateActiveStatus();
+                                // authController.updateActiveStatus();
+                                if (await canLaunchUrlString(
+                                    'tel:+919745401234')) {
+                                  launchUrlString('tel:+919745401234',
+                                      mode: LaunchMode.externalApplication);
+                                } else {
+                                  showCustomSnackBar(
+                                      'invalid_phone_number_found');
+                                }
                               },
                             ));
                           } else {
@@ -241,7 +250,7 @@ class HomeScreen extends StatelessWidget {
                                       SizedBox(
                                           height:
                                               Dimensions.PADDING_SIZE_SMALL),
-                                      authController.userModel != null
+                                      authController.userModel != null && authController.userModel.allServiceWorkDetails!=null
                                           ? Text(
                                               PriceConverter.convertPrice((authController.userModel.allServiceWorkDetails.carspa != null && authController.userModel.allServiceWorkDetails.carspa.total != null ? double.tryParse(authController.userModel.allServiceWorkDetails.carspa.total.earning.toString()) : 0.0) +
                                                   (authController.userModel.allServiceWorkDetails.shoppe != null && authController.userModel.allServiceWorkDetails.shoppe.total != null
@@ -451,7 +460,8 @@ class HomeScreen extends StatelessWidget {
                             Row(children: [
                               authController.userModel != null
                                   ? Text(
-                                      authController.userModel.avgRating
+                                      authController.userModel
+                                          .allServiceWorkDetails.average_rating
                                           .toString(),
                                       style: robotoBold.copyWith(
                                           fontSize: 30, color: Colors.white),
@@ -462,15 +472,15 @@ class HomeScreen extends StatelessWidget {
                                       color: Colors.white),
                               Icon(Icons.star, color: Colors.white, size: 35),
                             ]),
-                            authController.userModel != null
-                                ? Text(
-                                    '${authController.userModel.ratingCount} ${'reviews'.tr}',
-                                    style: robotoRegular.copyWith(
-                                        fontSize: Dimensions.FONT_SIZE_SMALL,
-                                        color: Colors.white),
-                                  )
-                                : Container(
-                                    height: 10, width: 50, color: Colors.white),
+                            // authController.userModel != null
+                            //     ? Text(
+                            //         '${authController.userModel.ratingCount} ${'reviews'.tr}',
+                            //         style: robotoRegular.copyWith(
+                            //             fontSize: Dimensions.FONT_SIZE_SMALL,
+                            //             color: Colors.white),
+                            //       )
+                            //     : Container(
+                            //         height: 10, width: 50, color: Colors.white),
                           ]),
                         );
                       }),

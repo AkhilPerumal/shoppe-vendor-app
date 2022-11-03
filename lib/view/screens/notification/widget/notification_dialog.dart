@@ -3,6 +3,7 @@ import 'package:carclenx_vendor_app/data/model/response/notification_model.dart'
 import 'package:carclenx_vendor_app/util/dimensions.dart';
 import 'package:carclenx_vendor_app/util/images.dart';
 import 'package:carclenx_vendor_app/util/styles.dart';
+import 'package:carclenx_vendor_app/view/base/custom_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -37,21 +38,15 @@ class NotificationDialog extends StatelessWidget {
                   color: Theme.of(context).primaryColor.withOpacity(0.20)),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(Dimensions.RADIUS_SMALL),
-                child: FadeInImage.assetNetwork(
+                child: CustomImage(
                   placeholder: Images.placeholder,
-                  image: notificationModel.thumbUrl != null &&
-                          notificationModel.thumbUrl.length > 0
-                      ? '${notificationModel.thumbUrl[0]}'
+                  image: notificationModel.imageUrl != null &&
+                          notificationModel.imageUrl.length > 0
+                      ? '${notificationModel.imageUrl[0]}'
                       : '',
                   height: 150,
                   width: MediaQuery.of(context).size.width,
                   fit: BoxFit.cover,
-                  imageErrorBuilder: (c, o, s) => Image.asset(
-                    Images.placeholder,
-                    height: 150,
-                    width: MediaQuery.of(context).size.width,
-                    fit: BoxFit.cover,
-                  ),
                 ),
               ),
             ),

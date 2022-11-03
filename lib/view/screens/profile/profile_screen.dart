@@ -24,7 +24,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     super.initState();
 
-    Get.find<AuthController>().getProfile();
+    Get.find<AuthController>()
+        .getProfile(userID: Get.find<AuthController>().userModel.id);
   }
 
   @override
@@ -51,7 +52,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       child: FadeInImage.assetNetwork(
                     placeholder: Images.placeholder,
                     image:
-                        '/${authController.userModel != null ? authController.userModel.image : ''}',
+                        '${authController.userModel != null ? authController.userModel.image : ''}',
                     height: 100,
                     width: 100,
                     fit: BoxFit.cover,

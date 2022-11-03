@@ -53,7 +53,7 @@ class ShoppeTotal {
   int dispatchedCount;
   int cancelledCount;
   int completedCount;
-  dynamic averageRating;
+  dynamic averageRating = 0;
 
   factory ShoppeTotal.fromJson(Map<String, dynamic> json) => ShoppeTotal(
         earning: json["earning"] == null ? null : json["earning"],
@@ -67,7 +67,8 @@ class ShoppeTotal {
             json["cancelled_count"] == null ? null : json["cancelled_count"],
         completedCount:
             json["completed_count"] == null ? null : json["completed_count"],
-        averageRating: json["average_rating"],
+        averageRating:
+            json["average_rating"] != null ? json["average_rating"] : 0,
       );
 
   Map<String, dynamic> toJson() => {

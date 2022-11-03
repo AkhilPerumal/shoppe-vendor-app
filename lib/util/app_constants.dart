@@ -18,6 +18,8 @@ class AppConstants {
   // Auth
   static const String LOGIN_URI = '/auth/sign-in';
   static const String SIGNUP_URI = '/partner/partner-registration';
+  static const String STATE_DISTRICT =
+      '/partner/partner-registration/states-data';
   static const String UPDATE_DOCUMENTATION =
       '/partner/partner-registration/id/';
   static const String UPLOAD_REG_DOC_IMAGE =

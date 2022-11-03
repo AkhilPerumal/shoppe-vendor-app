@@ -71,35 +71,90 @@ class ApprovalWaitingScreen extends StatelessWidget {
                       Card(
                           child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              'Status',
-                              style: robotoRegular,
-                            ),
-                            // Text(
-                            //   ':',
-                            //   style: robotoRegular,
-                            // ),
-                            Container(
-                              padding: EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                  color: Colors.green.shade100,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(15))),
-                              child: Text(
-                                authController.userModel.status != null
-                                    ? authController.userModel.status ==
-                                            "Unapproved"
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Status',
+                                  style: robotoRegular.copyWith(
+                                      color: Theme.of(context).disabledColor),
+                                ),
+                                // Text(
+                                //   ':',
+                                //   style: robotoRegular,
+                                // ),
+                                Container(
+                                  padding: EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                      color: authController
+                                                  .userModel
+                                                  .partnerApplicationId
+                                                  .status ==
+                                              "Rejected"
+                                          ? Colors.red.shade100
+                                          : Colors.green.shade100,
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(15))),
+                                  child: Text(
+                                    authController.userModel
+                                                    .partnerApplicationId !=
+                                                null &&
+                                            authController
+                                                    .userModel
+                                                    .partnerApplicationId
+                                                    .status ==
+                                                "Unapproved"
                                         ? 'Verifying'.toUpperCase()
-                                        : authController.userModel.status
-                                            .toUpperCase()
-                                    : 'Verifying'.toUpperCase(),
-                                style:
-                                    robotoMedium.copyWith(color: Colors.green),
-                              ),
+                                        : authController.userModel
+                                            .partnerApplicationId.status
+                                            .toUpperCase(),
+                                    style: robotoMedium.copyWith(
+                                        color: authController
+                                                    .userModel
+                                                    .partnerApplicationId
+                                                    .status ==
+                                                "Rejected"
+                                            ? Colors.red
+                                            : Colors.green),
+                                  ),
+                                ),
+                              ],
                             ),
+                            authController.userModel.partnerApplicationId
+                                        .statusUpdates.length >
+                                    0
+                                ? Column(
+                                    children: [
+                                      Text(
+                                        "Reason",
+                                        style: robotoRegular.copyWith(
+                                            color: Theme.of(context)
+                                                .disabledColor),
+                                      ),
+                                      SizedBox(
+                                        height:
+                                            Dimensions.PADDING_SIZE_EXTRA_SMALL,
+                                      ),
+                                      Text(
+                                        authController.userModel
+                                            .partnerApplicationId.statusUpdates
+                                            .where((element) =>
+                                                element.status == "Rejected")
+                                            .first
+                                            .comment
+                                            .toString(),
+                                        style: robotoBold.copyWith(
+                                            fontSize:
+                                                Dimensions.FONT_SIZE_DEFAULT,
+                                            color: Colors.black54),
+                                      ),
+                                    ],
+                                  )
+                                : SizedBox()
                           ],
                         ),
                       )),
@@ -374,12 +429,23 @@ class ApprovalWaitingScreen extends StatelessWidget {
                               SizedBox(
                                 height: Dimensions.PADDING_SIZE_SMALL,
                               ),
-                              authController.userModel.partnerApplicationId
-                                          .imageUrl.length >
-                                      0
+                              authController.userModel.partnerApplicationId !=
+                                          null &&
+                                      authController.userModel
+                                              .partnerApplicationId.imageUrl !=
+                                          null &&
+                                      authController
+                                              .userModel
+                                              .partnerApplicationId
+                                              .imageUrl
+                                              .length >
+                                          0
                                   ? Row(children: [
                                       CustomImage(
-                                        image: authController
+                                        image: authController.userModel
+                                                        .partnerApplicationId !=
+                                                    null &&
+                                                authController
                                                         .userModel
                                                         .partnerApplicationId
                                                         .imageUrl !=
