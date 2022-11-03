@@ -146,11 +146,14 @@ class AuthController extends GetxController implements GetxService {
     Response response = await authRepo.login(name, password);
     ResponseModel responseModel;
     if (response.statusCode == 200 || response.statusCode == 401) {
+      _isLoading = false;
+      update();
       _userModel = UserModel.fromJson(response.body['resultData']);
       authRepo.setUserDetails(_userModel);
       authRepo.saveUserToken(
           _userModel.userToken, response.body['zone_wise_topic']);
-      if (userModel.partnerApplicationId.status == "Approved") {
+      if (userModel.partnerApplicationId == null ||
+          userModel.partnerApplicationId.status == "Approved") {
         await authRepo.updateToken();
       }
       _isLoading = false;
