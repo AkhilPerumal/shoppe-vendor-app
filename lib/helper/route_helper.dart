@@ -61,7 +61,17 @@ class RouteHelper {
       '$update?update=${isUpdate.toString()}';
 
   static List<GetPage> routes = [
-    GetPage(name: initial, page: () => DashboardScreen(pageIndex: 0)),
+    GetPage(
+        name: initial,
+        page: () {
+          int pageNo = 0;
+          if (Get.arguments != null && Get.arguments['pageNo'] != null) {
+            pageNo = Get.arguments['pageNo'];
+          } else {
+            pageNo = 0;
+          }
+          return DashboardScreen(pageIndex: pageNo);
+        }),
     GetPage(name: splash, page: () => SplashScreen()),
     GetPage(name: signIn, page: () => SignInScreen()),
     GetPage(

@@ -18,10 +18,10 @@ class SignInScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String _countryDialCode = "+91";
-    // _nameController.text = "akhil.test.registration.1";
-    // _passwordController.text = "akhil.test.registration.1";
-    _nameController.text = "akhil.test.2";
-    _passwordController.text = "akhil.test.2";
+    _nameController.text = "akhil.test.registration.1";
+    _passwordController.text = "akhil.test.registration.1";
+    // _nameController.text = "akhil.test.2";
+    // _passwordController.text = "akhil.test.2";
 
     // _nameController.text = Get.find<AuthController>().getUserName() ?? '';
     // _passwordController.text =

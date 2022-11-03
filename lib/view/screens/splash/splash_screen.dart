@@ -65,7 +65,7 @@ class _SplashScreenState extends State<SplashScreen> {
       // if (Get.find<SplashController>().configModel.maintenanceMode) {
       //   Get.ofnamed(RouteHelper.getUpdateRoute(false));
       // } else {
-      Get.find<AuthController>().clearSharedData();
+      // Get.find<AuthController>().clearSharedData();
       if (Get.find<AuthController>().isLoggedIn()) {
         await Get.find<AuthController>()
             .getProfile(userID: Get.find<AuthController>().getUserId())

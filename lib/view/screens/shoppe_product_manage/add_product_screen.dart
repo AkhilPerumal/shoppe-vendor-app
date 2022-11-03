@@ -1,9 +1,15 @@
+import 'dart:io';
+
 import 'package:carclenx_vendor_app/controller/create_product_controller.dart';
 import 'package:carclenx_vendor_app/controller/shoppe_controller.dart';
+import 'package:carclenx_vendor_app/helper/route_helper.dart';
 import 'package:carclenx_vendor_app/util/dimensions.dart';
+import 'package:carclenx_vendor_app/util/images.dart';
 import 'package:carclenx_vendor_app/util/styles.dart';
 import 'package:carclenx_vendor_app/view/base/custom_app_bar.dart';
 import 'package:carclenx_vendor_app/view/base/custom_button.dart';
+import 'package:carclenx_vendor_app/view/base/custom_image.dart';
+import 'package:carclenx_vendor_app/view/base/custom_snackbar.dart';
 import 'package:carclenx_vendor_app/view/base/loading_screen.dart';
 import 'package:carclenx_vendor_app/view/base/my_text_field.dart';
 import 'package:carclenx_vendor_app/view/screens/shoppe_product_manage/widget/select_brand_sheet.dart';
@@ -25,11 +31,11 @@ class AddProductScreen extends StatelessWidget {
             ? LoadingScreen()
             : Container(
                 padding: EdgeInsets.all(Dimensions.PADDING_SIZE_DEFAULT),
-                child: SingleChildScrollView(
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Column(
                           children: [
                             MyTextField(
                                 hintText: 'Product Name',
@@ -536,49 +542,219 @@ class AddProductScreen extends StatelessWidget {
                                 SizedBox(
                                   height: Dimensions.PADDING_SIZE_SMALL,
                                 ),
+                                Column(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          'Attach product images',
+                                          style: robotoRegular.copyWith(
+                                              fontSize:
+                                                  Dimensions.FONT_SIZE_SMALL,
+                                              color: Theme.of(context)
+                                                  .disabledColor),
+                                        ),
+                                        CustomButton(
+                                          buttonText: "Re-Upload",
+                                          width: Get.width * 0.25,
+                                          height: 28,
+                                          backgroundColor: Colors.black,
+                                          icon: Icons.camera_enhance_outlined,
+                                          fontSize: 12,
+                                          onPressed: () {
+                                            if (createProductController
+                                                        .pickedImageList
+                                                        .length >=
+                                                    0 &&
+                                                createProductController
+                                                        .pickedImageList
+                                                        .length <
+                                                    6) {
+                                              createProductController.pickImage(
+                                                  singleImage: false);
+                                            } else {
+                                              showCustomSnackBar(
+                                                  'Maximum image you can select is 2');
+                                            }
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                    Container(
+                                      height: isEdit &&
+                                              ((createProductController
+                                                              .editingProduct !=
+                                                          null &&
+                                                      createProductController
+                                                              .editingProduct
+                                                              .imageUrl !=
+                                                          null &&
+                                                      createProductController
+                                                              .editingProduct
+                                                              .imageUrl
+                                                              .length >
+                                                          0) ||
+                                                  createProductController
+                                                          .pickedImageList
+                                                          .length >
+                                                      0)
+                                          ? 150
+                                          : 60,
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            child: isEdit &&
+                                                    ((createProductController
+                                                                    .editingProduct !=
+                                                                null &&
+                                                            createProductController
+                                                                    .editingProduct
+                                                                    .imageUrl !=
+                                                                null &&
+                                                            createProductController
+                                                                    .editingProduct
+                                                                    .imageUrl
+                                                                    .length >
+                                                                0) ||
+                                                        createProductController
+                                                                .pickedImageList
+                                                                .length >
+                                                            0)
+                                                ? ListView.builder(
+                                                    shrinkWrap: true,
+                                                    scrollDirection:
+                                                        Axis.horizontal,
+                                                    itemCount: isEdit
+                                                        ? createProductController
+                                                                    .pickedImageList
+                                                                    .length >
+                                                                0
+                                                            ? createProductController
+                                                                .pickedImageList
+                                                                .length
+                                                            : createProductController
+                                                                .editingProduct
+                                                                .imageUrl
+                                                                .length
+                                                        : 0,
+                                                    itemBuilder:
+                                                        ((context, index) {
+                                                      if (createProductController
+                                                              .pickedImageList
+                                                              .length >
+                                                          0) {
+                                                        return imageHolder(
+                                                            createProductController,
+                                                            context,
+                                                            index);
+                                                      } else {
+                                                        return applicationImage(
+                                                            createProductController,
+                                                            context,
+                                                            index);
+                                                      }
+                                                    }),
+                                                  )
+                                                : Container(
+                                                    child: Text(
+                                                      "Add image",
+                                                      style: robotoRegular
+                                                          .copyWith(
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .disabledColor),
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                    ),
+                                                  ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ],
                             )
                           ],
                         ),
-                        CustomButton(
-                          buttonText: "Next",
-                          onPressed: () {
-                            if (isEdit) {
-                              createProductController
-                                  .updateProduct(Get.find<ShoppeController>()
-                                      .selectedProduct
-                                      .id)
-                                  .then((value) {
-                                if (value != null && value == true) {
-                                  Get.bottomSheet(
-                                      Container(child: UploadImageSheet()),
-                                      backgroundColor:
-                                          Theme.of(context).cardColor,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.vertical(
-                                              top: Radius.circular(25.0))),
-                                      isScrollControlled: true);
-                                }
-                              });
-                            } else {
-                              createProductController
-                                  .createProduct()
-                                  .then((value) {
-                                if (value != null && value == true) {
-                                  Get.bottomSheet(
-                                      Container(child: UploadImageSheet()),
-                                      backgroundColor:
-                                          Theme.of(context).cardColor,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.vertical(
-                                              top: Radius.circular(25.0))),
-                                      isScrollControlled: true);
-                                }
-                              });
+                      ),
+                    ),
+                    CustomButton(
+                      buttonText: isEdit ? "Update" : "Create",
+                      onPressed: () {
+                        if (isEdit) {
+                          createProductController
+                              .updateProduct(Get.find<ShoppeController>()
+                                  .selectedProduct
+                                  .id)
+                              .then((value) {
+                            if (value != null && value == true) {
+                              if (createProductController
+                                          .pickedImageList.length >
+                                      0 &&
+                                  createProductController
+                                          .pickedImageList.length <
+                                      6) {
+                                createProductController
+                                    .imageUploader()
+                                    .then((value) {
+                                  Get.find<ShoppeController>()
+                                      .getMyProducts('1');
+                                  Get.until(
+                                    (route) =>
+                                        Get.currentRoute == RouteHelper.initial,
+                                  );
+                                });
+                              } else {
+                                Get.find<ShoppeController>().getMyProducts('1');
+                                Get.until(
+                                  (route) =>
+                                      Get.currentRoute == RouteHelper.initial,
+                                );
+                              }
+
+                              // Get.bottomSheet(
+                              //     Container(child: UploadImageSheet()),
+                              //     backgroundColor: Theme.of(context).cardColor,
+                              //     shape: RoundedRectangleBorder(
+                              //         borderRadius: BorderRadius.vertical(
+                              //             top: Radius.circular(25.0))),
+                              //     isScrollControlled: true);
                             }
-                          },
-                        )
-                      ]),
+                          });
+                        } else {
+                          createProductController.createProduct().then((value) {
+                            if (value != null && value == true) {
+                              if (createProductController
+                                          .pickedImageList.length >
+                                      0 &&
+                                  createProductController
+                                          .pickedImageList.length <
+                                      6) {
+                                createProductController
+                                    .imageUploader()
+                                    .then((value) {
+                                  if (value) {
+                                    Get.find<ShoppeController>()
+                                        .getMyProducts('1');
+                                    Get.back();
+                                  }
+                                });
+                              } else {
+                                Get.find<ShoppeController>().getMyProducts('1');
+                                Get.until(
+                                  (route) =>
+                                      Get.currentRoute == RouteHelper.initial,
+                                );
+                              }
+                            }
+                          });
+                        }
+                      },
+                    )
+                  ],
                 ),
               );
       }),
@@ -599,6 +775,132 @@ class AddProductScreen extends StatelessWidget {
         size: 12.0,
       ),
       shape: CircleBorder(),
+    );
+  }
+
+  Widget imageHolder(CreateProductController createProductController,
+      BuildContext context, int index) {
+    return Container(
+      padding: EdgeInsets.all(5),
+      child: Align(
+        alignment: Alignment.center,
+        child: Stack(children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(Dimensions.RADIUS_SMALL),
+            child: Image.file(
+              File(createProductController.pickedImageList[index].path),
+              width: 150,
+              height: 120,
+              fit: BoxFit.cover,
+            ),
+          ),
+          Positioned(
+            right: 0,
+            top: 0,
+            child: InkWell(
+              onTap: () => createProductController.removeImage(index),
+              child: Container(
+                padding: EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: Colors.red.withOpacity(0.7),
+                  borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(Dimensions.RADIUS_DEFAULT)),
+                ),
+                child: Icon(
+                  Icons.delete,
+                  color: Colors.white,
+                  size: 16,
+                ),
+              ),
+            ),
+          ),
+        ]),
+      ),
+    );
+  }
+
+  Widget imagePickerButton(
+      CreateProductController createProductController, BuildContext context) {
+    return Container(
+      child: Align(
+        alignment: Alignment.center,
+        child: Stack(children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(Dimensions.RADIUS_SMALL),
+            child: createProductController.pickedImage != null
+                ? Image.file(
+                    File(createProductController.pickedImage.path),
+                    width: 150,
+                    height: 120,
+                    fit: BoxFit.cover,
+                  )
+                : FadeInImage.assetNetwork(
+                    placeholder: Images.placeholder,
+                    image: Images.placeholder,
+                    height: 120,
+                    width: 150,
+                    fit: BoxFit.cover,
+                    imageErrorBuilder: (c, o, s) => Image.asset(
+                        Images.placeholder,
+                        height: 120,
+                        width: 150,
+                        fit: BoxFit.cover),
+                  ),
+          ),
+          Positioned(
+            bottom: 0,
+            right: 0,
+            top: 0,
+            left: 0,
+            child: InkWell(
+              onTap: () {
+                if (createProductController.pickedImageList.length >= 0 &&
+                    createProductController.pickedImageList.length < 6) {
+                  createProductController.pickImage(singleImage: false);
+                } else {
+                  showCustomSnackBar('Maximum image you can select is 5');
+                }
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.3),
+                  borderRadius: BorderRadius.circular(Dimensions.RADIUS_SMALL),
+                  border: Border.all(
+                      width: 1, color: Theme.of(context).primaryColor),
+                ),
+                child: Container(
+                  margin: EdgeInsets.all(25),
+                  decoration: BoxDecoration(
+                    border: Border.all(width: 2, color: Colors.white),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(Icons.camera_alt, color: Colors.white),
+                ),
+              ),
+            ),
+          ),
+        ]),
+      ),
+    );
+  }
+
+  Widget applicationImage(CreateProductController createProductController,
+      BuildContext context, int index) {
+    return Padding(
+      padding: const EdgeInsets.all(14.0),
+      child: Container(
+        height: 120,
+        width: 150,
+        decoration: BoxDecoration(
+          // color: Colors.black.withOpacity(0.3),
+          borderRadius: BorderRadius.circular(Dimensions.RADIUS_SMALL),
+          border: Border.all(width: 1, color: Theme.of(context).primaryColor),
+        ),
+        child: CustomImage(
+          image: createProductController.editingProduct.imageUrl[index],
+          fit: BoxFit.cover,
+        ),
+      ),
     );
   }
 }

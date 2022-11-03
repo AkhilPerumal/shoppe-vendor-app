@@ -23,8 +23,6 @@ class MyProductDetailsScreen extends StatelessWidget {
     return Scaffold(
       appBar: CustomAppBar(title: 'Product Details'),
       body: GetBuilder<ShoppeController>(builder: (shoppeController) {
-        Get.find<CreateProductController>().setQuantity(
-            count: shoppeController.selectedProduct.quantity, isInitial: true);
         return Column(children: [
           Expanded(
               child: SingleChildScrollView(
@@ -45,7 +43,10 @@ class MyProductDetailsScreen extends StatelessWidget {
                       ),
                       items: shoppeController.selectedProduct.imageUrl
                           .map((item) => Container(
-                                child: CustomImage(image: item),
+                                child: CustomImage(
+                                  image: item,
+                                  fit: BoxFit.fitWidth,
+                                ),
                               ))
                           .toList(),
                     )
@@ -508,11 +509,19 @@ class MyProductDetailsScreen extends StatelessWidget {
                                           fontSize: 14,
                                           width: 120,
                                           height: 25,
-                                          onPressed: () => shoppeController
-                                              .setStockUpdatingStatus(
-                                                  shoppeController
-                                                      .selectedProduct
-                                                      .quantity),
+                                          onPressed: () {
+                                            Get.find<CreateProductController>()
+                                                .setQuantity(
+                                                    count: shoppeController
+                                                        .selectedProduct
+                                                        .quantity,
+                                                    isInitial: true);
+                                            shoppeController
+                                                .setStockUpdatingStatus(
+                                                    shoppeController
+                                                        .selectedProduct
+                                                        .quantity);
+                                          },
                                         ),
                                       ],
                                     ),

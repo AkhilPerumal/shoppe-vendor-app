@@ -27,6 +27,7 @@ class CreateProductController extends GetxController implements GetxService {
   bool isError = false;
   String createdProductId;
   XFile pickedImage;
+  ProductDetails editingProduct;
 
   String generalID = "";
   String selectedCategory = "choose";
@@ -190,6 +191,8 @@ class CreateProductController extends GetxController implements GetxService {
   }
 
   setForEditProduct(ProductDetails product) {
+    editingProduct = product;
+    pickedImageList.clear();
     nameController.text = product.name;
     priceController.text = product.price.toString();
     discountController.text = product.offerPrice.toString();
@@ -303,6 +306,56 @@ class CreateProductController extends GetxController implements GetxService {
     }
   }
 
+  validateProduct(List selectedModelIdLit) {
+    isError = false;
+    update();
+    if ((nameController.text == "" || nameController.text == null)) {
+      isError = true;
+      update();
+      showCustomSnackBar("Please Enter Name of Product", isError: true);
+    } else if (priceController.text == "" || priceController.text == null) {
+      isError = true;
+      update();
+      showCustomSnackBar("Please Enter Price", isError: true);
+    } else if (discountController.text != "" ||
+        discountController.text != null) {
+      if (double.parse(discountController.text) >
+          double.parse(priceController.text)) {
+        isError = true;
+        update();
+        showCustomSnackBar("Offer price should be less than Price",
+            isError: true);
+      }
+    } else if (isSelectedCustomBrand == true) {
+      if (selectedModelIdLit == null || selectedModelIdLit.length == 0) {
+        isError = true;
+        update();
+        showCustomSnackBar("You should choose atleast one car model",
+            isError: true);
+      }
+    } else if (selectedCategory == null || selectedCategory == "") {
+      isError = true;
+      update();
+      showCustomSnackBar("You need to choose a Category", isError: true);
+    } else if (selectedSubCategory == null || selectedSubCategory == "") {
+      isError = true;
+      update();
+      showCustomSnackBar("You need to choose a Sub-Category", isError: true);
+    } else if (stockCountController.text == "" ||
+        stockCountController.text == null ||
+        stockCountController.text == "0") {
+      isError = true;
+      update();
+      showCustomSnackBar("Please add Stock", isError: true);
+    } else if (descriptionController.text == "" ||
+        descriptionController.text == null) {
+      isError = true;
+      update();
+      showCustomSnackBar("Please Enter Description", isError: true);
+    }
+    return isError;
+  }
+
   Future createProduct() async {
     isLoading = true;
     update();
@@ -312,53 +365,7 @@ class CreateProductController extends GetxController implements GetxService {
         selectedModelIdLit.add(element.id);
       }
     });
-    if ((nameController.text == "" || nameController.text == null)) {
-      isError = true;
-      update();
-      showCustomSnackBar("Please Enter Name of Product", isError: true);
-    }
-    if (priceController.text == "" || priceController.text == null) {
-      isError = true;
-      update();
-      showCustomSnackBar("Please Enter Price", isError: true);
-    }
-    if (discountController.text == "" || discountController.text == null) {
-      isError = true;
-      update();
-      showCustomSnackBar("Please Enter Price", isError: true);
-    }
-    if (descriptionController.text == "" ||
-        descriptionController.text == null) {
-      isError = true;
-      update();
-      showCustomSnackBar("Please Enter Description", isError: true);
-    }
-    if (stockCountController.text == "" ||
-        stockCountController.text == null ||
-        stockCountController.text == "0") {
-      isError = true;
-      update();
-      showCustomSnackBar("Please add Stock", isError: true);
-    }
-    if (isSelectedCustomBrand == true) {
-      if (selectedModelIdLit == null || selectedModelIdLit.length == 0) {
-        isError = true;
-        update();
-        showCustomSnackBar("You should choose atleast one car model",
-            isError: true);
-      }
-    }
-    if (selectedCategory == null || selectedCategory == "") {
-      isError = true;
-      update();
-      showCustomSnackBar("You need to choose a Category", isError: true);
-    }
-    if (selectedSubCategory == null || selectedSubCategory == "") {
-      isError = true;
-      update();
-      showCustomSnackBar("You need to choose a Sub-Category", isError: true);
-    }
-    if (!isError) {
+    if (validateProduct(selectedModelIdLit) == false) {
       var product;
       if (discountController.text != null && discountController.text != "") {
         product = {
@@ -410,57 +417,8 @@ class CreateProductController extends GetxController implements GetxService {
         selectedModelIdLit.add(element.id);
       }
     });
-    if ((nameController.text == "" || nameController.text == null)) {
-      isError = true;
-      update();
-      showCustomSnackBar("Please Enter Name of Product", isError: true);
-    }
-    if (priceController.text == "" || priceController.text == null) {
-      isError = true;
-      update();
-      showCustomSnackBar("Please Enter Price", isError: true);
-    }
-    if (discountController.text != "" || discountController.text != null) {
-      if (double.parse(discountController.text) >
-          double.parse(priceController.text)) {
-        isError = true;
-        update();
-        showCustomSnackBar("Offer price should be less than Price",
-            isError: true);
-      }
-    }
-    if (descriptionController.text == "" ||
-        descriptionController.text == null) {
-      isError = true;
-      update();
-      showCustomSnackBar("Please Enter Description", isError: true);
-    }
-    if (stockCountController.text == "" ||
-        stockCountController.text == null ||
-        stockCountController.text == "0") {
-      isError = true;
-      update();
-      showCustomSnackBar("Please add Stock", isError: true);
-    }
-    if (isSelectedCustomBrand == true) {
-      if (selectedModelIdLit == null || selectedModelIdLit.length == 0) {
-        isError = true;
-        update();
-        showCustomSnackBar("You should choose atleast one car model",
-            isError: true);
-      }
-    }
-    if (selectedCategory == null || selectedCategory == "") {
-      isError = true;
-      update();
-      showCustomSnackBar("You need to choose a Category", isError: true);
-    }
-    if (selectedSubCategory == null || selectedSubCategory == "") {
-      isError = true;
-      update();
-      showCustomSnackBar("You need to choose a Sub-Category", isError: true);
-    }
-    if (!isError) {
+
+    if (validateProduct(selectedModelIdLit) == false) {
       var product;
       if (discountController.text != null && discountController.text != "") {
         product = {
@@ -506,7 +464,7 @@ class CreateProductController extends GetxController implements GetxService {
     }
   }
 
-  imageUploader() async {
+  Future imageUploader() async {
     List<MultipartBody> newList = [];
     for (File img in pickedImageList) {
       if (img != "") {
@@ -519,8 +477,10 @@ class CreateProductController extends GetxController implements GetxService {
         await shoppeRepo.uploadProductImageUpload(body: body, images: newList);
     if (response.statusCode == 200 || response.statusCode == 201) {
       showCustomSnackBar("Images Uploaded", isError: false);
+      return true;
     } else {
-      showCustomSnackBar("Something went wrong");
+      showCustomSnackBar("Image uploading failed");
+      return false;
     }
   }
 

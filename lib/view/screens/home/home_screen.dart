@@ -250,7 +250,10 @@ class HomeScreen extends StatelessWidget {
                                       SizedBox(
                                           height:
                                               Dimensions.PADDING_SIZE_SMALL),
-                                      authController.userModel != null && authController.userModel.allServiceWorkDetails!=null
+                                      authController.userModel != null &&
+                                              authController.userModel
+                                                      .allServiceWorkDetails !=
+                                                  null
                                           ? Text(
                                               PriceConverter.convertPrice((authController.userModel.allServiceWorkDetails.carspa != null && authController.userModel.allServiceWorkDetails.carspa.total != null ? double.tryParse(authController.userModel.allServiceWorkDetails.carspa.total.earning.toString()) : 0.0) +
                                                   (authController.userModel.allServiceWorkDetails.shoppe != null && authController.userModel.allServiceWorkDetails.shoppe.total != null
@@ -294,32 +297,33 @@ class HomeScreen extends StatelessWidget {
                           Row(children: [
                             EarningWidget(
                               title: 'today'.tr,
-                              amount: (authController.userModel.allServiceWorkDetails.carspa != null && authController.userModel.allServiceWorkDetails.carspa.total != null ? double.tryParse(authController.userModel.allServiceWorkDetails.carspa.daily.earning.all.toString()) : 0.0) +
-                                  (authController.userModel.allServiceWorkDetails.shoppe != null && authController.userModel.allServiceWorkDetails.shoppe.daily != null
-                                      ? double.tryParse(authController
-                                          .userModel
-                                          .allServiceWorkDetails
-                                          .shoppe
-                                          .daily
-                                          .earning
-                                          .all
-                                          .toString())
-                                      : 0.0) +
-                                  (authController.userModel.allServiceWorkDetails.mechanical != null && authController.userModel.allServiceWorkDetails.mechanical.daily != null
-                                      ? double.tryParse(authController
-                                          .userModel
-                                          .allServiceWorkDetails
-                                          .mechanical
-                                          .daily
-                                          .earning
-                                          .all
-                                          .toString())
-                                      : 0.0) +
-                                  (authController.userModel.allServiceWorkDetails.quickhelp !=
-                                              null &&
-                                          authController.userModel.allServiceWorkDetails.quickhelp.daily != null
-                                      ? double.tryParse(authController.userModel.allServiceWorkDetails.quickhelp.daily.earning.all.toString())
-                                      : 0.0),
+                              amount: authController.userModel.allServiceWorkDetails != null
+                                  ? (authController.userModel.allServiceWorkDetails.carspa != null && authController.userModel.allServiceWorkDetails.carspa.total != null ? double.tryParse(authController.userModel.allServiceWorkDetails.carspa.daily.earning.all.toString()) : 0.0) +
+                                      (authController.userModel.allServiceWorkDetails.shoppe != null && authController.userModel.allServiceWorkDetails.shoppe.daily != null
+                                          ? double.tryParse(authController
+                                              .userModel
+                                              .allServiceWorkDetails
+                                              .shoppe
+                                              .daily
+                                              .earning
+                                              .all
+                                              .toString())
+                                          : 0.0) +
+                                      (authController.userModel.allServiceWorkDetails.mechanical != null && authController.userModel.allServiceWorkDetails.mechanical.daily != null
+                                          ? double.tryParse(authController
+                                              .userModel
+                                              .allServiceWorkDetails
+                                              .mechanical
+                                              .daily
+                                              .earning
+                                              .all
+                                              .toString())
+                                          : 0.0) +
+                                      (authController.userModel.allServiceWorkDetails.quickhelp != null &&
+                                              authController.userModel.allServiceWorkDetails.quickhelp.daily != null
+                                          ? double.tryParse(authController.userModel.allServiceWorkDetails.quickhelp.daily.earning.all.toString())
+                                          : 0.0)
+                                  : 0.0,
                             ),
                             Container(
                                 height: 30,
@@ -327,32 +331,33 @@ class HomeScreen extends StatelessWidget {
                                 color: Theme.of(context).cardColor),
                             EarningWidget(
                               title: 'this_week'.tr,
-                              amount: (authController.userModel.allServiceWorkDetails.carspa != null && authController.userModel.allServiceWorkDetails.carspa.weekly != null ? double.tryParse(authController.userModel.allServiceWorkDetails.carspa.weekly.earning.all.toString()) : 0.0) +
-                                  (authController.userModel.allServiceWorkDetails.shoppe != null && authController.userModel.allServiceWorkDetails.shoppe.weekly != null
-                                      ? double.tryParse(authController
-                                          .userModel
-                                          .allServiceWorkDetails
-                                          .shoppe
-                                          .weekly
-                                          .earning
-                                          .all
-                                          .toString())
-                                      : 0.0) +
-                                  (authController.userModel.allServiceWorkDetails.mechanical != null && authController.userModel.allServiceWorkDetails.mechanical.weekly != null
-                                      ? double.tryParse(authController
-                                          .userModel
-                                          .allServiceWorkDetails
-                                          .mechanical
-                                          .weekly
-                                          .earning
-                                          .all
-                                          .toString())
-                                      : 0.0) +
-                                  (authController.userModel.allServiceWorkDetails.quickhelp !=
-                                              null &&
-                                          authController.userModel.allServiceWorkDetails.quickhelp.weekly != null
-                                      ? double.tryParse(authController.userModel.allServiceWorkDetails.quickhelp.weekly.earning.all.toString())
-                                      : 0.0),
+                              amount: authController.userModel.allServiceWorkDetails != null
+                                  ? (authController.userModel.allServiceWorkDetails.carspa != null && authController.userModel.allServiceWorkDetails.carspa.weekly != null ? double.tryParse(authController.userModel.allServiceWorkDetails.carspa.weekly.earning.all.toString()) : 0.0) +
+                                      (authController.userModel.allServiceWorkDetails.shoppe != null && authController.userModel.allServiceWorkDetails.shoppe.weekly != null
+                                          ? double.tryParse(authController
+                                              .userModel
+                                              .allServiceWorkDetails
+                                              .shoppe
+                                              .weekly
+                                              .earning
+                                              .all
+                                              .toString())
+                                          : 0.0) +
+                                      (authController.userModel.allServiceWorkDetails.mechanical != null && authController.userModel.allServiceWorkDetails.mechanical.weekly != null
+                                          ? double.tryParse(authController
+                                              .userModel
+                                              .allServiceWorkDetails
+                                              .mechanical
+                                              .weekly
+                                              .earning
+                                              .all
+                                              .toString())
+                                          : 0.0) +
+                                      (authController.userModel.allServiceWorkDetails.quickhelp != null &&
+                                              authController.userModel.allServiceWorkDetails.quickhelp.weekly != null
+                                          ? double.tryParse(authController.userModel.allServiceWorkDetails.quickhelp.weekly.earning.all.toString())
+                                          : 0.0)
+                                  : 0.0,
                             ),
                             Container(
                                 height: 30,
@@ -360,7 +365,7 @@ class HomeScreen extends StatelessWidget {
                                 color: Theme.of(context).cardColor),
                             EarningWidget(
                               title: 'this_month'.tr,
-                              amount: double.parse(((authController.userModel.allServiceWorkDetails.carspa != null ? (authController.userModel.allServiceWorkDetails.carspa.monthly != null ? (authController.userModel.allServiceWorkDetails.carspa.monthly.earning.cod + authController.userModel.allServiceWorkDetails.carspa.monthly.earning.online) : 0.0) : 0.0) +
+                              amount:authController.userModel.allServiceWorkDetails!=null? double.parse(((authController.userModel.allServiceWorkDetails.carspa != null ? (authController.userModel.allServiceWorkDetails.carspa.monthly != null ? (authController.userModel.allServiceWorkDetails.carspa.monthly.earning.cod + authController.userModel.allServiceWorkDetails.carspa.monthly.earning.online) : 0.0) : 0.0) +
                                       (authController.userModel.allServiceWorkDetails.shoppe != null
                                           ? (authController.userModel.allServiceWorkDetails.shoppe.monthly != null
                                               ? (authController.userModel.allServiceWorkDetails.shoppe.monthly.earning.cod +
@@ -392,7 +397,7 @@ class HomeScreen extends StatelessWidget {
                                               : 0.0)
                                           : 0.0) +
                                       (authController.userModel.allServiceWorkDetails.quickhelp != null ? (authController.userModel.allServiceWorkDetails.quickhelp.monthly != null ? (authController.userModel.allServiceWorkDetails.quickhelp.monthly.earning.cod + authController.userModel.allServiceWorkDetails.quickhelp.monthly.earning.online) : 0.0) : 0.0))
-                                  .toString()),
+                                  .toString()):0.0,
                             ),
                           ]),
                         ]),
@@ -459,10 +464,11 @@ class HomeScreen extends StatelessWidget {
                           child: Column(children: [
                             Row(children: [
                               authController.userModel != null
-                                  ? Text(
+                                  ? Text(authController.userModel
+                                          .allServiceWorkDetails!=null?
                                       authController.userModel
                                           .allServiceWorkDetails.average_rating
-                                          .toString(),
+                                          .toString():"0",
                                       style: robotoBold.copyWith(
                                           fontSize: 30, color: Colors.white),
                                     )
