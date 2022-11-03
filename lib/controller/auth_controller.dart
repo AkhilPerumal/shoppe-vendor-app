@@ -634,6 +634,7 @@ class AuthController extends GetxController implements GetxService {
       update();
       showCustomSnackBar('Please select your District');
     } else if ((userNameController.text == '' ||
+            userNameController.text.isEmpty ||
             userNameController.text == null) &&
         isSignUp) {
       isError = true;
@@ -861,14 +862,18 @@ class AuthController extends GetxController implements GetxService {
     _isCheckedQuickHelp = false;
     _isCheckedShoppe = false;
     _isShiftTime = false;
+    _isUserNameAvailable = -1;
     workinglocationController.text = '';
     nameController.text = "";
     emailController.text = "";
     phoneController.text = "";
+    passwordController.text = "";
+    confirmPasswordController.text = "";
     _selectedDistrict = "";
     _selectedState = "";
     userNameController.text = "";
     experienceController.text = "";
+    pickedImageList.clear();
     update();
   }
 }
