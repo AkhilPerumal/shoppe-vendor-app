@@ -48,7 +48,6 @@ class OrderController extends GetxController implements GetxService {
   List<Widget> _fliterListOrderHistory = [Text("Completed"), Text("Cancelled")];
   List<bool> _selectedFilterOrderRequest = [true, false];
   List<bool> _selectedFilterOrderHistory = [true, false];
-  bool _haveMore;
   SubTabType _selectedSubTab;
 
   List<Widget> get fliterListOrderRequest => _fliterListOrderRequest;
@@ -59,7 +58,6 @@ class OrderController extends GetxController implements GetxService {
 
   int get tabIndex => _tabIndex;
   bool get isLoading => _isLoading;
-  bool get haveMore => _haveMore;
   Position get position => _position;
   Placemark get placeMark => _placeMark;
   String get address =>
@@ -241,11 +239,15 @@ class OrderController extends GetxController implements GetxService {
   }
 
   Future<void> getLatestOrders(
-      {String status, String pageNo, CategoryType category}) async {
+      {String status,
+      String pageNo,
+      CategoryType category,
+      bool haveMore = false}) async {
+    if (pageNo == "1") {
+      _currentOrderList = [];
+      _shoppeOrderList = [];
+    }
     _isLoading = true;
-    _currentOrderList = [];
-    _shoppeOrderList = [];
-    _haveMore = false;
     update();
     Response response = await orderRepo.getLatestOrders(
         status: status, pageNo: pageNo, category: category);

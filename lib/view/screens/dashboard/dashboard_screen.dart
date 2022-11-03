@@ -14,7 +14,7 @@ import 'package:carclenx_vendor_app/view/screens/dashboard/widget/new_request_di
 import 'package:carclenx_vendor_app/view/screens/home/home_screen.dart';
 import 'package:carclenx_vendor_app/view/screens/order/order_request_screen.dart';
 import 'package:carclenx_vendor_app/view/screens/profile/profile_screen.dart';
-import 'package:carclenx_vendor_app/view/screens/order/order_screen.dart';
+import 'package:carclenx_vendor_app/view/screens/order/order_history_screen.dart';
 import 'package:carclenx_vendor_app/view/screens/shoppe_product_manage/shoppe_screen.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
