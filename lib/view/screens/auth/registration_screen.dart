@@ -61,6 +61,7 @@ class RegistrationScreen extends StatelessWidget {
                             hintText: 'Phone',
                             controller: authController.phoneController,
                             focusNode: authController.phoneFocusNode,
+                            isError: authController.isPhoneNumberError,
                             maxLines: 1,
                             isEnabled: fromSignIn,
                             fillColor: fromSignIn
@@ -69,6 +70,13 @@ class RegistrationScreen extends StatelessWidget {
                             inputType: TextInputType.phone,
                             capitalization: TextCapitalization.words,
                             inputAction: TextInputAction.next,
+                            onChanged: (value) {
+                              if (value.toString().length > 10) {
+                                authController.setPhoneErrorStatus(true);
+                              } else {
+                                authController.setPhoneErrorStatus(false);
+                              }
+                            },
                             nextFocus: authController.workinLocationFocusNode),
                         SizedBox(
                           height: Dimensions.PADDING_SIZE_SMALL,

@@ -140,13 +140,25 @@ class ApprovalWaitingScreen extends StatelessWidget {
                                             Dimensions.PADDING_SIZE_EXTRA_SMALL,
                                       ),
                                       Text(
-                                        authController.userModel
-                                            .partnerApplicationId.statusUpdates
-                                            .where((element) =>
-                                                element.status == "Rejected")
-                                            .first
-                                            .comment
-                                            .toString(),
+                                        authController
+                                                    .userModel
+                                                    .partnerApplicationId
+                                                    .statusUpdates
+                                                    .where((element) =>
+                                                        element.status ==
+                                                        "Rejected") !=
+                                                null
+                                            ? authController
+                                                .userModel
+                                                .partnerApplicationId
+                                                .statusUpdates
+                                                .where((element) =>
+                                                    element.status ==
+                                                    "Rejected")
+                                                .first
+                                                .comment
+                                                .toString()
+                                            : "",
                                         style: robotoBold.copyWith(
                                             fontSize:
                                                 Dimensions.FONT_SIZE_DEFAULT,
@@ -544,7 +556,7 @@ class ApprovalWaitingScreen extends StatelessWidget {
         descriptions: "Your registration got APPROVED.",
         isLoading: false,
         title: "Welcome to PEXA",
-        onPressed: () => Get.toNamed(RouteHelper.getInitialRoute()),
+        onPressed: () => Get.offAllNamed(RouteHelper.getInitialRoute()),
       );
     }
     _controller.refreshCompleted();

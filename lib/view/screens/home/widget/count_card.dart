@@ -62,12 +62,13 @@ class CountCard extends StatelessWidget {
                     ],
                   ),
                   Container(
+                    margin: EdgeInsets.only(top: 15),
                     // height: 80,
                     // width: 22,
                     child: Column(children: [
                       Image.asset(
-                        Images.shoppe_icon,
-                        height: 40,
+                        Images.shoppe_icon_white,
+                        width: 25,
                       ),
                       SizedBox(
                         height: 10,
@@ -114,107 +115,20 @@ class CountCard extends StatelessWidget {
                         width: 1,
                         color: Theme.of(context).cardColor),
                   ),
-                  Column(children: [
-                    Image.asset(
-                      Images.car_spa_icon,
-                      height: 40,
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      orderCountList != null &&
-                              orderCountList.carspa.total != null
-                          ? orderCountList.carspa.total.acceptedCount.toString()
-                          : "0",
-                      style: robotoBold.copyWith(
-                          fontSize: Dimensions.FONT_SIZE_LARGE,
-                          color: Colors.white),
-                      textAlign: TextAlign.center,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      orderCountList != null &&
-                              orderCountList.carspa.total != null
-                          ? orderCountList.carspa.total.activeCount.toString()
-                          : "0",
-                      style: robotoBold.copyWith(
-                          fontSize: Dimensions.FONT_SIZE_LARGE,
-                          color: Colors.white),
-                      textAlign: TextAlign.center,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ]),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                        height: 50,
-                        width: 1,
-                        color: Theme.of(context).cardColor),
-                  ),
-                  Column(children: [
-                    Image.asset(
-                      Images.mechanical_icon,
-                      height: 40,
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      orderCountList != null &&
-                              orderCountList.mechanical.total != null
-                          ? orderCountList.mechanical.total.acceptedCount
-                              .toString()
-                          : "0",
-                      style: robotoBold.copyWith(
-                          fontSize: Dimensions.FONT_SIZE_LARGE,
-                          color: Colors.white),
-                      textAlign: TextAlign.center,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      orderCountList != null &&
-                              orderCountList.mechanical.total != null
-                          ? orderCountList.mechanical.total.activeCount
-                              .toString()
-                          : "0",
-                      style: robotoBold.copyWith(
-                          fontSize: Dimensions.FONT_SIZE_LARGE,
-                          color: Colors.white),
-                      textAlign: TextAlign.center,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ]),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                        height: 50,
-                        width: 1,
-                        color: Theme.of(context).cardColor),
-                  ),
-                  Column(
-                    children: [
+                  Container(
+                    margin: EdgeInsets.only(top: 15),
+                    child: Column(children: [
                       Image.asset(
-                        Images.quick_help_icon,
-                        height: 40,
+                        Images.car_spa_icon_white,
+                        width: 25,
                       ),
                       SizedBox(
                         height: 10,
                       ),
                       Text(
                         orderCountList != null &&
-                                orderCountList.quickhelp.total != null
-                            ? orderCountList.quickhelp.total.acceptedCount
+                                orderCountList.carspa.total != null
+                            ? orderCountList.carspa.total.acceptedCount
                                 .toString()
                             : "0",
                         style: robotoBold.copyWith(
@@ -229,8 +143,39 @@ class CountCard extends StatelessWidget {
                       ),
                       Text(
                         orderCountList != null &&
-                                orderCountList.quickhelp.total != null
-                            ? orderCountList.quickhelp.total.activeCount
+                                orderCountList.carspa.total != null
+                            ? orderCountList.carspa.total.activeCount.toString()
+                            : "0",
+                        style: robotoBold.copyWith(
+                            fontSize: Dimensions.FONT_SIZE_LARGE,
+                            color: Colors.white),
+                        textAlign: TextAlign.center,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ]),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                        height: 50,
+                        width: 1,
+                        color: Theme.of(context).cardColor),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(top: 15),
+                    child: Column(children: [
+                      Image.asset(
+                        Images.mechanical_icon_white,
+                        width: 25,
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        orderCountList != null &&
+                                orderCountList.mechanical.total != null
+                            ? orderCountList.mechanical.total.acceptedCount
                                 .toString()
                             : "0",
                         style: robotoBold.copyWith(
@@ -240,7 +185,73 @@ class CountCard extends StatelessWidget {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                    ],
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        orderCountList != null &&
+                                orderCountList.mechanical.total != null
+                            ? orderCountList.mechanical.total.activeCount
+                                .toString()
+                            : "0",
+                        style: robotoBold.copyWith(
+                            fontSize: Dimensions.FONT_SIZE_LARGE,
+                            color: Colors.white),
+                        textAlign: TextAlign.center,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ]),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                        height: 50,
+                        width: 1,
+                        color: Theme.of(context).cardColor),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(top: 15),
+                    child: Column(
+                      children: [
+                        Image.asset(
+                          Images.quick_help_icon_white,
+                          width: 25,
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          orderCountList != null &&
+                                  orderCountList.quickhelp.total != null
+                              ? orderCountList.quickhelp.total.acceptedCount
+                                  .toString()
+                              : "0",
+                          style: robotoBold.copyWith(
+                              fontSize: Dimensions.FONT_SIZE_LARGE,
+                              color: Colors.white),
+                          textAlign: TextAlign.center,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          orderCountList != null &&
+                                  orderCountList.quickhelp.total != null
+                              ? orderCountList.quickhelp.total.activeCount
+                                  .toString()
+                              : "0",
+                          style: robotoBold.copyWith(
+                              fontSize: Dimensions.FONT_SIZE_LARGE,
+                              color: Colors.white),
+                          textAlign: TextAlign.center,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               )

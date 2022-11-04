@@ -49,6 +49,31 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       print("onMessage: ${message.data}");
+      if (Get.currentRoute == RouteHelper.shoppeOrderDetails &&
+          Get.find<OrderController>().selectedShoppeOrder != null &&
+          Get.find<OrderController>().selectedShoppeOrder.id ==
+              message.data['_id']) {
+        Get.find<OrderController>()
+            .getOrderWithId(message.data['_id'], CategoryType.CAR_SHOPPE);
+      }
+      if (Get.currentRoute == RouteHelper.serviceOrderDetails &&
+          Get.find<OrderController>().selectedServiceOrder != null &&
+          Get.find<OrderController>().selectedServiceOrder.id ==
+              message.data['_id']) {
+        if (message.data['assetType'] == "Carspa") {
+          Get.find<OrderController>()
+              .getOrderWithId(message.data['_id'], CategoryType.CAR_SPA);
+        }
+        if (message.data['assetType'] == "Mechanical") {
+          Get.find<OrderController>()
+              .getOrderWithId(message.data['_id'], CategoryType.CAR_MECHANIC);
+        }
+        if (message.data['assetType'] == "Quickhelp") {
+          Get.find<OrderController>()
+              .getOrderWithId(message.data['_id'], CategoryType.QUICK_HELP);
+        }
+      }
+
       if (_pageIndex == 1) {
         int _tabIndex = Get.find<ActiveOrderTabController>().tabIndex;
         SubTabType _subTabType =
@@ -149,55 +174,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       OrderHistoryScreen(),
       ProfileScreen(),
     ];
-
-    // var androidInitialize = AndroidInitializationSettings('notification_icon');
-    // var iOSInitialize = IOSInitializationSettings();
-    // var initializationsSettings =
-    //     InitializationSettings(android: androidInitialize, iOS: iOSInitialize);
-    // flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-    // flutterLocalNotificationsPlugin.initialize(initializationsSettings);
-
-    // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    //   // if(Get.find<OrderController>().latestOrderList != null) {
-    //   //   _orderCount = Get.find<OrderController>().latestOrderList.length;
-    //   // }
-    //   print("onMessage: ${message.data}");
-    //   String _type = message.notification.bodyLocKey;
-    //   String _orderID = message.notification.titleLocKey;
-    //   if (_type != 'assign' && _type != 'new_order') {
-    //     NotificationHelper.showNotification(
-    //         message, flutterLocalNotificationsPlugin, false);
-    //   }
-    //   if (_type == 'new_order') {
-    //     //_orderCount = _orderCount + 1;
-    //     Get.dialog(NewRequestDialog(
-    //         isRequest: true, onTap: () => _navigateRequestPage()));
-    //   } else if (_type == 'assign' && _orderID != null && _orderID.isNotEmpty) {
-    //     Get.dialog(
-    //         NewRequestDialog(isRequest: false, onTap: () => _setPage(0)));
-    //   } else if (_type == 'block') {
-    //     Get.find<AuthController>().clearSharedData();
-    //     Get.find<AuthController>().stopLocationRecord();
-    //     Get.offAllNamed(RouteHelper.getSignInRoute());
-    //   }
-    // });
-
-    // _timer = Timer.periodic(Duration(seconds: 30), (timer) async {
-    //   await Get.find<OrderController>().getLatestOrders();
-    //   int _count = Get.find<OrderController>().latestOrderList.length;
-    //   if(_orderCount != null && _orderCount < _count) {
-    //     Get.dialog(NewRequestDialog(isRequest: true, onTap: () => _navigateRequestPage()));
-    //   }else {
-    //     _orderCount = Get.find<OrderController>().latestOrderList.length;
-    //   }
-    // });
   }
-
-  // @override
-  // void dispose() {
-  //   super.dispose();
-  //   _timer?.cancel();
-  // }
 
   void _navigateRequestPage() {
     if (Get.find<AuthController>().isLoggedIn() &&
@@ -228,8 +205,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
         } else {
           if (GetPlatform.isAndroid &&
               Get.find<AuthController>().userModel.isActive == true) {
-            _channel.invokeMethod('sendToBackground');
-            return false;
+            // _channel.invokeMethod('sendToBackground');
+            // return false;
+            return true;
           } else {
             return true;
           }

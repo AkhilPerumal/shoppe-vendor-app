@@ -156,11 +156,14 @@ class _MyTextFieldState extends State<MyTextField> {
             prefixIcon: widget.amountIcon
                 ? Icon(Icons.currency_rupee, size: 20)
                 : widget.inputType == TextInputType.phone
-                    ? Text(
-                        "+91",
-                        textAlign: TextAlign.center,
-                        style: robotoRegular.copyWith(
-                            fontSize: Dimensions.FONT_SIZE_DEFAULT),
+                    ? Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 14.0),
+                        child: Text(
+                          "+91",
+                          textAlign: TextAlign.center,
+                          style: robotoRegular.copyWith(
+                              fontSize: Dimensions.FONT_SIZE_DEFAULT),
+                        ),
                       )
                     : null,
           ),

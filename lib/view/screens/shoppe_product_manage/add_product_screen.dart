@@ -13,14 +13,13 @@ import 'package:carclenx_vendor_app/view/base/custom_snackbar.dart';
 import 'package:carclenx_vendor_app/view/base/loading_screen.dart';
 import 'package:carclenx_vendor_app/view/base/my_text_field.dart';
 import 'package:carclenx_vendor_app/view/screens/shoppe_product_manage/widget/select_brand_sheet.dart';
-import 'package:carclenx_vendor_app/view/screens/shoppe_product_manage/widget/upload_image_sheet.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class AddProductScreen extends StatelessWidget {
   AddProductScreen({this.isEdit = false});
-  bool isEdit;
+  final bool isEdit;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -676,79 +675,88 @@ class AddProductScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    CustomButton(
-                      buttonText: isEdit ? "Update" : "Create",
-                      onPressed: () {
-                        if (isEdit) {
-                          createProductController
-                              .updateProduct(Get.find<ShoppeController>()
-                                  .selectedProduct
-                                  .id)
-                              .then((value) {
-                            if (value != null && value == true) {
-                              if (createProductController
-                                          .pickedImageList.length >
-                                      0 &&
-                                  createProductController
-                                          .pickedImageList.length <
-                                      6) {
+                    createProductController.isLoading
+                        ? CircularProgressIndicator()
+                        : CustomButton(
+                            buttonText: isEdit ? "Update" : "Create",
+                            onPressed: () {
+                              if (isEdit) {
                                 createProductController
-                                    .imageUploader()
+                                    .updateProduct(Get.find<ShoppeController>()
+                                        .selectedProduct
+                                        .id)
                                     .then((value) {
-                                  Get.find<ShoppeController>()
-                                      .getMyProducts('1');
-                                  Get.until(
-                                    (route) =>
-                                        Get.currentRoute == RouteHelper.initial,
-                                  );
-                                });
-                              } else {
-                                Get.find<ShoppeController>().getMyProducts('1');
-                                Get.until(
-                                  (route) =>
-                                      Get.currentRoute == RouteHelper.initial,
-                                );
-                              }
+                                  if (value != null && value == true) {
+                                    if (createProductController
+                                                .pickedImageList.length >
+                                            0 &&
+                                        createProductController
+                                                .pickedImageList.length <
+                                            6) {
+                                      createProductController
+                                          .imageUploader()
+                                          .then((value) {
+                                        Get.find<ShoppeController>()
+                                            .getMyProducts('1');
+                                        Get.until(
+                                          (route) =>
+                                              Get.currentRoute ==
+                                              RouteHelper.initial,
+                                        );
+                                      });
+                                    } else {
+                                      Get.find<ShoppeController>()
+                                          .getMyProducts('1');
+                                      Get.until(
+                                        (route) =>
+                                            Get.currentRoute ==
+                                            RouteHelper.initial,
+                                      );
+                                    }
 
-                              // Get.bottomSheet(
-                              //     Container(child: UploadImageSheet()),
-                              //     backgroundColor: Theme.of(context).cardColor,
-                              //     shape: RoundedRectangleBorder(
-                              //         borderRadius: BorderRadius.vertical(
-                              //             top: Radius.circular(25.0))),
-                              //     isScrollControlled: true);
-                            }
-                          });
-                        } else {
-                          createProductController.createProduct().then((value) {
-                            if (value != null && value == true) {
-                              if (createProductController
-                                          .pickedImageList.length >
-                                      0 &&
-                                  createProductController
-                                          .pickedImageList.length <
-                                      6) {
-                                createProductController
-                                    .imageUploader()
-                                    .then((value) {
-                                  if (value) {
-                                    Get.find<ShoppeController>()
-                                        .getMyProducts('1');
-                                    Get.back();
+                                    // Get.bottomSheet(
+                                    //     Container(child: UploadImageSheet()),
+                                    //     backgroundColor: Theme.of(context).cardColor,
+                                    //     shape: RoundedRectangleBorder(
+                                    //         borderRadius: BorderRadius.vertical(
+                                    //             top: Radius.circular(25.0))),
+                                    //     isScrollControlled: true);
                                   }
                                 });
                               } else {
-                                Get.find<ShoppeController>().getMyProducts('1');
-                                Get.until(
-                                  (route) =>
-                                      Get.currentRoute == RouteHelper.initial,
-                                );
+                                createProductController
+                                    .createProduct()
+                                    .then((value) {
+                                  if (value != null && value == true) {
+                                    if (createProductController
+                                                .pickedImageList.length >
+                                            0 &&
+                                        createProductController
+                                                .pickedImageList.length <
+                                            6) {
+                                      createProductController
+                                          .imageUploader()
+                                          .then((value) {
+                                        if (value) {
+                                          Get.find<ShoppeController>()
+                                              .getMyProducts('1');
+                                          Get.back();
+                                        }
+                                      });
+                                    } else {
+                                      Get.find<ShoppeController>()
+                                          .getMyProducts('1');
+                                      Get.until(
+                                        (route) =>
+                                            Get.currentRoute ==
+                                            RouteHelper.initial,
+                                      );
+                                    }
+                                  }
+                                });
                               }
-                            }
-                          });
-                        }
-                      },
-                    )
+                            },
+                          )
                   ],
                 ),
               );

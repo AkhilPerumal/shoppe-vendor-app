@@ -587,19 +587,24 @@ class MyProductDetailsScreen extends StatelessWidget {
               )
             ]),
           )),
-          CustomButton(
-            onPressed: () {
-              Get.find<CreateProductController>()
-                  .getAllCategoryDetails()
-                  .then((value) {
-                Get.find<CreateProductController>()
-                    .setForEditProduct(shoppeController.selectedProduct);
-                Get.toNamed(RouteHelper.editProduct);
-              });
-            },
-            buttonText: 'Update',
-            margin: EdgeInsets.all(Dimensions.PADDING_SIZE_SMALL),
-          ),
+          GetBuilder<CreateProductController>(
+              builder: (createProductController) {
+            return createProductController.isLoading
+                ? CircularProgressIndicator()
+                : CustomButton(
+                    onPressed: () {
+                      createProductController
+                          .getAllCategoryDetails()
+                          .then((value) {
+                        createProductController.setForEditProduct(
+                            shoppeController.selectedProduct);
+                        Get.toNamed(RouteHelper.editProduct);
+                      });
+                    },
+                    buttonText: 'Update',
+                    margin: EdgeInsets.all(Dimensions.PADDING_SIZE_SMALL),
+                  );
+          }),
         ]);
       }),
     );

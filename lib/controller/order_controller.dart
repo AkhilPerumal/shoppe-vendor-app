@@ -41,7 +41,7 @@ class OrderController extends GetxController implements GetxService {
   int _totalPage;
   int _pageSize;
   int _offset = 1;
-  OrderModel _selectedOrder;
+  OrderModel _selectedServiceOrder;
   ProductOrderDetails _selectedShoppeProduct;
   String _toogleType;
   List<Widget> _fliterListOrderRequest = [Text("New"), Text("Active")];
@@ -70,7 +70,7 @@ class OrderController extends GetxController implements GetxService {
   List<bool> get selectedFilterOrderRequest => _selectedFilterOrderRequest;
   List<bool> get selectedFilterOrderHistory => _selectedFilterOrderHistory;
   String get toogleType => _toogleType;
-  OrderModel get selectedOrder => _selectedOrder;
+  OrderModel get selectedServiceOrder => _selectedServiceOrder;
   ProductOrderDetails get selectedShoppeOrder => _selectedShoppeProduct;
   SubTabType get slectedSubTab => _selectedSubTab;
 
@@ -97,14 +97,14 @@ class OrderController extends GetxController implements GetxService {
   }
 
   void updateAddOnStatus({int selectedIndex}) {
-    selectedOrder.addOn[selectedIndex].isSelected =
-        selectedOrder.addOn[selectedIndex].isSelected ? false : true;
+    selectedServiceOrder.addOn[selectedIndex].isSelected =
+        selectedServiceOrder.addOn[selectedIndex].isSelected ? false : true;
 
     update();
   }
 
   void setServiceSelectedOrder(OrderModel orderModel) {
-    _selectedOrder = orderModel;
+    _selectedServiceOrder = orderModel;
     update();
   }
 
@@ -225,7 +225,8 @@ class OrderController extends GetxController implements GetxService {
         _isLoading = false;
         update();
       } else {
-        _selectedOrder = OrderModel.fromJson(response.body['resultData']);
+        _selectedServiceOrder =
+            OrderModel.fromJson(response.body['resultData']);
         _isLoading = false;
         update();
       }
@@ -386,9 +387,10 @@ class OrderController extends GetxController implements GetxService {
       selectedAddon.add(AddOn(name: element.name, price: element.price));
     });
     CompletedServiceBody completedServiceBody = CompletedServiceBody(
-        orderId: selectedOrder.id,
+        orderId: selectedServiceOrder.id,
         completedReport: CompletedReport(
-            addOns: selectedAddon, serviceId: selectedOrder.serviceId.id));
+            addOns: selectedAddon,
+            serviceId: selectedServiceOrder.serviceId.id));
     Response response = await orderRepo.generateHappyCode(
         category: category, body: completedServiceBody.toJson());
     if (response.statusCode == 200 || response.statusCode == 201) {
@@ -401,7 +403,8 @@ class OrderController extends GetxController implements GetxService {
 
   Future<bool> verifyHappyCode(String code, CategoryType category) async {
     Response response = await orderRepo.verifyHappyCode(
-        body: {"orderId": selectedOrder.id, "code": code}, category: category);
+        body: {"orderId": selectedServiceOrder.id, "code": code},
+        category: category);
     if (response.statusCode == 200 || response.statusCode == 201) {
       print("HappyCode verified :  " + response.body.toString());
       return true;

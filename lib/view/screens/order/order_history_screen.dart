@@ -21,10 +21,12 @@ class OrderHistoryScreen extends StatelessWidget {
     return GetBuilder<OrderHistoryTabController>(builder: (_tbx) {
       return Scaffold(
         appBar: AppBar(
+          backgroundColor: Theme.of(context).primaryColor,
+          // backgroundColor: Theme.of(context).secondaryHeaderColor,
           title: Text('order_history'.tr,
               style: robotoRegular.copyWith(
                   fontSize: Dimensions.FONT_SIZE_LARGE,
-                  color: Theme.of(context).textTheme.bodyText1.color)),
+                  color: Theme.of(context).secondaryHeaderColor)),
           centerTitle: true,
           // backgroundColor: Theme.of(context).cardColor,
           elevation: 0,
@@ -38,11 +40,14 @@ class OrderHistoryScreen extends StatelessWidget {
                   indicatorColor: Theme.of(context).cardColor,
                   indicatorWeight: 3,
                   indicator: BoxDecoration(
-                    color: Theme.of(context).scaffoldBackgroundColor,
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(5),
-                        topRight: Radius.circular(5)),
-                  ),
+                      // border: Border(
+                      //     top: BorderSide(color: Color(0xFF2d2d2d), width: 3)),
+                      gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    // colors: [Color(0xFF2d2d2d), Colors.white],
+                    colors: [Theme.of(context).primaryColor, Colors.white],
+                  )),
                   tabs: [
                     Container(
                       height: tabHeight,
@@ -53,19 +58,18 @@ class OrderHistoryScreen extends StatelessWidget {
                               Padding(
                                 padding: const EdgeInsets.all(3.0),
                                 child: Image.asset(
-                                  Images.shoppe_icon,
-                                  width: _tabx.tabIndex == 0 ? 25 : 40,
+                                  Images.shoppe_icon_selected_black,
+                                  width: 40,
                                 ),
                               ),
-                              _tabx.tabIndex == 0
-                                  ? Text('car_shoppe'.tr,
-                                      style: robotoRegular.copyWith(
-                                          fontSize: Dimensions.FONT_SIZE_SMALL,
-                                          color: Theme.of(context)
-                                              .textTheme
-                                              .bodyText1
-                                              .color))
-                                  : SizedBox()
+                              Text('car_shoppe'.tr,
+                                  style: robotoRegular.copyWith(
+                                    fontSize: Dimensions.FONT_SIZE_SMALL,
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .bodyText1
+                                        .color,
+                                  ))
                             ]),
                       ),
                     ),
@@ -78,19 +82,17 @@ class OrderHistoryScreen extends StatelessWidget {
                               Padding(
                                 padding: const EdgeInsets.all(3.0),
                                 child: Image.asset(
-                                  Images.car_spa_icon,
-                                  width: _tabx.tabIndex == 1 ? 25 : 40,
+                                  Images.car_spa_icon_selected_black,
+                                  width: 40,
                                 ),
                               ),
-                              _tabx.tabIndex == 1
-                                  ? Text('car_spa'.tr,
-                                      style: robotoRegular.copyWith(
-                                          fontSize: Dimensions.FONT_SIZE_SMALL,
-                                          color: Theme.of(context)
-                                              .textTheme
-                                              .bodyText1
-                                              .color))
-                                  : SizedBox()
+                              Text("Car Spa",
+                                  style: robotoRegular.copyWith(
+                                      fontSize: Dimensions.FONT_SIZE_SMALL,
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .bodyText1
+                                          .color))
                             ]),
                       ),
                     ),
@@ -103,19 +105,18 @@ class OrderHistoryScreen extends StatelessWidget {
                               Padding(
                                 padding: const EdgeInsets.all(3.0),
                                 child: Image.asset(
-                                  Images.mechanical_icon,
-                                  width: _tabx.tabIndex == 2 ? 25 : 40,
+                                  Images.mechanical_icon_selected_black,
+                                  width: 40,
                                 ),
                               ),
-                              _tabx.tabIndex == 2
-                                  ? Text('car_mechanical'.tr,
-                                      style: robotoRegular.copyWith(
-                                          fontSize: Dimensions.FONT_SIZE_SMALL,
-                                          color: Theme.of(context)
-                                              .textTheme
-                                              .bodyText1
-                                              .color))
-                                  : SizedBox()
+                              Text('car_mechanical'.tr,
+                                  style: robotoRegular.copyWith(
+                                    fontSize: Dimensions.FONT_SIZE_SMALL,
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .bodyText1
+                                        .color,
+                                  ))
                             ]),
                       ),
                     ),
@@ -128,20 +129,19 @@ class OrderHistoryScreen extends StatelessWidget {
                               Padding(
                                 padding: const EdgeInsets.all(3.0),
                                 child: Image.asset(
-                                  Images.quick_help_icon,
-                                  width: _tabx.tabIndex == 3 ? 25 : 40,
+                                  Images.quick_help_icon_selected_black,
+                                  width: 40,
                                 ),
                               ),
-                              _tabx.tabIndex == 3
-                                  ? Text('quick_help'.tr,
-                                      textAlign: TextAlign.center,
-                                      style: robotoRegular.copyWith(
-                                          fontSize: Dimensions.FONT_SIZE_SMALL,
-                                          color: Theme.of(context)
-                                              .textTheme
-                                              .bodyText1
-                                              .color))
-                                  : SizedBox()
+                              Text('quick_help'.tr,
+                                  textAlign: TextAlign.center,
+                                  style: robotoRegular.copyWith(
+                                    fontSize: Dimensions.FONT_SIZE_SMALL,
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .bodyText1
+                                        .color,
+                                  ))
                             ]),
                       ),
                     ),

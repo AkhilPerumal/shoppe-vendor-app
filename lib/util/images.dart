@@ -29,8 +29,24 @@ class Images {
   static const String update = 'assets/image/update.png';
   static const String maintenance = 'assets/image/maintenance.png';
   static const String animate_delivery_man = 'assets/image/delivery-man.gif';
-  static const String shoppe_icon = 'assets/image/shoppe.png';
-  static const String car_spa_icon = 'assets/image/car-spa.png';
-  static const String mechanical_icon = 'assets/image/mechanical.png';
-  static const String quick_help_icon = 'assets/image/roadside-ass.png';
+  static const String shoppe_icon_white = 'assets/image/w_shoppe.png';
+  static const String car_spa_icon_white = 'assets/image/w_car-spa.png';
+  static const String mechanical_icon_white = 'assets/image/w_mechanical.png';
+  static const String quick_help_icon_white = 'assets/image/w_roadside-ass.png';
+  static const String shoppe_icon_selected_black =
+      'assets/image/b_s_shoppe.png';
+  static const String car_spa_icon_selected_black =
+      'assets/image/b_s_car-spa.png';
+  static const String mechanical_icon_selected_black =
+      'assets/image/b_s_mechanical.png';
+  static const String quick_help_icon_selected_black =
+      'assets/image/b_s_roadside-ass.png';
+  static const String shoppe_icon_unselected_black =
+      'assets/image/b_shoppe.png';
+  static const String car_spa_icon_unselected_black =
+      'assets/image/b_car-spa.png';
+  static const String mechanical_icon_unselected_black =
+      'assets/image/b_mechanical.png';
+  static const String quick_help_icon_unselected_black =
+      'assets/image/b_roadside-ass.png';
 }

@@ -42,6 +42,7 @@ class AuthController extends GetxController implements GetxService {
   bool _isCheckedShoppe = false;
   int _isUserNameAvailable = -1;
   bool _isPasswordConfirmed = true;
+  bool _isPhoneNumberError = false;
   UserModel _userModel;
   XFile _pickedFile;
   Timer _timer;
@@ -87,6 +88,7 @@ class AuthController extends GetxController implements GetxService {
   bool get isCheckedShoppe => _isCheckedShoppe;
   int get isUserNameAvailable => _isUserNameAvailable;
   bool get isPasswordConfirmed => _isPasswordConfirmed;
+  bool get isPhoneNumberError => _isPhoneNumberError;
   UserModel get userModel => _userModel;
   XFile get pickedFile => _pickedFile;
   AllStateDistrictModel get allStateDistrictModel => _allStateDistrictModel;
@@ -128,6 +130,11 @@ class AuthController extends GetxController implements GetxService {
 
   setDistrict(String district) {
     _selectedDistrict = district;
+    update();
+  }
+
+  setPhoneErrorStatus(bool status) {
+    _isPhoneNumberError = status;
     update();
   }
 
@@ -835,6 +842,7 @@ class AuthController extends GetxController implements GetxService {
 
   Future<void> setForEditApplication() async {
     await getStateDistrict();
+    _isPhoneNumberError = false;
     _isCheckedCarWash = userModel.partnerApplicationId.experience.carspa == 1;
     _isCheckedMechanic =
         userModel.partnerApplicationId.experience.mechanical == 1;
@@ -859,6 +867,7 @@ class AuthController extends GetxController implements GetxService {
 
   void setForNewApplication() {
     getStateDistrict();
+    _isPhoneNumberError = false;
     _isCheckedCarWash = false;
     _isCheckedMechanic = false;
     _isCheckedQuickHelp = false;

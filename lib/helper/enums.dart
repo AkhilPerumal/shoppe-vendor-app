@@ -134,10 +134,10 @@ class EnumConverter {
         return "Return Requested";
         break;
       case OrderStatus.RETURN_ACCEPTED:
-        return "Return Policy";
+        return "Return Accepted";
         break;
       case OrderStatus.RETURN_APPROVED:
-        return "Return Accepted";
+        return "Return Approved";
         break;
       case OrderStatus.RETURN_REJECTED:
         return "Return Rejected";
@@ -153,6 +153,7 @@ class EnumConverter {
         break;
       case OrderStatus.REPLACEMENT_PROCESSING:
         return "Replacement Processing";
+        break;
       case OrderStatus.REPLACEMENT_DISPATCHED:
         return "Replacement Dispatched";
         break;
@@ -268,6 +269,8 @@ class EnumConverter {
       return OrderStatus.REPLACEMENT_DISPATCHED;
     } else if (orderStatus == "Replacement_Processing") {
       return OrderStatus.REPLACEMENT_PROCESSING;
+    } else if (orderStatus == "Return_Requested") {
+      return OrderStatus.RETURN_REQUESTED;
     } else if (orderStatus == "Return_Accepted") {
       return OrderStatus.RETURN_ACCEPTED;
     } else if (orderStatus == "Return_Approved") {

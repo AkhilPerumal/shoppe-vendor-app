@@ -26,8 +26,8 @@ class VerifyCheckListSheet extends StatelessWidget {
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: GetBuilder<OrderController>(builder: (orderController) {
-        total_amount = orderController.selectedOrder.serviceId.price;
-        selectedAddons = orderController.selectedOrder.addOn
+        total_amount = orderController.selectedServiceOrder.serviceId.price;
+        selectedAddons = orderController.selectedServiceOrder.addOn
             .where((element) => element.isSelected == true)
             .toList();
         selectedAddons.forEach(
@@ -81,8 +81,8 @@ class VerifyCheckListSheet extends StatelessWidget {
                           orderController
                               .generateHappyCode(
                                   addons: selectedAddons,
-                                  category:
-                                      orderController.selectedOrder.category)
+                                  category: orderController
+                                      .selectedServiceOrder.category)
                               .then((value) {
                             if (value) {
                               Get.back();
@@ -91,8 +91,8 @@ class VerifyCheckListSheet extends StatelessWidget {
                                   VerifyDeliverySheet(
                                     verify: true,
                                     orderAmount: total_amount.toDouble(),
-                                    cod: orderController
-                                            .selectedOrder.paymentStatus ==
+                                    cod: orderController.selectedServiceOrder
+                                            .paymentStatus ==
                                         'COD',
                                   ),
                                   isScrollControlled: true);

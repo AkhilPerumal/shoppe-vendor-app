@@ -22,6 +22,7 @@ class OrderRequestScreen extends StatelessWidget {
     return GetBuilder<ActiveOrderTabController>(builder: (_tbx) {
       return Scaffold(
         appBar: AppBar(
+          backgroundColor: Theme.of(context).primaryColor,
           title: Text('order_request'.tr,
               style: robotoRegular.copyWith(
                   fontSize: Dimensions.FONT_SIZE_LARGE,
@@ -39,11 +40,13 @@ class OrderRequestScreen extends StatelessWidget {
                   indicatorColor: Theme.of(context).cardColor,
                   indicatorWeight: 3,
                   indicator: BoxDecoration(
-                    color: Theme.of(context).scaffoldBackgroundColor,
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(5),
-                        topRight: Radius.circular(5)),
-                  ),
+                      border: Border(
+                          top: BorderSide(color: Color(0XFFf7d417), width: 3)),
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [Theme.of(context).primaryColor, Colors.white],
+                      )),
                   tabs: [
                     Container(
                       height: tab_height,
@@ -55,20 +58,22 @@ class OrderRequestScreen extends StatelessWidget {
                                 Padding(
                                   padding: const EdgeInsets.all(3.0),
                                   child: Image.asset(
-                                    Images.shoppe_icon,
-                                    width: _tabx.tabIndex == 0 ? 25 : 40,
+                                    Images.shoppe_icon_selected_black,
+                                    width:
+                                        // _tabx.tabIndex == 0 ? 25 :
+                                        40,
                                   ),
                                 ),
-                                _tabx.tabIndex == 0
-                                    ? Text('car_shoppe'.tr,
-                                        style: robotoRegular.copyWith(
-                                            fontSize:
-                                                Dimensions.FONT_SIZE_SMALL,
-                                            color: Theme.of(context)
-                                                .textTheme
-                                                .bodyText1
-                                                .color))
-                                    : SizedBox()
+                                // _tabx.tabIndex == 0
+                                //     ?
+                                Text('car_shoppe'.tr,
+                                    style: robotoRegular.copyWith(
+                                        fontSize: Dimensions.FONT_SIZE_SMALL,
+                                        color: Theme.of(context)
+                                            .textTheme
+                                            .bodyText1
+                                            .color))
+                                // : SizedBox()
                               ]);
                         }),
                       ),
@@ -82,19 +87,22 @@ class OrderRequestScreen extends StatelessWidget {
                               Padding(
                                 padding: const EdgeInsets.all(3.0),
                                 child: Image.asset(
-                                  Images.car_spa_icon,
-                                  width: _tabx.tabIndex == 1 ? 25 : 40,
+                                  Images.car_spa_icon_selected_black,
+                                  width:
+                                      //  _tabx.tabIndex == 1 ? 25 :
+                                      40,
                                 ),
                               ),
-                              _tabx.tabIndex == 1
-                                  ? Text('car_spa'.tr,
-                                      style: robotoRegular.copyWith(
-                                          fontSize: Dimensions.FONT_SIZE_SMALL,
-                                          color: Theme.of(context)
-                                              .textTheme
-                                              .bodyText1
-                                              .color))
-                                  : SizedBox()
+                              // _tabx.tabIndex == 1
+                              //     ?
+                              Text('Car Spa',
+                                  style: robotoRegular.copyWith(
+                                      fontSize: Dimensions.FONT_SIZE_SMALL,
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .bodyText1
+                                          .color))
+                              // : SizedBox()
                             ]),
                       ),
                     ),
@@ -107,19 +115,22 @@ class OrderRequestScreen extends StatelessWidget {
                               Padding(
                                 padding: const EdgeInsets.all(3.0),
                                 child: Image.asset(
-                                  Images.mechanical_icon,
-                                  width: _tabx.tabIndex == 2 ? 25 : 40,
+                                  Images.mechanical_icon_selected_black,
+                                  width:
+                                      //  _tabx.tabIndex == 2 ? 25 :
+                                      40,
                                 ),
                               ),
-                              _tabx.tabIndex == 2
-                                  ? Text('car_mechanical'.tr,
-                                      style: robotoRegular.copyWith(
-                                          fontSize: Dimensions.FONT_SIZE_SMALL,
-                                          color: Theme.of(context)
-                                              .textTheme
-                                              .bodyText1
-                                              .color))
-                                  : SizedBox()
+                              // _tabx.tabIndex == 2
+                              //     ?
+                              Text('car_mechanical'.tr,
+                                  style: robotoRegular.copyWith(
+                                      fontSize: Dimensions.FONT_SIZE_SMALL,
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .bodyText1
+                                          .color))
+                              // : SizedBox()
                             ]),
                       ),
                     ),
@@ -132,20 +143,23 @@ class OrderRequestScreen extends StatelessWidget {
                               Padding(
                                 padding: const EdgeInsets.all(3.0),
                                 child: Image.asset(
-                                  Images.quick_help_icon,
-                                  width: _tabx.tabIndex == 3 ? 25 : 40,
+                                  Images.quick_help_icon_selected_black,
+                                  width:
+                                      // _tabx.tabIndex == 3 ? 25 :
+                                      40,
                                 ),
                               ),
-                              _tabx.tabIndex == 3
-                                  ? Text('quick_help'.tr,
-                                      textAlign: TextAlign.center,
-                                      style: robotoRegular.copyWith(
-                                          fontSize: Dimensions.FONT_SIZE_SMALL,
-                                          color: Theme.of(context)
-                                              .textTheme
-                                              .bodyText1
-                                              .color))
-                                  : SizedBox()
+                              // _tabx.tabIndex == 3
+                              //     ?
+                              Text('quick_help'.tr,
+                                  textAlign: TextAlign.center,
+                                  style: robotoRegular.copyWith(
+                                      fontSize: Dimensions.FONT_SIZE_SMALL,
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .bodyText1
+                                          .color))
+                              // : SizedBox()
                             ]),
                       ),
                     ),

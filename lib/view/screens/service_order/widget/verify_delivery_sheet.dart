@@ -108,7 +108,7 @@ class VerifyDeliverySheet extends StatelessWidget {
                         onPressed: () {
                           orderController
                               .verifyHappyCode(orderController.otp,
-                                  orderController.selectedOrder.category)
+                                  orderController.selectedServiceOrder.category)
                               .then((value) {
                             if (value) {
                               Get.offAllNamed(RouteHelper.getInitialRoute());

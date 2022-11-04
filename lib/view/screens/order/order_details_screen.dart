@@ -30,13 +30,14 @@ class OrderDetailsScreen extends StatelessWidget {
       body: Padding(
         padding: EdgeInsets.all(Dimensions.PADDING_SIZE_SMALL),
         child: GetBuilder<OrderController>(builder: (orderController) {
-          bool _showBottomView =
-              orderController.selectedOrder.status != OrderStatus.CANCELLED ||
-                  isRunningOrder;
-          bool _showSlider =
-              orderController.selectedOrder.status == OrderStatus.IN_PROGRESS ||
-                  orderController.selectedOrder.status == OrderStatus.ACCEPTED;
-          return orderController.selectedOrder != null
+          bool _showBottomView = orderController.selectedServiceOrder.status !=
+                  OrderStatus.CANCELLED ||
+              isRunningOrder;
+          bool _showSlider = orderController.selectedServiceOrder.status ==
+                  OrderStatus.IN_PROGRESS ||
+              orderController.selectedServiceOrder.status ==
+                  OrderStatus.ACCEPTED;
+          return orderController.selectedServiceOrder != null
               ? Column(children: [
                   Expanded(
                       child: SingleChildScrollView(
@@ -105,7 +106,9 @@ class OrderDetailsScreen extends StatelessWidget {
                       Row(children: [
                         Text('${'order_id'.tr}:', style: robotoRegular),
                         SizedBox(width: Dimensions.PADDING_SIZE_EXTRA_SMALL),
-                        Text(orderController.selectedOrder.orderId.toString(),
+                        Text(
+                            orderController.selectedServiceOrder.orderId
+                                .toString(),
                             style: robotoMedium),
                         SizedBox(width: Dimensions.PADDING_SIZE_EXTRA_SMALL),
                         Expanded(child: SizedBox()),
@@ -117,7 +120,7 @@ class OrderDetailsScreen extends StatelessWidget {
                         SizedBox(width: Dimensions.PADDING_SIZE_EXTRA_SMALL),
                         Text(
                           EnumConverter.orderStatusToTitle(
-                                  orderController.selectedOrder.status)
+                                  orderController.selectedServiceOrder.status)
                               .toString()
                               .toUpperCase(),
                           style: robotoRegular,
@@ -126,22 +129,25 @@ class OrderDetailsScreen extends StatelessWidget {
                       SizedBox(height: Dimensions.PADDING_SIZE_LARGE),
                       InfoCard(
                         title: 'customer_contact_details'.tr,
-                        addressModel: orderController.selectedOrder.address,
+                        addressModel:
+                            orderController.selectedServiceOrder.address,
                         isDelivery: true,
                         image: '',
-                        name: orderController.selectedOrder.address.name,
-                        phone: orderController.selectedOrder.address.mobile
+                        name: orderController.selectedServiceOrder.address.name,
+                        phone: orderController
+                            .selectedServiceOrder.address.mobile
                             .toString(),
                         latitude: orderController
-                            .selectedOrder.address.location[0]
+                            .selectedServiceOrder.address.location[0]
                             .toString(),
                         longitude: orderController
-                            .selectedOrder.address.location[1]
+                            .selectedServiceOrder.address.location[1]
                             .toString(),
-                        showButton: orderController.selectedOrder.status !=
-                                OrderStatus.COMPLETED &&
-                            orderController.selectedOrder.status !=
-                                OrderStatus.CANCELLED,
+                        showButton:
+                            orderController.selectedServiceOrder.status !=
+                                    OrderStatus.COMPLETED &&
+                                orderController.selectedServiceOrder.status !=
+                                    OrderStatus.CANCELLED,
                       ),
                       SizedBox(height: Dimensions.PADDING_SIZE_LARGE),
                       Column(
@@ -160,8 +166,8 @@ class OrderDetailsScreen extends StatelessWidget {
                                     height: 50,
                                     width: 50,
                                     fit: BoxFit.cover,
-                                    image: orderController
-                                        .selectedOrder.serviceId.thumbURL[0],
+                                    image: orderController.selectedServiceOrder
+                                        .serviceId.thumbURL[0],
                                     imageErrorBuilder: (c, o, s) => Image.asset(
                                         Images.placeholder,
                                         height: 50,
@@ -185,7 +191,7 @@ class OrderDetailsScreen extends StatelessWidget {
                                                 children: [
                                                   Text(
                                                     orderController
-                                                        .selectedOrder
+                                                        .selectedServiceOrder
                                                         .serviceId
                                                         .name,
                                                     style: robotoMedium.copyWith(
@@ -201,7 +207,7 @@ class OrderDetailsScreen extends StatelessWidget {
                                                   Text(
                                                     PriceConverter.convertPrice(
                                                         orderController
-                                                            .selectedOrder
+                                                            .selectedServiceOrder
                                                             .grandTotal
                                                             .toDouble()),
                                                     style: robotoMedium,
@@ -220,7 +226,7 @@ class OrderDetailsScreen extends StatelessWidget {
                                                                           .FONT_SIZE_SMALL)),
                                                       Text(
                                                         orderController
-                                                            .selectedOrder
+                                                            .selectedServiceOrder
                                                             .addOn
                                                             .length
                                                             .toString(),
@@ -250,12 +256,12 @@ class OrderDetailsScreen extends StatelessWidget {
                                                                 .circular(5)),
                                                     child: Text(
                                                       orderController
-                                                                  .selectedOrder
+                                                                  .selectedServiceOrder
                                                                   .paymentStatus ==
                                                               'cod'.tr
                                                           ? 'cod'.tr
                                                           : orderController
-                                                                      .selectedOrder
+                                                                      .selectedServiceOrder
                                                                       .paymentStatus ==
                                                                   'wallet'
                                                               ? 'wallet_payment'
@@ -288,37 +294,48 @@ class OrderDetailsScreen extends StatelessWidget {
                                         const Divider(),
                                 shrinkWrap: true,
                                 physics: NeverScrollableScrollPhysics(),
-                                itemCount:
-                                    orderController.selectedOrder.addOn.length,
+                                itemCount: orderController
+                                    .selectedServiceOrder.addOn.length,
                                 itemBuilder: (context, index) {
-                                  if (orderController.selectedOrder.status ==
+                                  if (orderController
+                                          .selectedServiceOrder.status ==
                                       OrderStatus.IN_PROGRESS) {
                                     return CheckboxListTile(
-                                      value: orderController.selectedOrder
-                                          .addOn[index].isSelected,
+                                      value: orderController
+                                          .selectedServiceOrder
+                                          .addOn[index]
+                                          .isSelected,
                                       onChanged: ((value) {
                                         orderController.updateAddOnStatus(
                                             selectedIndex: index);
                                       }),
                                       title: Text(orderController
-                                          .selectedOrder.addOn[index].name
+                                          .selectedServiceOrder
+                                          .addOn[index]
+                                          .name
                                           .toString()),
                                       subtitle: Text(
                                           PriceConverter.convertPrice(
-                                              orderController.selectedOrder
-                                                  .addOn[index].price
+                                              orderController
+                                                  .selectedServiceOrder
+                                                  .addOn[index]
+                                                  .price
                                                   .toDouble())),
                                     );
                                   } else {
                                     return ListTile(
                                       leading: Icon(Icons.radio_button_checked),
                                       title: Text(orderController
-                                          .selectedOrder.addOn[index].name
+                                          .selectedServiceOrder
+                                          .addOn[index]
+                                          .name
                                           .toString()),
                                       subtitle: Text(
                                           PriceConverter.convertPrice(
-                                              orderController.selectedOrder
-                                                  .addOn[index].price
+                                              orderController
+                                                  .selectedServiceOrder
+                                                  .addOn[index]
+                                                  .price
                                                   .toDouble())),
                                     );
                                   }
@@ -327,9 +344,9 @@ class OrderDetailsScreen extends StatelessWidget {
                     ]),
                   )),
                   _showBottomView
-                      ? orderController.selectedOrder.status ==
+                      ? orderController.selectedServiceOrder.status ==
                                   OrderStatus.ACTIVE ||
-                              orderController.selectedOrder.status ==
+                              orderController.selectedServiceOrder.status ==
                                   OrderStatus.REASSIGNED
                           ? Row(children: [
                               Expanded(
@@ -344,19 +361,19 @@ class OrderDetailsScreen extends StatelessWidget {
                                         orderController
                                             .serviceOrderStatusUpdate(
                                                 orderID: orderController
-                                                    .selectedOrder.id,
+                                                    .selectedServiceOrder.id,
                                                 orderModel: orderController
-                                                    .selectedOrder,
+                                                    .selectedServiceOrder,
                                                 status: OrderStatus.REJECTED)
                                             .then((isSuccess) {
                                           if (isSuccess) {
                                             Get.back();
-                                            orderController.selectedOrder
+                                            orderController.selectedServiceOrder
                                                 .status = OrderStatus.REJECTED;
                                             orderController
                                                 .setServiceSelectedOrder(
                                                     orderController
-                                                        .selectedOrder);
+                                                        .selectedServiceOrder);
                                             showCustomSnackBar(
                                                 'order_ignored'.tr,
                                                 isError: false);
@@ -409,16 +426,16 @@ class OrderDetailsScreen extends StatelessWidget {
                                         orderController
                                             .serviceOrderStatusUpdate(
                                                 orderID: orderController
-                                                    .selectedOrder.id,
+                                                    .selectedServiceOrder.id,
                                                 orderModel: orderController
-                                                    .selectedOrder,
+                                                    .selectedServiceOrder,
                                                 status: orderController
-                                                                .selectedOrder
+                                                                .selectedServiceOrder
                                                                 .status ==
                                                             OrderStatus
                                                                 .ACTIVE ||
                                                         orderController
-                                                                .selectedOrder
+                                                                .selectedServiceOrder
                                                                 .status ==
                                                             OrderStatus
                                                                 .REASSIGNED
@@ -429,7 +446,7 @@ class OrderDetailsScreen extends StatelessWidget {
                                             orderController
                                                 .setServiceSelectedOrder(
                                                     orderController
-                                                        .selectedOrder);
+                                                        .selectedServiceOrder);
                                           } else {
                                             showCustomSnackBar(
                                                 'Something went wrong!',
@@ -442,7 +459,7 @@ class OrderDetailsScreen extends StatelessWidget {
                               )),
                             ])
                           : _showSlider
-                              ? (orderController.selectedOrder.status ==
+                              ? (orderController.selectedServiceOrder.status ==
                                       OrderStatus.ACCEPTED)
                                   ? Container(
                                       height: 40,
@@ -463,26 +480,25 @@ class OrderDetailsScreen extends StatelessWidget {
                                                   onYesPressed: () {
                                                     orderController
                                                         .serviceOrderStatusUpdate(
-                                                            orderID:
-                                                                orderController
-                                                                    .selectedOrder
-                                                                    .id,
+                                                            orderID: orderController
+                                                                .selectedServiceOrder
+                                                                .id,
                                                             orderModel:
                                                                 orderController
-                                                                    .selectedOrder,
+                                                                    .selectedServiceOrder,
                                                             status: OrderStatus
                                                                 .IN_PROGRESS)
                                                         .then((isSuccess) {
                                                       if (isSuccess) {
                                                         orderController
-                                                                .selectedOrder
+                                                                .selectedServiceOrder
                                                                 .status =
                                                             OrderStatus
                                                                 .IN_PROGRESS;
                                                         orderController
                                                             .setServiceSelectedOrder(
                                                                 orderController
-                                                                    .selectedOrder);
+                                                                    .selectedServiceOrder);
                                                       } else {
                                                         showCustomSnackBar(
                                                             'Something went wrong!',
@@ -494,7 +510,8 @@ class OrderDetailsScreen extends StatelessWidget {
                                         },
                                       )),
                                     )
-                                  : orderController.selectedOrder.status ==
+                                  : orderController
+                                              .selectedServiceOrder.status ==
                                           OrderStatus.IN_PROGRESS
                                       ? SliderButton(
                                           action: () {
