@@ -68,8 +68,12 @@ class _NewRequestDialogState extends State<NewRequestDialog> {
           CustomButton(
             height: 40,
             buttonText: widget.isRequest
-                ? (Get.find<OrderController>().currentOrderList != null &&
-                        Get.find<OrderController>().currentOrderList.length > 0)
+                ? (Get.find<OrderController>().currentServiceOrderList !=
+                            null &&
+                        Get.find<OrderController>()
+                                .currentServiceOrderList
+                                .length >
+                            0)
                     ? 'ok'.tr
                     : 'go'.tr
                 : 'ok'.tr,

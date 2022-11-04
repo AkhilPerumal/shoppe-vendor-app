@@ -5,6 +5,7 @@ import 'package:carclenx_vendor_app/data/api/api_client.dart';
 import 'package:carclenx_vendor_app/data/model/response/product_category_model.dart';
 import 'package:carclenx_vendor_app/data/model/response/product_details_model.dart';
 import 'package:carclenx_vendor_app/data/model/response/product_sub_category_model.dart';
+import 'package:carclenx_vendor_app/helper/file_helper.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:http/http.dart' as Http;
 import 'package:carclenx_vendor_app/controller/auth_controller.dart';
@@ -309,6 +310,11 @@ class CreateProductController extends GetxController implements GetxService {
   validateProduct(List selectedModelIdLit) {
     isError = false;
     update();
+    var pickedImageSize = 0.0;
+    pickedImageList.forEach((element) {
+      pickedImageSize = pickedImageSize + FileHelper.getFileSizeInMB(element);
+    });
+
     if ((nameController.text == "" || nameController.text == null)) {
       isError = true;
       update();
@@ -352,6 +358,10 @@ class CreateProductController extends GetxController implements GetxService {
       isError = true;
       update();
       showCustomSnackBar("Please Enter Description", isError: true);
+    } else if (pickedImageSize > 10.0) {
+      isError = true;
+      update();
+      showCustomSnackBar("Total file size should be below 10MB", isError: true);
     }
     return isError;
   }

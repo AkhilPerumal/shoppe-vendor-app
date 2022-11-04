@@ -149,6 +149,7 @@ class AuthController extends GetxController implements GetxService {
       _isLoading = false;
       update();
       _userModel = UserModel.fromJson(response.body['resultData']);
+      _userModel.isActive = userModel.status == "Active";
       authRepo.setUserDetails(_userModel);
       authRepo.saveUserToken(
           _userModel.userToken, response.body['zone_wise_topic']);
@@ -204,6 +205,7 @@ class AuthController extends GetxController implements GetxService {
       _isLoading = false;
       update();
       _userModel = UserModel.fromJson(response.body['resultData']);
+      _userModel.isActive = _userModel.status == "Active";
       getWorkerWorkDetails();
       if (_userModel.isActive && _userModel.status == "Approved") {
         LocationPermission permission = await Geolocator.checkPermission();

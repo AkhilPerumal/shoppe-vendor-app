@@ -126,7 +126,7 @@ class _MyTextFieldState extends State<MyTextField> {
           obscureText: widget.isPassword ? _obscureText : false,
           inputFormatters: widget.inputType == TextInputType.phone
               ? <TextInputFormatter>[
-                  FilteringTextInputFormatter.allow(RegExp('[0-9+]'))
+                  FilteringTextInputFormatter.allow(RegExp('[0-9]'))
                 ]
               : widget.isAmount
                   ? [FilteringTextInputFormatter.allow(RegExp(r'[0-9.]'))]
@@ -153,8 +153,16 @@ class _MyTextFieldState extends State<MyTextField> {
                     onPressed: _toggle,
                   )
                 : null,
-            prefixIcon:
-                widget.amountIcon ? Icon(Icons.currency_rupee, size: 20) : null,
+            prefixIcon: widget.amountIcon
+                ? Icon(Icons.currency_rupee, size: 20)
+                : widget.inputType == TextInputType.phone
+                    ? Text(
+                        "+91",
+                        textAlign: TextAlign.center,
+                        style: robotoRegular.copyWith(
+                            fontSize: Dimensions.FONT_SIZE_DEFAULT),
+                      )
+                    : null,
           ),
           onTap: widget.onTap,
           onSubmitted: (text) => widget.nextFocus != null

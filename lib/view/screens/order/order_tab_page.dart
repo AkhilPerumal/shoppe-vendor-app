@@ -60,7 +60,8 @@ class OrderTabPage extends StatelessWidget {
                                 enablePullDown: true,
                                 enablePullUp: true,
                                 onLoading: () {
-                                  if (orderController.currentOrderList.length >
+                                  if (orderController
+                                          .currentServiceOrderList.length >
                                       20) {
                                     loadOrders(reload: false, loadMore: true);
                                   } else {
@@ -163,15 +164,17 @@ class OrderTabPage extends StatelessWidget {
                                                   child: Center(
                                                       child:
                                                           CircularProgressIndicator()))
-                                          : orderController.currentOrderList !=
+                                          : orderController
+                                                      .currentServiceOrderList !=
                                                   null
-                                              ? orderController.currentOrderList
+                                              ? orderController
+                                                          .currentServiceOrderList
                                                           .length >
                                                       0
                                                   ? ListView.builder(
                                                       shrinkWrap: true,
                                                       itemCount: orderController
-                                                          .currentOrderList
+                                                          .currentServiceOrderList
                                                           .length,
                                                       padding: EdgeInsets.all(
                                                           Dimensions
@@ -183,7 +186,7 @@ class OrderTabPage extends StatelessWidget {
                                                         return OrderRequestWidget(
                                                             orderModel:
                                                                 orderController
-                                                                        .currentOrderList[
+                                                                        .currentServiceOrderList[
                                                                     index],
                                                             index: index);
                                                       },

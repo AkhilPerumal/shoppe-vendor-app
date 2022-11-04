@@ -47,11 +47,106 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     _pageController = PageController(initialPage: widget.pageIndex);
 
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print("onMessage: ${message.data}");
+      if (_pageIndex == 1) {
+        int _tabIndex = Get.find<ActiveOrderTabController>().tabIndex;
+        SubTabType _subTabType =
+            Get.find<ActiveOrderTabController>().subTabType;
+        if (message.data['eventType'] == "order-placed" &&
+            _subTabType == SubTabType.NEW) {
+          if (_tabIndex == 0 && message.data['assetType'] == "Shoppe") {
+            Get.find<OrderController>()
+                .setCurrentOrderList(category: CategoryType.CAR_SHOPPE);
+          }
+          if (_tabIndex == 1 && message.data['assetType'] == "Carspa") {
+            Get.find<OrderController>()
+                .setCurrentOrderList(category: CategoryType.CAR_SPA);
+          }
+          if (_tabIndex == 2 && message.data['assetType'] == "Mechanical") {
+            Get.find<OrderController>()
+                .setCurrentOrderList(category: CategoryType.CAR_MECHANIC);
+          }
+          if (_tabIndex == 3 && message.data['assetType'] == "Quickhelp") {
+            Get.find<OrderController>()
+                .setCurrentOrderList(category: CategoryType.QUICK_HELP);
+          }
+        }
+        if ((message.data['eventType'] == "order-in-progress" ||
+                message.data['eventType'] == "order-dispatched" ||
+                message.data['eventType'] == "order-return-accepted" ||
+                message.data['eventType'] == "order-return-approved" ||
+                message.data['eventType'] == "order-refund-processing") &&
+            _subTabType == SubTabType.ACTIVE) {
+          if (_tabIndex == 0 && message.data['assetType'] == "Shoppe") {
+            Get.find<OrderController>()
+                .setCurrentOrderList(category: CategoryType.CAR_SHOPPE);
+          }
+          if (_tabIndex == 1 && message.data['assetType'] == "Carspa") {
+            Get.find<OrderController>()
+                .setCurrentOrderList(category: CategoryType.CAR_SPA);
+          }
+          if (_tabIndex == 2 && message.data['assetType'] == "Mechanical") {
+            Get.find<OrderController>()
+                .setCurrentOrderList(category: CategoryType.CAR_MECHANIC);
+          }
+          if (_tabIndex == 3 && message.data['assetType'] == "Quickhelp") {
+            Get.find<OrderController>()
+                .setCurrentOrderList(category: CategoryType.QUICK_HELP);
+          }
+        }
+      } else if (_pageIndex == 3) {
+        int _tabIndex = Get.find<OrderHistoryTabController>().tabIndex;
+        SubTabType _subTabType =
+            Get.find<OrderHistoryTabController>().subTabType;
+        if ((message.data['eventType'] == "order-completed" ||
+                message.data['eventType'] == "order-refund-complete") &&
+            _subTabType == SubTabType.COMPELTED) {
+          if (_tabIndex == 0 && message.data['assetType'] == "Shoppe") {
+            Get.find<OrderController>()
+                .setCurrentOrderList(category: CategoryType.CAR_SHOPPE);
+          }
+          if (_tabIndex == 1 && message.data['assetType'] == "Carspa") {
+            Get.find<OrderController>()
+                .setCurrentOrderList(category: CategoryType.CAR_SPA);
+          }
+          if (_tabIndex == 2 && message.data['assetType'] == "Mechanical") {
+            Get.find<OrderController>()
+                .setCurrentOrderList(category: CategoryType.CAR_MECHANIC);
+          }
+          if (_tabIndex == 3 && message.data['assetType'] == "Quickhelp") {
+            Get.find<OrderController>()
+                .setCurrentOrderList(category: CategoryType.QUICK_HELP);
+          }
+        }
+        if ((message.data['eventType'] == "order-rejected" ||
+                message.data['eventType'] == "order-cancelled") &&
+            _subTabType == SubTabType.CANCELLED) {
+          if (_tabIndex == 0 && message.data['assetType'] == "Shoppe") {
+            Get.find<OrderController>()
+                .setCurrentOrderList(category: CategoryType.CAR_SHOPPE);
+          }
+          if (_tabIndex == 1 && message.data['assetType'] == "Carspa") {
+            Get.find<OrderController>()
+                .setCurrentOrderList(category: CategoryType.CAR_SPA);
+          }
+          if (_tabIndex == 2 && message.data['assetType'] == "Mechanical") {
+            Get.find<OrderController>()
+                .setCurrentOrderList(category: CategoryType.CAR_MECHANIC);
+          }
+          if (_tabIndex == 3 && message.data['assetType'] == "Quickhelp") {
+            Get.find<OrderController>()
+                .setCurrentOrderList(category: CategoryType.QUICK_HELP);
+          }
+        }
+      }
+    });
+
     _screens = [
       HomeScreen(),
       OrderRequestScreen(onTap: () => _setPage(0)),
       ShoppeScreen(),
-      OrderScreen(),
+      OrderHistoryScreen(),
       ProfileScreen(),
     ];
 

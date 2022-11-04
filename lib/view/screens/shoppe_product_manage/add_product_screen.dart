@@ -583,30 +583,28 @@ class AddProductScreen extends StatelessWidget {
                                       ],
                                     ),
                                     Container(
-                                      height: isEdit &&
-                                              ((createProductController
-                                                              .editingProduct !=
-                                                          null &&
-                                                      createProductController
-                                                              .editingProduct
-                                                              .imageUrl !=
-                                                          null &&
-                                                      createProductController
-                                                              .editingProduct
-                                                              .imageUrl
-                                                              .length >
-                                                          0) ||
+                                      height: ((createProductController
+                                                          .editingProduct !=
+                                                      null &&
                                                   createProductController
-                                                          .pickedImageList
+                                                          .editingProduct
+                                                          .imageUrl !=
+                                                      null &&
+                                                  createProductController
+                                                          .editingProduct
+                                                          .imageUrl
                                                           .length >
-                                                      0)
+                                                      0) ||
+                                              createProductController
+                                                      .pickedImageList.length >
+                                                  0)
                                           ? 150
                                           : 60,
                                       child: Row(
                                         children: [
                                           Expanded(
-                                            child: isEdit &&
-                                                    ((createProductController
+                                            child:
+                                                ((createProductController
                                                                     .editingProduct !=
                                                                 null &&
                                                             createProductController
@@ -622,12 +620,11 @@ class AddProductScreen extends StatelessWidget {
                                                                 .pickedImageList
                                                                 .length >
                                                             0)
-                                                ? ListView.builder(
-                                                    shrinkWrap: true,
-                                                    scrollDirection:
-                                                        Axis.horizontal,
-                                                    itemCount: isEdit
-                                                        ? createProductController
+                                                    ? ListView.builder(
+                                                        shrinkWrap: true,
+                                                        scrollDirection:
+                                                            Axis.horizontal,
+                                                        itemCount: createProductController
                                                                     .pickedImageList
                                                                     .length >
                                                                 0
@@ -637,38 +634,36 @@ class AddProductScreen extends StatelessWidget {
                                                             : createProductController
                                                                 .editingProduct
                                                                 .imageUrl
-                                                                .length
-                                                        : 0,
-                                                    itemBuilder:
-                                                        ((context, index) {
-                                                      if (createProductController
-                                                              .pickedImageList
-                                                              .length >
-                                                          0) {
-                                                        return imageHolder(
-                                                            createProductController,
-                                                            context,
-                                                            index);
-                                                      } else {
-                                                        return applicationImage(
-                                                            createProductController,
-                                                            context,
-                                                            index);
-                                                      }
-                                                    }),
-                                                  )
-                                                : Container(
-                                                    child: Text(
-                                                      "Add image",
-                                                      style: robotoRegular
-                                                          .copyWith(
+                                                                .length,
+                                                        itemBuilder:
+                                                            ((context, index) {
+                                                          if (createProductController
+                                                                  .pickedImageList
+                                                                  .length >
+                                                              0) {
+                                                            return imageHolder(
+                                                                createProductController,
+                                                                context,
+                                                                index);
+                                                          } else {
+                                                            return applicationImage(
+                                                                createProductController,
+                                                                context,
+                                                                index);
+                                                          }
+                                                        }),
+                                                      )
+                                                    : Container(
+                                                        child: Text(
+                                                          "Add image",
+                                                          style: robotoRegular.copyWith(
                                                               color: Theme.of(
                                                                       context)
                                                                   .disabledColor),
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                    ),
-                                                  ),
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                        ),
+                                                      ),
                                           ),
                                         ],
                                       ),

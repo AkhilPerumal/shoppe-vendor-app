@@ -31,9 +31,67 @@ enum OrderStatus {
   OTHER
 }
 
+enum NotificationType { message, order, general, happyCode }
+
+enum NotificationOrerType {
+  order_placed,
+  order_rejected,
+  order_cancelled,
+  order_in_progress,
+  order_confirmed,
+  order_dispatched,
+  order_completed,
+  order_return_requested,
+  order_return_accepted,
+  order_return_approved,
+  order_refund_processing,
+  order_refund_complete
+}
+
 enum OrderPage { ACTIVE, HISTORY }
 
 class EnumConverter {
+  static notificationOrderStatusEnumToString(NotificationOrerType orderType) {
+    switch (orderType) {
+      case NotificationOrerType.order_placed:
+        return "order-placed";
+        break;
+      case NotificationOrerType.order_rejected:
+        return "order-rejected";
+        break;
+      case NotificationOrerType.order_cancelled:
+        return "order-cancelled";
+        break;
+      case NotificationOrerType.order_in_progress:
+        return "order-in-progress";
+        break;
+      case NotificationOrerType.order_confirmed:
+        return "order-confirmed";
+        break;
+      case NotificationOrerType.order_dispatched:
+        return "order-dispatched";
+        break;
+      case NotificationOrerType.order_completed:
+        return "order-completed";
+        break;
+      case NotificationOrerType.order_return_requested:
+        return "order-return-requested";
+        break;
+      case NotificationOrerType.order_return_accepted:
+        return "order-return-accepted";
+        break;
+      case NotificationOrerType.order_return_approved:
+        return "order-return-approved";
+        break;
+      case NotificationOrerType.order_refund_processing:
+        return "order-refund-processing";
+        break;
+      case NotificationOrerType.order_refund_complete:
+        return "order-refund-complete";
+        break;
+    }
+  }
+
   static orderStatusToTitle(OrderStatus orderStatus) {
     switch (orderStatus) {
       case OrderStatus.ACTIVE:
@@ -192,7 +250,7 @@ class EnumConverter {
       return OrderStatus.REJECTED;
     } else if (orderStatus == "Completed") {
       return OrderStatus.COMPLETED;
-    } else if (orderStatus == "Cancelletd") {
+    } else if (orderStatus == "Cancelled") {
       return OrderStatus.CANCELLED;
     } else if (orderStatus == "Confirmed") {
       return OrderStatus.CONFIRMED;

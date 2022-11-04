@@ -17,8 +17,8 @@ class OrderController extends GetxController implements GetxService {
   final OrderRepo orderRepo;
   OrderController({@required this.orderRepo});
 
-  List<OrderModel> _currentOrderList, _runningOrderList;
-  List<ProductOrderDetails> _shoppeOrderList;
+  List<OrderModel> _currentServiceOrderList, _runningOrderList;
+  List<ProductOrderDetails> _currentShoppeOrderList;
 
   int _tabIndex = 0;
   List<IgnoreModel> _ignoredRequests = [];
@@ -52,9 +52,9 @@ class OrderController extends GetxController implements GetxService {
 
   List<Widget> get fliterListOrderRequest => _fliterListOrderRequest;
   List<Widget> get fliterListOrderHistory => _fliterListOrderHistory;
-  List<OrderModel> get currentOrderList => _currentOrderList;
+  List<OrderModel> get currentServiceOrderList => _currentServiceOrderList;
   List<OrderModel> get runningOrderList => _runningOrderList;
-  List<ProductOrderDetails> get shoppeOrderList => _shoppeOrderList;
+  List<ProductOrderDetails> get shoppeOrderList => _currentShoppeOrderList;
 
   int get tabIndex => _tabIndex;
   bool get isLoading => _isLoading;
@@ -117,9 +117,7 @@ class OrderController extends GetxController implements GetxService {
     if (category == CategoryType.CAR_SHOPPE) {
       if (_selectedSubTab == SubTabType.NEW) {
         getLatestOrders(
-            category: CategoryType.CAR_SHOPPE,
-            pageNo: pageNo,
-            status: "Processing");
+            category: CategoryType.CAR_SHOPPE, pageNo: pageNo, status: "new");
       }
       if (_selectedSubTab == SubTabType.ACTIVE) {
         getLatestOrders(
@@ -129,7 +127,7 @@ class OrderController extends GetxController implements GetxService {
         getLatestOrders(
             category: CategoryType.CAR_SHOPPE,
             pageNo: pageNo,
-            status: "Completed");
+            status: "finished");
       }
       if (_selectedSubTab == SubTabType.CANCELLED) {
         getLatestOrders(
@@ -244,8 +242,8 @@ class OrderController extends GetxController implements GetxService {
       CategoryType category,
       bool haveMore = false}) async {
     if (pageNo == "1") {
-      _currentOrderList = [];
-      _shoppeOrderList = [];
+      _currentServiceOrderList = [];
+      _currentShoppeOrderList = [];
     }
     _isLoading = true;
     update();
@@ -257,14 +255,14 @@ class OrderController extends GetxController implements GetxService {
           response.body['resultData'].length > 0) {
         if (category != CategoryType.CAR_SHOPPE) {
           response.body['resultData'].forEach((data) {
-            _currentOrderList.add(OrderModel.fromJson(data));
+            _currentServiceOrderList.add(OrderModel.fromJson(data));
           });
-          _currentOrderList.forEach((element) {
+          _currentServiceOrderList.forEach((element) {
             element.category = category;
           });
         } else {
           response.body['resultData'].forEach((data) {
-            _shoppeOrderList.add(ProductOrderDetails.fromJson(data));
+            _currentShoppeOrderList.add(ProductOrderDetails.fromJson(data));
           });
         }
         _totalPage = response.body['totalPages'];
@@ -345,18 +343,37 @@ class OrderController extends GetxController implements GetxService {
         status == OrderStatus.REJECTED ||
         status == OrderStatus.COMPLETED) {
       if (category == CategoryType.CAR_SPA) {
-        _currentOrderList.removeWhere(((element) => orderID == element.id));
+        _currentServiceOrderList
+            .removeWhere(((element) => orderID == element.id));
       }
       if (category == CategoryType.CAR_MECHANIC) {
-        _currentOrderList.removeWhere(((element) => orderID == element.id));
+        _currentServiceOrderList
+            .removeWhere(((element) => orderID == element.id));
       }
       if (category == CategoryType.QUICK_HELP) {
-        _currentOrderList.removeWhere(((element) => orderID == element.id));
+        _currentServiceOrderList
+            .removeWhere(((element) => orderID == element.id));
       }
     }
     if (category == CategoryType.CAR_SHOPPE) {
       if (status != OrderStatus.DISPATCHED) {
-        _shoppeOrderList.removeWhere(((element) => orderID == element.id));
+        _currentShoppeOrderList
+            .removeWhere(((element) => orderID == element.id));
+      }
+    }
+    if (category == CategoryType.CAR_SPA ||
+        category == CategoryType.CAR_MECHANIC ||
+        category == CategoryType.QUICK_HELP) {
+      if (status == OrderStatus.IN_PROGRESS) {
+        _currentServiceOrderList.where((element) {
+          if (element.id == orderID) {
+            element.status = OrderStatus.IN_PROGRESS;
+            update();
+            return true;
+          } else {
+            return false;
+          }
+        });
       }
     }
     update();

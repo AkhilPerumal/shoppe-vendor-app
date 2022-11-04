@@ -1,6 +1,7 @@
 import 'package:carclenx_vendor_app/controller/auth_controller.dart';
 import 'package:carclenx_vendor_app/controller/localization_controller.dart';
 import 'package:carclenx_vendor_app/controller/order_controller.dart';
+import 'package:carclenx_vendor_app/data/model/response/order_model.dart';
 import 'package:carclenx_vendor_app/helper/enums.dart';
 import 'package:carclenx_vendor_app/helper/price_converter.dart';
 import 'package:carclenx_vendor_app/util/dimensions.dart';
@@ -292,12 +293,11 @@ class ServiceOrderDetailsScreen extends StatelessWidget {
                                             .then((isSuccess) {
                                           if (isSuccess) {
                                             Get.back();
-                                            orderController.selectedOrder
-                                                .status = OrderStatus.REJECTED;
+                                            OrderModel order =
+                                                orderController.selectedOrder;
+                                            order.status = OrderStatus.REJECTED;
                                             orderController
-                                                .setServiceSelectedOrder(
-                                                    orderController
-                                                        .selectedOrder);
+                                                .setServiceSelectedOrder(order);
                                             showCustomSnackBar(
                                                 'order_ignored'.tr,
                                                 isError: false);
@@ -368,10 +368,12 @@ class ServiceOrderDetailsScreen extends StatelessWidget {
                                             .then((isSuccess) {
                                           if (isSuccess) {
                                             // onTap();
+                                            OrderModel order =
+                                                orderController.selectedOrder;
+                                            orderController.selectedOrder
+                                                .status = OrderStatus.ACCEPTED;
                                             orderController
-                                                .setServiceSelectedOrder(
-                                                    orderController
-                                                        .selectedOrder);
+                                                .setServiceSelectedOrder(order);
                                           } else {
                                             showCustomSnackBar(
                                                 'Something went wrong!',
@@ -389,8 +391,7 @@ class ServiceOrderDetailsScreen extends StatelessWidget {
                                   ? Container(
                                       height: 40,
                                       width: Get.width * 0.9,
-                                      child: Expanded(
-                                          child: CustomButton(
+                                      child: CustomButton(
                                         buttonText: 'start'.tr,
                                         height: 40,
                                         onPressed: () {
@@ -416,15 +417,15 @@ class ServiceOrderDetailsScreen extends StatelessWidget {
                                                                 .IN_PROGRESS)
                                                         .then((isSuccess) {
                                                       if (isSuccess) {
-                                                        orderController
-                                                                .selectedOrder
-                                                                .status =
+                                                        OrderModel order =
+                                                            orderController
+                                                                .selectedOrder;
+                                                        order.status =
                                                             OrderStatus
                                                                 .IN_PROGRESS;
                                                         orderController
                                                             .setServiceSelectedOrder(
-                                                                orderController
-                                                                    .selectedOrder);
+                                                                order);
                                                       } else {
                                                         showCustomSnackBar(
                                                             'Something went wrong!',
@@ -434,7 +435,7 @@ class ServiceOrderDetailsScreen extends StatelessWidget {
                                                   }),
                                               barrierDismissible: false);
                                         },
-                                      )),
+                                      ),
                                     )
                                   : orderController.selectedOrder.status ==
                                           OrderStatus.IN_PROGRESS

@@ -11,8 +11,8 @@ class RunningOrderScreen extends StatelessWidget {
     return Scaffold(
       appBar: CustomAppBar(title: 'running_orders'.tr),
       body: GetBuilder<OrderController>(builder: (orderController) {
-        return orderController.currentOrderList != null
-            ? orderController.currentOrderList.length > 0
+        return orderController.currentServiceOrderList != null
+            ? orderController.currentServiceOrderList.length > 0
                 ? RefreshIndicator(
                     onRefresh: () async {
                       // await orderController.getCurrentOrders();
@@ -26,13 +26,14 @@ class RunningOrderScreen extends StatelessWidget {
                         child: ListView.builder(
                           padding:
                               EdgeInsets.all(Dimensions.PADDING_SIZE_SMALL),
-                          itemCount: orderController.currentOrderList.length,
+                          itemCount:
+                              orderController.currentServiceOrderList.length,
                           physics: NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
                           itemBuilder: (context, index) {
                             return HistoryOrderWidget(
-                                orderModel:
-                                    orderController.currentOrderList[index],
+                                orderModel: orderController
+                                    .currentServiceOrderList[index],
                                 isRunning: true,
                                 index: index);
                           },

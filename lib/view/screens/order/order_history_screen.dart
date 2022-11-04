@@ -10,7 +10,7 @@ import 'package:carclenx_vendor_app/view/screens/order/widget/history_order_widg
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class OrderScreen extends StatelessWidget {
+class OrderHistoryScreen extends StatelessWidget {
   final OrderHistoryTabController _tabx =
       Get.put(OrderHistoryTabController(length: 4));
   double tabHeight = 0;

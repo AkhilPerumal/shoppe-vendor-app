@@ -20,6 +20,7 @@ class OrderHistoryTabController extends GetxController
 
   setTabIndex({int index, SubTabType subTabType}) {
     _tabIndex = index;
+    _subTabType = subTabType;
     tabController.index = _tabIndex;
     loadData(tabIndex: _tabIndex, subTabType: subTabType);
     update();

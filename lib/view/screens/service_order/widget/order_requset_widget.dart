@@ -241,13 +241,11 @@ class OrderRequestWidget extends StatelessWidget {
                                                 status: OrderStatus.IN_PROGRESS)
                                             .then((isSuccess) {
                                           if (isSuccess) {
-                                            orderController
-                                                    .selectedOrder.status =
+                                            orderModel.status =
                                                 OrderStatus.IN_PROGRESS;
                                             orderController
                                                 .setServiceSelectedOrder(
-                                                    orderController
-                                                        .selectedOrder);
+                                                    orderModel);
                                           } else {
                                             showCustomSnackBar(
                                                 'Something went wrong!',
