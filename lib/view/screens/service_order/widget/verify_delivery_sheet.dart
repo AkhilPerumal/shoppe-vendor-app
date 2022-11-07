@@ -6,6 +6,7 @@ import 'package:carclenx_vendor_app/util/dimensions.dart';
 import 'package:carclenx_vendor_app/util/images.dart';
 import 'package:carclenx_vendor_app/util/styles.dart';
 import 'package:carclenx_vendor_app/view/base/custom_button.dart';
+import 'package:carclenx_vendor_app/view/screens/dashboard/dashboard_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
@@ -29,36 +30,36 @@ class VerifyDeliverySheet extends StatelessWidget {
         return Padding(
           padding: EdgeInsets.all(Dimensions.PADDING_SIZE_LARGE),
           child: Column(mainAxisSize: MainAxisSize.min, children: [
-            cod
-                ? Column(children: [
-                    Image.asset(Images.money, height: 100, width: 100),
-                    SizedBox(height: Dimensions.PADDING_SIZE_LARGE),
-                    Text(
+            Column(children: [
+              Image.asset(Images.money, height: 100, width: 100),
+              SizedBox(height: Dimensions.PADDING_SIZE_LARGE),
+              cod
+                  ? Text(
                       'collect_money_from_customer'.tr,
                       textAlign: TextAlign.center,
                       style: robotoMedium.copyWith(
                           fontSize: Dimensions.FONT_SIZE_LARGE),
-                    ),
-                    SizedBox(height: Dimensions.PADDING_SIZE_LARGE),
-                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                      Text(
-                        '${'order_amount'.tr}:',
-                        textAlign: TextAlign.center,
-                        style: robotoBold.copyWith(
-                            fontSize: Dimensions.FONT_SIZE_LARGE),
-                      ),
-                      SizedBox(width: Dimensions.PADDING_SIZE_EXTRA_SMALL),
-                      Text(
-                        PriceConverter.convertPrice(orderAmount),
-                        textAlign: TextAlign.center,
-                        style: robotoBold.copyWith(
-                            fontSize: Dimensions.FONT_SIZE_LARGE,
-                            color: Theme.of(context).primaryColor),
-                      ),
-                    ]),
-                    SizedBox(height: verify ? 20 : 40),
-                  ])
-                : SizedBox(),
+                    )
+                  : SizedBox(),
+              SizedBox(height: cod ? Dimensions.PADDING_SIZE_LARGE : 0),
+              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                Text(
+                  '${'order_amount'.tr}:',
+                  textAlign: TextAlign.center,
+                  style:
+                      robotoBold.copyWith(fontSize: Dimensions.FONT_SIZE_LARGE),
+                ),
+                SizedBox(width: Dimensions.PADDING_SIZE_EXTRA_SMALL),
+                Text(
+                  PriceConverter.convertPrice(orderAmount),
+                  textAlign: TextAlign.center,
+                  style: robotoBold.copyWith(
+                      fontSize: Dimensions.FONT_SIZE_LARGE,
+                      color: Theme.of(context).primaryColor),
+                ),
+              ]),
+              SizedBox(height: verify ? 20 : 40),
+            ]),
             verify
                 ? Column(children: [
                     SizedBox(height: Dimensions.PADDING_SIZE_LARGE),
@@ -111,7 +112,8 @@ class VerifyDeliverySheet extends StatelessWidget {
                                   orderController.selectedServiceOrder.category)
                               .then((value) {
                             if (value) {
-                              Get.offAllNamed(RouteHelper.getInitialRoute());
+                              Get.until((route) =>
+                                  Get.currentRoute == RouteHelper.initial);
                             }
                           });
                           // Get.find<OrderController>()

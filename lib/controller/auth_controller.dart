@@ -756,6 +756,8 @@ class AuthController extends GetxController implements GetxService {
         _isLoading = false;
         update();
         showCustomSnackBar("User Already Exists", isError: true);
+      } else {
+        showCustomSnackBar("Something went wrong");
       }
     }
 

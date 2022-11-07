@@ -91,8 +91,8 @@ class VerifyCheckListSheet extends StatelessWidget {
                                   VerifyDeliverySheet(
                                     verify: true,
                                     orderAmount: total_amount.toDouble(),
-                                    cod: orderController.selectedServiceOrder
-                                            .paymentStatus ==
+                                    cod: orderController
+                                            .selectedServiceOrder.mode ==
                                         'COD',
                                   ),
                                   isScrollControlled: true);

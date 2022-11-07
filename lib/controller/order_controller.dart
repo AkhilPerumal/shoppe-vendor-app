@@ -8,6 +8,7 @@ import 'package:carclenx_vendor_app/data/model/response/order_model.dart';
 import 'package:carclenx_vendor_app/data/model/response/product_order_details.dart';
 import 'package:carclenx_vendor_app/data/repository/order_repo.dart';
 import 'package:carclenx_vendor_app/helper/enums.dart';
+import 'package:carclenx_vendor_app/view/base/custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
@@ -406,10 +407,17 @@ class OrderController extends GetxController implements GetxService {
         body: {"orderId": selectedServiceOrder.id, "code": code},
         category: category);
     if (response.statusCode == 200 || response.statusCode == 201) {
+      currentServiceOrderList
+          .removeWhere((element) => element.id == selectedServiceOrder.id);
+      update();
+      showCustomSnackBar("Happy code Verified", isError: false);
       print("HappyCode verified :  " + response.body.toString());
       return true;
-    } else {
+    } else if (response.statusCode == 400) {
+      showCustomSnackBar("Happy code Verification failed", isError: true);
       return false;
+    } else {
+      showCustomSnackBar("Something went wrong");
     }
   }
 

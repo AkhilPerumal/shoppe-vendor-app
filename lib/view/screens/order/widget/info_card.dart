@@ -86,7 +86,10 @@ class InfoCard extends StatelessWidget {
                                       overflow: TextOverflow.ellipsis,
                                       style: robotoRegular.copyWith(
                                           fontSize: Dimensions.FONT_SIZE_SMALL,
-                                          color: Theme.of(context).hintColor),
+                                          color: Theme.of(context)
+                                              .textTheme
+                                              .bodyText1
+                                              .color),
                                     )
                                   : SizedBox(),
                               (addressModel.street != null &&
@@ -101,7 +104,10 @@ class InfoCard extends StatelessWidget {
                                       overflow: TextOverflow.ellipsis,
                                       style: robotoRegular.copyWith(
                                           fontSize: Dimensions.FONT_SIZE_SMALL,
-                                          color: Theme.of(context).hintColor),
+                                          color: Theme.of(context)
+                                              .textTheme
+                                              .bodyText1
+                                              .color),
                                     )
                                   : SizedBox(),
 
@@ -130,7 +136,10 @@ class InfoCard extends StatelessWidget {
                               overflow: TextOverflow.ellipsis,
                               style: robotoRegular.copyWith(
                                   fontSize: Dimensions.FONT_SIZE_SMALL,
-                                  color: Theme.of(context).hintColor),
+                                  color: Theme.of(context)
+                                      .textTheme
+                                      .bodyText1
+                                      .color),
                             )
                           : SizedBox(),
                       SizedBox(
@@ -144,7 +153,10 @@ class InfoCard extends StatelessWidget {
                               overflow: TextOverflow.ellipsis,
                               style: robotoRegular.copyWith(
                                   fontSize: Dimensions.FONT_SIZE_SMALL,
-                                  color: Theme.of(context).hintColor),
+                                  color: Theme.of(context)
+                                      .textTheme
+                                      .bodyText1
+                                      .color),
                             )
                           : SizedBox(),
                       showButton

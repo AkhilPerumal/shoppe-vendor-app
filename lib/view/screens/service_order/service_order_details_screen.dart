@@ -2,6 +2,7 @@ import 'package:carclenx_vendor_app/controller/auth_controller.dart';
 import 'package:carclenx_vendor_app/controller/localization_controller.dart';
 import 'package:carclenx_vendor_app/controller/order_controller.dart';
 import 'package:carclenx_vendor_app/data/model/response/order_model.dart';
+import 'package:carclenx_vendor_app/helper/date_converter.dart';
 import 'package:carclenx_vendor_app/helper/enums.dart';
 import 'package:carclenx_vendor_app/helper/price_converter.dart';
 import 'package:carclenx_vendor_app/util/dimensions.dart';
@@ -68,6 +69,22 @@ class ServiceOrderDetailsScreen extends StatelessWidget {
                           style: robotoRegular,
                         ),
                       ]),
+                      SizedBox(
+                        height: Dimensions.PADDING_SIZE_SMALL,
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                              "Order Placed On: " +
+                                  DateConverter.isoStringToLocalDateAnTime(
+                                      orderController
+                                          .selectedServiceOrder.createdAt
+                                          .toIso8601String()),
+                              style: robotoRegular.copyWith(
+                                  fontSize: Dimensions.FONT_SIZE_SMALL,
+                                  color: Theme.of(context).disabledColor))
+                        ],
+                      ),
                       SizedBox(height: Dimensions.PADDING_SIZE_LARGE),
                       InfoCard(
                         title: 'customer_contact_details'.tr,
@@ -199,12 +216,12 @@ class ServiceOrderDetailsScreen extends StatelessWidget {
                                                     child: Text(
                                                       orderController
                                                                   .selectedServiceOrder
-                                                                  .paymentStatus ==
+                                                                  .mode ==
                                                               'cod'.tr
                                                           ? 'cod'.tr
                                                           : orderController
                                                                       .selectedServiceOrder
-                                                                      .paymentStatus ==
+                                                                      .mode ==
                                                                   'wallet'
                                                               ? 'wallet_payment'
                                                                   .tr

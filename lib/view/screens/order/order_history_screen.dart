@@ -26,7 +26,7 @@ class OrderHistoryScreen extends StatelessWidget {
           title: Text('order_history'.tr,
               style: robotoRegular.copyWith(
                   fontSize: Dimensions.FONT_SIZE_LARGE,
-                  color: Theme.of(context).secondaryHeaderColor)),
+                  color: Theme.of(context).cardColor)),
           centerTitle: true,
           // backgroundColor: Theme.of(context).cardColor,
           elevation: 0,

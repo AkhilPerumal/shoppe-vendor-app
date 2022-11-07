@@ -551,14 +551,16 @@ class RegistrationScreen extends StatelessWidget {
                     children: [
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: CustomButton(
-                          buttonText: fromSignIn ? "Sign Up" : "Update",
-                          width: Get.width * 0.8,
-                          height: 45,
-                          onPressed: () {
-                            authController.signUp(fromSignIn);
-                          },
-                        ),
+                        child: authController.isLoading
+                            ? CircularProgressIndicator()
+                            : CustomButton(
+                                buttonText: fromSignIn ? "Sign Up" : "Update",
+                                width: Get.width * 0.8,
+                                height: 45,
+                                onPressed: () {
+                                  authController.signUp(fromSignIn);
+                                },
+                              ),
                       ),
                     ],
                   )
