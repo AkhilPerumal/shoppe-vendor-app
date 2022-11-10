@@ -1,5 +1,6 @@
 import 'package:carclenx_vendor_app/controller/order_controller.dart';
 import 'package:carclenx_vendor_app/data/model/response/add_on_model.dart';
+import 'package:carclenx_vendor_app/helper/enums.dart';
 import 'package:carclenx_vendor_app/helper/price_converter.dart';
 import 'package:carclenx_vendor_app/util/dimensions.dart';
 import 'package:carclenx_vendor_app/util/images.dart';
@@ -78,26 +79,32 @@ class VerifyCheckListSheet extends StatelessWidget {
                                 total_amount.toDouble()) +
                             ' is the payable amount. You sure to continue.',
                         onYesPressed: () {
-                          orderController
-                              .generateHappyCode(
-                                  addons: selectedAddons,
-                                  category: orderController
-                                      .selectedServiceOrder.category)
-                              .then((value) {
-                            if (value) {
-                              Get.back();
-                              Get.back();
-                              Get.bottomSheet(
-                                  VerifyDeliverySheet(
-                                    verify: true,
-                                    orderAmount: total_amount.toDouble(),
-                                    cod: orderController
-                                            .selectedServiceOrder.mode ==
-                                        'COD',
-                                  ),
-                                  isScrollControlled: true);
-                            }
-                          });
+                          if (!orderController.isLoading ||
+                              orderController.selectedServiceOrder.status ==
+                                  OrderStatus.IN_PROGRESS) {
+                            orderController
+                                .generateHappyCode(
+                                    addons: selectedAddons,
+                                    category: orderController
+                                        .selectedServiceOrder.category)
+                                .then((value) {
+                              if (value) {
+                                Get.back();
+                                Get.back();
+                                Get.bottomSheet(
+                                    VerifyDeliverySheet(
+                                      verify: true,
+                                      orderAmount: total_amount.toDouble(),
+                                      cod: orderController
+                                              .selectedServiceOrder.mode ==
+                                          'COD',
+                                    ),
+                                    isScrollControlled: true);
+                              }
+                            });
+                          } else {
+                            Get.back();
+                          }
                         }));
                   },
                 )

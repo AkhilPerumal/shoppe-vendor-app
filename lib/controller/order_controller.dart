@@ -383,6 +383,8 @@ class OrderController extends GetxController implements GetxService {
 
   Future<bool> generateHappyCode(
       {List<AddOn> addons, CategoryType category}) async {
+    _isLoading = true;
+    update();
     List<AddOn> selectedAddon = [];
     addons.forEach((element) {
       selectedAddon.add(AddOn(name: element.name, price: element.price));
@@ -396,8 +398,12 @@ class OrderController extends GetxController implements GetxService {
         category: category, body: completedServiceBody.toJson());
     if (response.statusCode == 200 || response.statusCode == 201) {
       print("StatusCode Generated  :  " + response.body.toString());
+      _isLoading = false;
+      update();
       return true;
     } else {
+      _isLoading = false;
+      update();
       return false;
     }
   }

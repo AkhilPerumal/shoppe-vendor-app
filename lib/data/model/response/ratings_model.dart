@@ -13,7 +13,7 @@ class RatingsModel {
   StarCount threeStar;
   StarCount fourStar;
   StarCount fiveStar;
-  int average;
+  var average;
 
   factory RatingsModel.fromJson(Map<String, dynamic> json) => RatingsModel(
         oneStar: json["1"] == null ? null : StarCount.fromJson(json["1"]),

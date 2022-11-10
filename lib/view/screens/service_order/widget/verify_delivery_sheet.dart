@@ -21,116 +21,142 @@ class VerifyDeliverySheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Get.find<OrderController>().setOtp('');
-    return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      child: GetBuilder<OrderController>(builder: (orderController) {
-        return Padding(
-          padding: EdgeInsets.all(Dimensions.PADDING_SIZE_LARGE),
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-            Column(children: [
-              Image.asset(Images.money, height: 100, width: 100),
-              SizedBox(height: Dimensions.PADDING_SIZE_LARGE),
-              cod
-                  ? Text(
-                      'collect_money_from_customer'.tr,
-                      textAlign: TextAlign.center,
-                      style: robotoMedium.copyWith(
-                          fontSize: Dimensions.FONT_SIZE_LARGE),
-                    )
-                  : SizedBox(),
-              SizedBox(height: cod ? Dimensions.PADDING_SIZE_LARGE : 0),
-              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                Text(
-                  '${'order_amount'.tr}:',
-                  textAlign: TextAlign.center,
-                  style:
-                      robotoBold.copyWith(fontSize: Dimensions.FONT_SIZE_LARGE),
-                ),
-                SizedBox(width: Dimensions.PADDING_SIZE_EXTRA_SMALL),
-                Text(
-                  PriceConverter.convertPrice(orderAmount),
-                  textAlign: TextAlign.center,
-                  style: robotoBold.copyWith(
-                      fontSize: Dimensions.FONT_SIZE_LARGE,
-                      color: Theme.of(context).primaryColor),
-                ),
-              ]),
-              SizedBox(height: verify ? 20 : 40),
-            ]),
-            verify
-                ? Column(children: [
-                    SizedBox(height: Dimensions.PADDING_SIZE_LARGE),
-                    Text('collect_otp_from_customer'.tr,
-                        style: robotoRegular, textAlign: TextAlign.center),
-                    SizedBox(height: 40),
-                    PinCodeTextField(
-                      length: 4,
-                      appContext: context,
-                      keyboardType: TextInputType.number,
-                      animationType: AnimationType.slide,
-                      pinTheme: PinTheme(
-                        shape: PinCodeFieldShape.box,
-                        fieldHeight: 60,
-                        fieldWidth: 60,
-                        borderWidth: 1,
-                        borderRadius:
-                            BorderRadius.circular(Dimensions.RADIUS_SMALL),
-                        selectedColor:
-                            Theme.of(context).primaryColor.withOpacity(0.2),
-                        selectedFillColor: Colors.white,
-                        inactiveFillColor:
-                            Theme.of(context).disabledColor.withOpacity(0.2),
-                        inactiveColor:
-                            Theme.of(context).primaryColor.withOpacity(0.2),
-                        activeColor:
-                            Theme.of(context).primaryColor.withOpacity(0.4),
-                        activeFillColor:
-                            Theme.of(context).disabledColor.withOpacity(0.2),
-                      ),
-                      animationDuration: Duration(milliseconds: 300),
-                      backgroundColor: Colors.transparent,
-                      enableActiveFill: true,
-                      onChanged: (String text) => orderController.setOtp(text),
-                      beforeTextPaste: (text) => true,
+    return DraggableScrollableSheet(
+        initialChildSize: 0.55,
+        maxChildSize: 0.55,
+        expand: false,
+        builder: (BuildContext context, ScrollController scrollController) {
+          return Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).cardColor,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            ),
+            child: GetBuilder<OrderController>(builder: (orderController) {
+              return Padding(
+                padding: EdgeInsets.all(Dimensions.PADDING_SIZE_LARGE),
+                child: Column(mainAxisSize: MainAxisSize.min, children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                      controller: scrollController,
+                      child: Column(mainAxisSize: MainAxisSize.max, children: [
+                        Image.asset(Images.money, height: 100, width: 100),
+                        SizedBox(height: Dimensions.PADDING_SIZE_LARGE),
+                        cod
+                            ? Text(
+                                'collect_money_from_customer'.tr,
+                                textAlign: TextAlign.center,
+                                style: robotoMedium.copyWith(
+                                    fontSize: Dimensions.FONT_SIZE_LARGE),
+                              )
+                            : SizedBox(),
+                        SizedBox(
+                            height: cod ? Dimensions.PADDING_SIZE_LARGE : 0),
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                '${'order_amount'.tr}:',
+                                textAlign: TextAlign.center,
+                                style: robotoBold.copyWith(
+                                    fontSize: Dimensions.FONT_SIZE_LARGE),
+                              ),
+                              SizedBox(
+                                  width: Dimensions.PADDING_SIZE_EXTRA_SMALL),
+                              Text(
+                                PriceConverter.convertPrice(orderAmount),
+                                textAlign: TextAlign.center,
+                                style: robotoBold.copyWith(
+                                    fontSize: Dimensions.FONT_SIZE_LARGE,
+                                    color: Theme.of(context).primaryColor),
+                              ),
+                            ]),
+                        SizedBox(height: verify ? 20 : 40),
+                        verify
+                            ? Column(children: [
+                                SizedBox(height: Dimensions.PADDING_SIZE_LARGE),
+                                Text('collect_otp_from_customer'.tr,
+                                    style: robotoRegular,
+                                    textAlign: TextAlign.center),
+                                SizedBox(height: 40),
+                                PinCodeTextField(
+                                  length: 4,
+                                  appContext: context,
+                                  keyboardType: TextInputType.number,
+                                  animationType: AnimationType.slide,
+                                  pinTheme: PinTheme(
+                                    shape: PinCodeFieldShape.box,
+                                    fieldHeight: 60,
+                                    fieldWidth: 60,
+                                    borderWidth: 1,
+                                    borderRadius: BorderRadius.circular(
+                                        Dimensions.RADIUS_SMALL),
+                                    selectedColor: Theme.of(context)
+                                        .primaryColor
+                                        .withOpacity(0.2),
+                                    selectedFillColor: Colors.white,
+                                    inactiveFillColor: Theme.of(context)
+                                        .disabledColor
+                                        .withOpacity(0.2),
+                                    inactiveColor: Theme.of(context)
+                                        .primaryColor
+                                        .withOpacity(0.2),
+                                    activeColor: Theme.of(context)
+                                        .primaryColor
+                                        .withOpacity(0.4),
+                                    activeFillColor: Theme.of(context)
+                                        .disabledColor
+                                        .withOpacity(0.2),
+                                  ),
+                                  animationDuration:
+                                      Duration(milliseconds: 300),
+                                  backgroundColor: Colors.transparent,
+                                  enableActiveFill: true,
+                                  onChanged: (String text) =>
+                                      orderController.setOtp(text),
+                                  beforeTextPaste: (text) => true,
+                                ),
+                                SizedBox(height: 40),
+                              ])
+                            : SizedBox(),
+                      ]),
                     ),
-                    SizedBox(height: 40),
-                  ])
-                : SizedBox(),
-            (verify && orderController.otp.length != 4)
-                ? SizedBox()
-                : !orderController.isLoading
-                    ? CustomButton(
-                        buttonText: verify ? 'verify'.tr : 'ok'.tr,
-                        margin: EdgeInsets.only(
-                            bottom: Dimensions.PADDING_SIZE_LARGE),
-                        onPressed: () {
-                          orderController
-                              .verifyHappyCode(orderController.otp,
-                                  orderController.selectedServiceOrder.category)
-                              .then((value) {
-                            if (value) {
-                              Get.until((route) =>
-                                  Get.currentRoute == RouteHelper.initial);
-                            }
-                          });
-                          // Get.find<OrderController>()
-                          //     .updateOrderStatus(orderIndex, 'delivered')
-                          //     .then((success) {
-                          //   if (success) {
-                          //     Get.find<AuthController>().getProfile();
-                          //     // Get.find<OrderController>().getCurrentOrders();
-                          //     Get.offAllNamed(RouteHelper.getInitialRoute());
-                          //   }
-                          // });
-                        },
-                      )
-                    : Center(child: CircularProgressIndicator()),
-          ]),
-        );
-      }),
-    );
+                  ),
+                  (verify && orderController.otp.length != 4)
+                      ? SizedBox()
+                      : !orderController.isLoading
+                          ? CustomButton(
+                              buttonText: verify ? 'verify'.tr : 'ok'.tr,
+                              margin: EdgeInsets.only(
+                                  bottom: Dimensions.PADDING_SIZE_LARGE),
+                              onPressed: () {
+                                orderController
+                                    .verifyHappyCode(
+                                        orderController.otp,
+                                        orderController
+                                            .selectedServiceOrder.category)
+                                    .then((value) {
+                                  if (value) {
+                                    Get.until((route) =>
+                                        Get.currentRoute ==
+                                        RouteHelper.initial);
+                                  }
+                                });
+                                // Get.find<OrderController>()
+                                //     .updateOrderStatus(orderIndex, 'delivered')
+                                //     .then((success) {
+                                //   if (success) {
+                                //     Get.find<AuthController>().getProfile();
+                                //     // Get.find<OrderController>().getCurrentOrders();
+                                //     Get.offAllNamed(RouteHelper.getInitialRoute());
+                                //   }
+                                // });
+                              },
+                            )
+                          : Center(child: CircularProgressIndicator()),
+                ]),
+              );
+            }),
+          );
+        });
   }
 }

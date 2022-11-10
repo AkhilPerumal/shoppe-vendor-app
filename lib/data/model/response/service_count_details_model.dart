@@ -136,7 +136,7 @@ class TotalWorkDetails {
   int cancelledCount;
   int completedCount;
   int reassignedCount;
-  int averageRating;
+  var averageRating;
 
   factory TotalWorkDetails.fromJson(Map<String, dynamic> json) =>
       TotalWorkDetails(

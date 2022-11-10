@@ -114,7 +114,9 @@ class _SplashScreenState extends State<SplashScreen> {
             //Text(AppConstants.APP_NAME, style: robotoMedium.copyWith(fontSize: 25), textAlign: TextAlign.center),
             SizedBox(height: Dimensions.PADDING_SIZE_SMALL),
             Text('suffix_name'.tr,
-                style: robotoMedium, textAlign: TextAlign.center),
+                style: robotoMedium.copyWith(
+                    fontSize: Dimensions.FONT_SIZE_OVER_LARGE),
+                textAlign: TextAlign.center),
           ]),
         ),
       ),

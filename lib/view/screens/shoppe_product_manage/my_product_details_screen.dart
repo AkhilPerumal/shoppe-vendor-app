@@ -123,10 +123,16 @@ class MyProductDetailsScreen extends StatelessWidget {
                                 Icon(Icons.star,
                                     color: Theme.of(context).primaryColor,
                                     size: 20),
+                                SizedBox(
+                                  width: Dimensions.PADDING_SIZE_EXTRA_SMALL,
+                                ),
                                 Text(
-                                    shoppeController
-                                        .selectedProduct.ratings.average
-                                        .toStringAsFixed(1),
+                                    shoppeController.selectedProduct.ratings !=
+                                            null
+                                        ? shoppeController
+                                            .selectedProduct.ratings.average
+                                            .toStringAsFixed(1)
+                                        : '0',
                                     style: robotoRegular),
                                 SizedBox(width: Dimensions.PADDING_SIZE_SMALL),
                                 Text(

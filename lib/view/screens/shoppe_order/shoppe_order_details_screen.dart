@@ -274,31 +274,39 @@ class ShoppeOrderDetailsScreen extends StatelessWidget {
                                     description:
                                         'you_want_to_ignore_this_order'.tr,
                                     onYesPressed: () {
-                                      orderController
-                                          .shoppeOrderStatusUpdate(
-                                              orderID: orderController
-                                                  .selectedShoppeOrder.id,
-                                              orderModel: orderController
-                                                  .selectedShoppeOrder,
-                                              status: OrderStatus.REJECTED)
-                                          .then((isSuccess) {
-                                        if (isSuccess) {
-                                          Get.back();
-                                          orderController.selectedShoppeOrder
-                                              .status = OrderStatus.REJECTED;
+                                      if (!orderController.isLoading &&
                                           orderController
-                                              .setShoppeSelectedOrder(
-                                                  orderController
-                                                      .selectedShoppeOrder);
-                                          showCustomSnackBar('order_ignored'.tr,
-                                              isError: false);
-                                        } else {
-                                          Get.back();
-                                          showCustomSnackBar(
-                                              'Something went wrong!',
-                                              isError: false);
-                                        }
-                                      });
+                                                  .selectedShoppeOrder.status ==
+                                              OrderStatus.PROCESSING) {
+                                        orderController
+                                            .shoppeOrderStatusUpdate(
+                                                orderID: orderController
+                                                    .selectedShoppeOrder.id,
+                                                orderModel: orderController
+                                                    .selectedShoppeOrder,
+                                                status: OrderStatus.REJECTED)
+                                            .then((isSuccess) {
+                                          if (isSuccess) {
+                                            Get.back();
+                                            orderController.selectedShoppeOrder
+                                                .status = OrderStatus.REJECTED;
+                                            orderController
+                                                .setShoppeSelectedOrder(
+                                                    orderController
+                                                        .selectedShoppeOrder);
+                                            showCustomSnackBar(
+                                                'order_ignored'.tr,
+                                                isError: false);
+                                          } else {
+                                            Get.back();
+                                            showCustomSnackBar(
+                                                'Something went wrong!',
+                                                isError: false);
+                                          }
+                                        });
+                                      } else {
+                                        Get.back();
+                                      }
                                     },
                                   ),
                                   barrierDismissible: false),
@@ -370,38 +378,50 @@ class ShoppeOrderDetailsScreen extends StatelessWidget {
                                             ? "You are about to update order status to Dispatched"
                                             : "",
                                     onYesPressed: () {
-                                      orderController
-                                          .shoppeOrderStatusUpdate(
-                                              orderID: orderController
-                                                  .selectedShoppeOrder.id,
-                                              orderModel: orderController
-                                                  .selectedShoppeOrder,
-                                              status: orderController
-                                                          .selectedShoppeOrder
-                                                          .status ==
-                                                      OrderStatus.PROCESSING
-                                                  ? OrderStatus.CONFIRMED
-                                                  : OrderStatus.DISPATCHED)
-                                          .then((isSuccess) {
-                                        if (isSuccess) {
-                                          ProductOrderDetails orderDetails =
+                                      if (!orderController.isLoading &&
+                                          (orderController.selectedShoppeOrder
+                                                      .status ==
+                                                  OrderStatus.PROCESSING ||
                                               orderController
-                                                  .selectedShoppeOrder;
-                                          orderDetails.status = orderController
                                                       .selectedShoppeOrder
                                                       .status ==
-                                                  OrderStatus.PROCESSING
-                                              ? OrderStatus.CONFIRMED
-                                              : OrderStatus.DISPATCHED;
-                                          orderController
-                                              .setShoppeSelectedOrder(
-                                                  orderDetails);
-                                        } else {
-                                          showCustomSnackBar(
-                                              'Something went wrong!',
-                                              isError: false);
-                                        }
-                                      });
+                                                  OrderStatus.CONFIRMED)) {
+                                        orderController
+                                            .shoppeOrderStatusUpdate(
+                                                orderID: orderController
+                                                    .selectedShoppeOrder.id,
+                                                orderModel: orderController
+                                                    .selectedShoppeOrder,
+                                                status: orderController
+                                                            .selectedShoppeOrder
+                                                            .status ==
+                                                        OrderStatus.PROCESSING
+                                                    ? OrderStatus.CONFIRMED
+                                                    : OrderStatus.DISPATCHED)
+                                            .then((isSuccess) {
+                                          if (isSuccess) {
+                                            ProductOrderDetails orderDetails =
+                                                orderController
+                                                    .selectedShoppeOrder;
+                                            orderDetails.status =
+                                                orderController
+                                                            .selectedShoppeOrder
+                                                            .status ==
+                                                        OrderStatus.PROCESSING
+                                                    ? OrderStatus.CONFIRMED
+                                                    : OrderStatus.DISPATCHED;
+                                            orderController
+                                                .setShoppeSelectedOrder(
+                                                    orderDetails);
+                                          } else {
+                                            showCustomSnackBar(
+                                                'Something went wrong!',
+                                                isError: false);
+                                          }
+                                        });
+                                      } else {
+                                        Get.back();
+                                      }
                                     },
                                   ),
                                   barrierDismissible: false),

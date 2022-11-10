@@ -166,7 +166,28 @@ class NotificationScreen extends StatelessWidget {
                                           },
                                         ))))),
                       )
-                    : Center(child: Text('no_notification_found'.tr))
+                    : Center(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.warning_rounded,
+                              size: 50,
+                              color: Theme.of(context).disabledColor,
+                            ),
+                            SizedBox(
+                              height: Dimensions.PADDING_SIZE_SMALL,
+                            ),
+                            Text(
+                              'no_notification_found'.tr,
+                              style: robotoMedium.copyWith(
+                                  color: Theme.of(context).disabledColor,
+                                  fontSize: Dimensions.FONT_SIZE_LARGE),
+                            ),
+                          ],
+                        ),
+                      )
                 : Center(child: CircularProgressIndicator());
       }),
     );

@@ -4,6 +4,7 @@ import 'package:carclenx_vendor_app/view/screens/auth/registration_screen.dart';
 import 'package:carclenx_vendor_app/view/screens/auth/sign_in_screen.dart';
 import 'package:carclenx_vendor_app/view/screens/dashboard/dashboard_screen.dart';
 import 'package:carclenx_vendor_app/view/screens/html/html_viewer_screen.dart';
+import 'package:carclenx_vendor_app/view/screens/infoPage/infoPage.dart';
 import 'package:carclenx_vendor_app/view/screens/language/language_screen.dart';
 import 'package:carclenx_vendor_app/view/screens/notification/notification_screen.dart';
 import 'package:carclenx_vendor_app/view/screens/order/running_order_screen.dart';
@@ -35,6 +36,7 @@ class RouteHelper {
   static const String privacy = '/privacy-policy';
   static const String language = '/language';
   static const String update = '/update';
+  static const String info = '/info-page';
   static const String addProduct = '/add-new-product';
   static const String myProductDetails = '/my-product-details';
   static const String editProduct = '/edit-product-details';
@@ -59,6 +61,7 @@ class RouteHelper {
   static String getLanguageRoute() => '$language';
   static String getUpdateRoute(bool isUpdate) =>
       '$update?update=${isUpdate.toString()}';
+  static String getInfoPage(String page) => '$info?page=$page';
 
   static List<GetPage> routes = [
     GetPage(
@@ -131,5 +134,10 @@ class RouteHelper {
     GetPage(
         name: update,
         page: () => UpdateScreen(isUpdate: Get.parameters['update'] == 'true')),
+    GetPage(
+        name: info,
+        page: () => InformationPage(
+              title: Get.parameters['page'],
+            )),
   ];
 }

@@ -1,16 +1,14 @@
-import 'package:carclenx_vendor_app/controller/active_order_tab_controller.dart';
-import 'package:carclenx_vendor_app/controller/order_controller.dart';
 import 'package:carclenx_vendor_app/controller/order_history_tab_controller.dart';
 import 'package:carclenx_vendor_app/helper/enums.dart';
 import 'package:carclenx_vendor_app/util/dimensions.dart';
 import 'package:carclenx_vendor_app/util/images.dart';
 import 'package:carclenx_vendor_app/util/styles.dart';
 import 'package:carclenx_vendor_app/view/screens/order/order_history_tab_page.dart';
-import 'package:carclenx_vendor_app/view/screens/order/widget/history_order_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class OrderHistoryScreen extends StatelessWidget {
+  OrderHistoryScreen();
   final OrderHistoryTabController _tabx =
       Get.put(OrderHistoryTabController(length: 4));
   double tabHeight = 0;
@@ -24,9 +22,9 @@ class OrderHistoryScreen extends StatelessWidget {
           backgroundColor: Theme.of(context).primaryColor,
           // backgroundColor: Theme.of(context).secondaryHeaderColor,
           title: Text('order_history'.tr,
-              style: robotoRegular.copyWith(
+              style: robotoBold.copyWith(
                   fontSize: Dimensions.FONT_SIZE_LARGE,
-                  color: Theme.of(context).cardColor)),
+                  color: Theme.of(context).secondaryHeaderColor)),
           centerTitle: true,
           // backgroundColor: Theme.of(context).cardColor,
           elevation: 0,

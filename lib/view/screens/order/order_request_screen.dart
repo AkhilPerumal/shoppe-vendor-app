@@ -24,7 +24,7 @@ class OrderRequestScreen extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: Theme.of(context).primaryColor,
           title: Text('order_request'.tr,
-              style: robotoRegular.copyWith(
+              style: robotoBold.copyWith(
                   fontSize: Dimensions.FONT_SIZE_LARGE,
                   color: Theme.of(context).textTheme.bodyText1.color)),
           centerTitle: true,

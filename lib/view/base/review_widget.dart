@@ -7,69 +7,102 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class ReviewWidget extends StatelessWidget {
-  final FeedbackModel review;
+  final String productName;
+  final String rating;
+  final String description;
+  final String productImage;
+
   final bool hasDivider;
-  final bool fromRestaurant;
-  ReviewWidget(
-      {@required this.review,
-      @required this.hasDivider,
-      @required this.fromRestaurant});
+  ReviewWidget({
+    @required this.hasDivider,
+    @required this.productName,
+    @required this.rating,
+    @required this.description,
+    @required this.productImage,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      Row(children: [
-        ClipOval(
-          child: CustomImage(
-            image: '',
-            height: 60,
-            width: 60,
-            fit: BoxFit.cover,
-          ),
-        ),
-        SizedBox(width: Dimensions.PADDING_SIZE_SMALL),
-        Expanded(
-            child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-              Text(
-                'Product',
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: robotoMedium.copyWith(
-                    fontSize: Dimensions.FONT_SIZE_SMALL,
-                    color:
-                        Theme.of(context).textTheme.headline1.backgroundColor),
-              ),
-              SizedBox(height: Dimensions.PADDING_SIZE_EXTRA_SMALL),
-              RatingBar(
-                  rating: review.rating.toDouble(),
-                  ratingCount: null,
-                  size: 15),
-              fromRestaurant
-                  ? Text(
-                      'customer name',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: robotoMedium.copyWith(
-                          fontSize: Dimensions.FONT_SIZE_EXTRA_SMALL,
-                          color: Theme.of(context).textTheme.headline1.color),
-                    )
-                  : SizedBox(),
-              SizedBox(height: Dimensions.PADDING_SIZE_EXTRA_SMALL),
-              Text(review.description,
-                  style: robotoRegular.copyWith(
-                      fontSize: Dimensions.FONT_SIZE_EXTRA_SMALL,
-                      color: Theme.of(context).disabledColor)),
-            ])),
-      ]),
-      hasDivider
-          ? Padding(
-              padding: EdgeInsets.only(left: 70),
-              child: Divider(color: Theme.of(context).disabledColor),
+    return Container(
+      padding: EdgeInsets.symmetric(
+          horizontal: Dimensions.PADDING_SIZE_SMALL,
+          vertical: Dimensions.PADDING_SIZE_SMALL),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(Dimensions.RADIUS_SMALL),
+        boxShadow: [
+          BoxShadow(
+              color: Colors.grey[Get.isDarkMode ? 800 : 200],
+              spreadRadius: 1,
+              blurRadius: 5)
+        ],
+      ),
+      child: Column(children: [
+        Row(
+          children: [
+            Text(
+              "Review",
+              style: robotoRegular.copyWith(
+                  color: Theme.of(context).disabledColor),
             )
-          : SizedBox(),
-    ]);
+          ],
+        ),
+        SizedBox(
+          height: Dimensions.PADDING_SIZE_SMALL,
+        ),
+        Row(children: [
+          ClipOval(
+            child: CustomImage(
+              image: productImage,
+              height: 60,
+              width: 60,
+              fit: BoxFit.cover,
+            ),
+          ),
+          SizedBox(width: Dimensions.PADDING_SIZE_SMALL),
+          Expanded(
+              child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                Text(
+                  productName,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: robotoMedium.copyWith(
+                      fontSize: Dimensions.FONT_SIZE_SMALL,
+                      color: Theme.of(context)
+                          .textTheme
+                          .headline1
+                          .backgroundColor),
+                ),
+                SizedBox(height: Dimensions.PADDING_SIZE_EXTRA_SMALL),
+                RatingBar(
+                    rating: double.parse(rating), ratingCount: null, size: 15),
+                // fromRestaurant
+                //     ? Text(
+                //         'customer name',
+                //         maxLines: 1,
+                //         overflow: TextOverflow.ellipsis,
+                //         style: robotoMedium.copyWith(
+                //             fontSize: Dimensions.FONT_SIZE_EXTRA_SMALL,
+                //             color: Theme.of(context).textTheme.headline1.color),
+                //       )
+                //     : SizedBox(),
+                SizedBox(height: Dimensions.PADDING_SIZE_EXTRA_SMALL),
+                Text(description != null ? description : "No comments",
+                    style: robotoRegular.copyWith(
+                        fontSize: Dimensions.FONT_SIZE_EXTRA_SMALL,
+                        color: Theme.of(context).disabledColor)),
+              ])),
+        ]),
+        // hasDivider
+        //     ? Padding(
+        //         padding: EdgeInsets.only(left: 70),
+        //         child: Divider(color: Theme.of(context).disabledColor),
+        //       )
+        //     : SizedBox(),
+      ]),
+    );
   }
 }

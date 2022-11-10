@@ -88,7 +88,10 @@ class MyProductWidget extends StatelessWidget {
                           SizedBox(height: Dimensions.PADDING_SIZE_EXTRA_SMALL),
                           RatingBar(
                             rating: double.parse(
-                                productDetails.ratings.average.toString()),
+                                (productDetails.ratings != null &&
+                                        productDetails.ratings.average != null)
+                                    ? productDetails.ratings.average.toString()
+                                    : '0.0'),
                             size: 12,
                             ratingCount: productDetails.ratings != null
                                 ? (productDetails.ratings.oneStar.count +
@@ -96,7 +99,7 @@ class MyProductWidget extends StatelessWidget {
                                     productDetails.ratings.threeStar.count +
                                     productDetails.ratings.fourStar.count +
                                     productDetails.ratings.fiveStar.count)
-                                : 0.0,
+                                : 0,
                           ),
                           SizedBox(height: Dimensions.PADDING_SIZE_EXTRA_SMALL),
                           Row(children: [

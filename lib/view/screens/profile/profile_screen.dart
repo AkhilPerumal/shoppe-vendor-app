@@ -181,14 +181,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             icon: Icons.list,
                             title: 'terms_condition'.tr,
                             onTap: () {
-                              Get.toNamed(RouteHelper.getTermsRoute());
+                              Get.toNamed(RouteHelper.getInfoPage(
+                                  'Terms and Conditions'));
                             }),
                         SizedBox(height: Dimensions.PADDING_SIZE_SMALL),
                         ProfileButton(
                             icon: Icons.privacy_tip,
                             title: 'privacy_policy'.tr,
                             onTap: () {
-                              Get.toNamed(RouteHelper.getPrivacyRoute());
+                              Get.toNamed(RouteHelper.getInfoPage(
+                                  'Privacy and Policy'));
+                            }),
+                        SizedBox(height: Dimensions.PADDING_SIZE_SMALL),
+                        ProfileButton(
+                            icon: Icons.question_mark_rounded,
+                            title: 'About Us',
+                            onTap: () {
+                              Get.toNamed(RouteHelper.getInfoPage('About Us'));
                             }),
                         SizedBox(height: Dimensions.PADDING_SIZE_SMALL),
                         // ProfileButton(

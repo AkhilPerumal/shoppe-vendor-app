@@ -20,8 +20,8 @@ class SignInScreen extends StatelessWidget {
     String _countryDialCode = "+91";
     // _nameController.text = "syedalitest";
     // _passwordController.text = "syedalitest";
-    _nameController.text = "akhil.dev.vendor";
-    _passwordController.text = "akhil.dev.vendor";
+    // _nameController.text = "akhil.dev.vendor";
+    // _passwordController.text = "akhil.dev.vendor";
     // _nameController.text = "akhil.test.registration.1";
     // _passwordController.text = "akhil.test.registration.1";
     // _nameController.text = "akhil.test.2";

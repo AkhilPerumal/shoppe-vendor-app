@@ -72,13 +72,15 @@ class HistoryOrderWidget extends StatelessWidget {
               ]),
               SizedBox(height: Dimensions.PADDING_SIZE_EXTRA_SMALL),
               Text(
-                'status : '.tr +
+                'Status : '.tr +
                     EnumConverter.orderStatusToTitle(orderModel.status)
                         .toString()
                         .toUpperCase(),
                 style: robotoMedium.copyWith(
                     fontSize: Dimensions.FONT_SIZE_SMALL,
-                    color: Theme.of(context).primaryColor),
+                    color: orderModel.status == OrderStatus.COMPLETED
+                        ? Colors.green
+                        : Colors.red),
               ),
               SizedBox(height: Dimensions.PADDING_SIZE_EXTRA_SMALL),
               Row(children: [

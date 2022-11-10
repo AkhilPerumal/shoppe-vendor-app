@@ -168,27 +168,33 @@ class OrderProductWidget extends StatelessWidget {
                                 title: 'are_you_sure_to_ignore'.tr,
                                 description: 'you_want_to_ignore_this_order'.tr,
                                 onYesPressed: () {
-                                  orderController
-                                      .shoppeOrderStatusUpdate(
-                                          orderID: orderdetails.id,
-                                          orderModel: orderdetails,
-                                          status: OrderStatus.REJECTED)
-                                      .then((isSuccess) {
-                                    if (isSuccess) {
-                                      Get.back();
-                                      orderdetails.status =
-                                          OrderStatus.REJECTED;
-                                      orderController
-                                          .setShoppeSelectedOrder(orderdetails);
-                                      showCustomSnackBar('order_ignored'.tr,
-                                          isError: false);
-                                    } else {
-                                      Get.back();
-                                      showCustomSnackBar(
-                                          'Something went wrong!',
-                                          isError: false);
-                                    }
-                                  });
+                                  if (!orderController.isLoading &&
+                                      orderdetails.status ==
+                                          OrderStatus.PROCESSING) {
+                                    orderController
+                                        .shoppeOrderStatusUpdate(
+                                            orderID: orderdetails.id,
+                                            orderModel: orderdetails,
+                                            status: OrderStatus.REJECTED)
+                                        .then((isSuccess) {
+                                      if (isSuccess) {
+                                        Get.back();
+                                        orderdetails.status =
+                                            OrderStatus.REJECTED;
+                                        orderController.setShoppeSelectedOrder(
+                                            orderdetails);
+                                        showCustomSnackBar('order_ignored'.tr,
+                                            isError: false);
+                                      } else {
+                                        Get.back();
+                                        showCustomSnackBar(
+                                            'Something went wrong!',
+                                            isError: false);
+                                      }
+                                    });
+                                  } else {
+                                    Get.back();
+                                  }
                                 },
                               ),
                               barrierDismissible: false),
@@ -225,25 +231,31 @@ class OrderProductWidget extends StatelessWidget {
                                 title: 'are_you_sure_to_accept'.tr,
                                 description: 'you_want_to_accept_this_order'.tr,
                                 onYesPressed: () {
-                                  orderController
-                                      .shoppeOrderStatusUpdate(
-                                          orderID: orderdetails.id,
-                                          orderModel: orderdetails,
-                                          status: OrderStatus.CONFIRMED)
-                                      .then((isSuccess) {
-                                    if (isSuccess) {
-                                      orderdetails.status =
-                                          OrderStatus.CONFIRMED;
-                                      orderController
-                                          .setShoppeSelectedOrder(orderdetails);
-                                      Get.toNamed(
-                                          RouteHelper.shoppeOrderDetails);
-                                    } else {
-                                      showCustomSnackBar(
-                                          'Something went wrong!',
-                                          isError: false);
-                                    }
-                                  });
+                                  if (!orderController.isLoading &&
+                                      orderdetails.status ==
+                                          OrderStatus.PROCESSING) {
+                                    orderController
+                                        .shoppeOrderStatusUpdate(
+                                            orderID: orderdetails.id,
+                                            orderModel: orderdetails,
+                                            status: OrderStatus.CONFIRMED)
+                                        .then((isSuccess) {
+                                      if (isSuccess) {
+                                        orderdetails.status =
+                                            OrderStatus.CONFIRMED;
+                                        orderController.setShoppeSelectedOrder(
+                                            orderdetails);
+                                        Get.toNamed(
+                                            RouteHelper.shoppeOrderDetails);
+                                      } else {
+                                        showCustomSnackBar(
+                                            'Something went wrong!',
+                                            isError: false);
+                                      }
+                                    });
+                                  } else {
+                                    Get.back();
+                                  }
                                 },
                               ),
                               barrierDismissible: false),
@@ -293,10 +305,40 @@ class OrderProductWidget extends StatelessWidget {
                               ),
                             ),
                           )
-                        : CustomButton(
-                            height: 30,
-                            buttonText: EnumConverter.orderStatusToTitle(
-                                orderdetails.status));
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                  height: 30,
+                                  width: Get.width * 0.8,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                      color: (orderdetails.status ==
+                                                  OrderStatus.COMPLETED ||
+                                              orderdetails.status ==
+                                                  OrderStatus
+                                                      .REFUND_COMPLETED ||
+                                              orderdetails.status ==
+                                                  OrderStatus
+                                                      .REPLACEMENT_COMPLETED ||
+                                              orderdetails.status ==
+                                                  OrderStatus.CONFIRMED)
+                                          ? Colors.green
+                                          : orderdetails.status ==
+                                                  OrderStatus.DISPATCHED
+                                              ? Colors.blue
+                                              : Colors.red,
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(5))),
+                                  child: Text(
+                                    EnumConverter.orderStatusToTitle(
+                                        orderdetails.status),
+                                    textAlign: TextAlign.center,
+                                    style: robotoBold.copyWith(
+                                        color: Colors.white),
+                                  )),
+                            ],
+                          );
               })
             ],
           ),

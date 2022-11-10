@@ -12,6 +12,8 @@ import 'package:carclenx_vendor_app/view/base/confirmation_dialog.dart';
 import 'package:carclenx_vendor_app/view/base/custom_app_bar.dart';
 import 'package:carclenx_vendor_app/view/base/custom_button.dart';
 import 'package:carclenx_vendor_app/view/base/custom_snackbar.dart';
+import 'package:carclenx_vendor_app/view/base/rating_bar.dart';
+import 'package:carclenx_vendor_app/view/base/review_widget.dart';
 import 'package:carclenx_vendor_app/view/screens/order/widget/info_card.dart';
 import 'package:carclenx_vendor_app/view/base/slider_button.dart';
 import 'package:carclenx_vendor_app/view/screens/service_order/widget/verify_check_list_sheet.dart';
@@ -108,6 +110,39 @@ class ServiceOrderDetailsScreen extends StatelessWidget {
                                 orderController.selectedServiceOrder.status !=
                                     OrderStatus.CANCELLED,
                       ),
+                      SizedBox(
+                          height:
+                              orderController.selectedServiceOrder.feedbackId !=
+                                      null
+                                  ? Dimensions.PADDING_SIZE_SMALL
+                                  : 0),
+                      orderController.selectedServiceOrder.feedbackId != null
+                          ? Column(
+                              children: [
+                                // RatingBar(
+                                //     rating: double.parse(orderController
+                                //         .selectedServiceOrder.feedbackId.rating
+                                //         .toString()),
+                                //     ratingCount: 1),
+                                ReviewWidget(
+                                  productImage: orderController
+                                      .selectedServiceOrder
+                                      .serviceId
+                                      .thumbURL[0],
+                                  productName: orderController
+                                      .selectedServiceOrder.serviceId.name,
+                                  hasDivider: true,
+                                  description: orderController
+                                      .selectedServiceOrder
+                                      .feedbackId
+                                      .description,
+                                  rating: orderController
+                                      .selectedServiceOrder.feedbackId.rating
+                                      .toString(),
+                                )
+                              ],
+                            )
+                          : SizedBox(),
                       SizedBox(height: Dimensions.PADDING_SIZE_LARGE),
                       Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -317,31 +352,42 @@ class ServiceOrderDetailsScreen extends StatelessWidget {
                                       description:
                                           'you_want_to_ignore_this_order'.tr,
                                       onYesPressed: () {
-                                        orderController
-                                            .serviceOrderStatusUpdate(
-                                                orderID: orderController
-                                                    .selectedServiceOrder.id,
-                                                orderModel: orderController
-                                                    .selectedServiceOrder,
-                                                status: OrderStatus.REJECTED)
-                                            .then((isSuccess) {
-                                          if (isSuccess) {
-                                            Get.back();
-                                            OrderModel order = orderController
-                                                .selectedServiceOrder;
-                                            order.status = OrderStatus.REJECTED;
-                                            orderController
-                                                .setServiceSelectedOrder(order);
-                                            showCustomSnackBar(
-                                                'order_ignored'.tr,
-                                                isError: false);
-                                          } else {
-                                            Get.back();
-                                            showCustomSnackBar(
-                                                'Something went wrong!',
-                                                isError: false);
-                                          }
-                                        });
+                                        if (!orderController.isLoading &&
+                                                orderController
+                                                        .selectedServiceOrder
+                                                        .status ==
+                                                    OrderStatus.ACTIVE ||
+                                            orderController.selectedServiceOrder
+                                                    .status ==
+                                                OrderStatus.REASSIGNED) {
+                                          orderController
+                                              .serviceOrderStatusUpdate(
+                                                  orderID: orderController
+                                                      .selectedServiceOrder.id,
+                                                  orderModel: orderController
+                                                      .selectedServiceOrder,
+                                                  status: OrderStatus.REJECTED)
+                                              .then((isSuccess) {
+                                            if (isSuccess) {
+                                              Get.back();
+                                              OrderModel order = orderController
+                                                  .selectedServiceOrder;
+                                              order.status =
+                                                  OrderStatus.REJECTED;
+                                              orderController
+                                                  .setServiceSelectedOrder(
+                                                      order);
+                                              showCustomSnackBar(
+                                                  'order_ignored'.tr,
+                                                  isError: false);
+                                            } else {
+                                              Get.back();
+                                              showCustomSnackBar(
+                                                  'Something went wrong!',
+                                                  isError: false);
+                                            }
+                                          });
+                                        }
                                       },
                                     ),
                                     barrierDismissible: false),
@@ -374,49 +420,78 @@ class ServiceOrderDetailsScreen extends StatelessWidget {
                                   child: CustomButton(
                                 height: 40,
                                 buttonText: 'accept'.tr,
-                                onPressed: () => Get.dialog(
-                                    ConfirmationDialog(
-                                      icon: Images.warning,
-                                      title: 'are_you_sure_to_accept'.tr,
-                                      description:
-                                          'you_want_to_accept_this_order'.tr,
-                                      onYesPressed: () {
-                                        orderController
-                                            .serviceOrderStatusUpdate(
-                                                orderID: orderController
-                                                    .selectedServiceOrder.id,
-                                                orderModel: orderController
-                                                    .selectedServiceOrder,
-                                                status: orderController
-                                                                .selectedServiceOrder
-                                                                .status ==
-                                                            OrderStatus
-                                                                .ACTIVE ||
-                                                        orderController
-                                                                .selectedServiceOrder
-                                                                .status ==
-                                                            OrderStatus
-                                                                .REASSIGNED
-                                                    ? OrderStatus.ACCEPTED
-                                                    : OrderStatus.COMPLETED)
-                                            .then((isSuccess) {
-                                          if (isSuccess) {
-                                            // onTap();
-                                            OrderModel order = orderController
-                                                .selectedServiceOrder;
-                                            orderController.selectedServiceOrder
-                                                .status = OrderStatus.ACCEPTED;
-                                            orderController
-                                                .setServiceSelectedOrder(order);
-                                          } else {
-                                            showCustomSnackBar(
-                                                'Something went wrong!',
-                                                isError: false);
-                                          }
-                                        });
-                                      },
-                                    ),
-                                    barrierDismissible: false),
+                                onPressed: () {
+                                  if (orderController
+                                              .selectedServiceOrder.status ==
+                                          OrderStatus.ACTIVE ||
+                                      orderController
+                                              .selectedServiceOrder.status ==
+                                          OrderStatus.REASSIGNED) {
+                                    Get.dialog(
+                                        ConfirmationDialog(
+                                          icon: Images.warning,
+                                          title: 'are_you_sure_to_accept'.tr,
+                                          description:
+                                              'you_want_to_accept_this_order'
+                                                  .tr,
+                                          onYesPressed: () {
+                                            if (!orderController.isLoading &&
+                                                (orderController
+                                                            .selectedServiceOrder
+                                                            .status ==
+                                                        OrderStatus.ACTIVE ||
+                                                    orderController
+                                                            .selectedServiceOrder
+                                                            .status ==
+                                                        OrderStatus
+                                                            .REASSIGNED)) {
+                                              orderController
+                                                  .serviceOrderStatusUpdate(
+                                                      orderID: orderController
+                                                          .selectedServiceOrder
+                                                          .id,
+                                                      orderModel: orderController
+                                                          .selectedServiceOrder,
+                                                      status: orderController
+                                                                      .selectedServiceOrder
+                                                                      .status ==
+                                                                  OrderStatus
+                                                                      .ACTIVE ||
+                                                              orderController
+                                                                      .selectedServiceOrder
+                                                                      .status ==
+                                                                  OrderStatus
+                                                                      .REASSIGNED
+                                                          ? OrderStatus.ACCEPTED
+                                                          : OrderStatus
+                                                              .COMPLETED)
+                                                  .then((isSuccess) {
+                                                if (isSuccess) {
+                                                  // onTap();
+                                                  OrderModel order =
+                                                      orderController
+                                                          .selectedServiceOrder;
+                                                  orderController
+                                                          .selectedServiceOrder
+                                                          .status =
+                                                      OrderStatus.ACCEPTED;
+                                                  orderController
+                                                      .setServiceSelectedOrder(
+                                                          order);
+                                                } else {
+                                                  showCustomSnackBar(
+                                                      'Something went wrong!',
+                                                      isError: false);
+                                                }
+                                              });
+                                            } else {
+                                              Get.back();
+                                            }
+                                          },
+                                        ),
+                                        barrierDismissible: false);
+                                  }
+                                },
                               )),
                             ])
                           : _showSlider
@@ -438,33 +513,41 @@ class ServiceOrderDetailsScreen extends StatelessWidget {
                                                       'order_start_alert_description'
                                                           .tr,
                                                   onYesPressed: () {
-                                                    orderController
-                                                        .serviceOrderStatusUpdate(
-                                                            orderID: orderController
-                                                                .selectedServiceOrder
-                                                                .id,
-                                                            orderModel:
-                                                                orderController
-                                                                    .selectedServiceOrder,
-                                                            status: OrderStatus
-                                                                .IN_PROGRESS)
-                                                        .then((isSuccess) {
-                                                      if (isSuccess) {
-                                                        OrderModel order =
-                                                            orderController
-                                                                .selectedServiceOrder;
-                                                        order.status =
-                                                            OrderStatus
-                                                                .IN_PROGRESS;
-                                                        orderController
-                                                            .setServiceSelectedOrder(
-                                                                order);
-                                                      } else {
-                                                        showCustomSnackBar(
-                                                            'Something went wrong!',
-                                                            isError: false);
-                                                      }
-                                                    });
+                                                    if (orderController
+                                                            .selectedServiceOrder
+                                                            .status ==
+                                                        OrderStatus.ACCEPTED) {
+                                                      orderController
+                                                          .serviceOrderStatusUpdate(
+                                                              orderID:
+                                                                  orderController
+                                                                      .selectedServiceOrder
+                                                                      .id,
+                                                              orderModel:
+                                                                  orderController
+                                                                      .selectedServiceOrder,
+                                                              status: OrderStatus
+                                                                  .IN_PROGRESS)
+                                                          .then((isSuccess) {
+                                                        if (isSuccess) {
+                                                          OrderModel order =
+                                                              orderController
+                                                                  .selectedServiceOrder;
+                                                          order.status =
+                                                              OrderStatus
+                                                                  .IN_PROGRESS;
+                                                          orderController
+                                                              .setServiceSelectedOrder(
+                                                                  order);
+                                                        } else {
+                                                          showCustomSnackBar(
+                                                              'Something went wrong!',
+                                                              isError: false);
+                                                        }
+                                                      });
+                                                    } else {
+                                                      Get.back();
+                                                    }
                                                   }),
                                               barrierDismissible: false);
                                         },
