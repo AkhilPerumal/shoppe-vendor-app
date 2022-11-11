@@ -20,8 +20,8 @@ import 'package:url_strategy/url_strategy.dart';
 import 'controller/auth_controller.dart';
 import 'helper/get_di.dart' as di;
 
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
+// final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+//     FlutterLocalNotificationsPlugin();
 
 Future<void> main() async {
   if (!GetPlatform.isWeb) {
@@ -29,13 +29,14 @@ Future<void> main() async {
   }
   setPathUrlStrategy();
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+  // await Firebase.initializeApp();
+  // FirebaseAnalytics analytics = FirebaseAnalytics.instance;
   Map<String, Map<String, String>> _languages = await di.init();
 
   try {
     if (GetPlatform.isMobile) {
-      await NotificationHelper.initialize(flutterLocalNotificationsPlugin);
+      // await NotificationHelper.initialize(flutterLocalNotificationsPlugin);
+      await NotificationHelper().setupInteractedMessage();
       FirebaseMessaging.onBackgroundMessage(myBackgroundMessageHandler);
     }
   } catch (e) {}

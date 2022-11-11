@@ -3,11 +3,11 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>968510000223-8uoepc4oec8ac511bm24ksq2ttt64sjq.apps.googleusercontent.com</string>
+	<string>968510000223-89fbel9vqjqfmi47jdqs40gs4fhl2ntq.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.968510000223-8uoepc4oec8ac511bm24ksq2ttt64sjq</string>
+	<string>com.googleusercontent.apps.968510000223-89fbel9vqjqfmi47jdqs40gs4fhl2ntq</string>
 	<key>ANDROID_CLIENT_ID</key>
-	<string>968510000223-0pc8ufep82ktbknpbl498lqs1f706i59.apps.googleusercontent.com</string>
+	<string>968510000223-06np8qaslk550qssc0mpnngpeq1mvatu.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
 	<string>AIzaSyBVVDkA88M8PTTq9qU13MpA_B0S3jwCqnU</string>
 	<key>GCM_SENDER_ID</key>
@@ -31,7 +31,7 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:968510000223:ios:be7d8c334dac5af459dfea</string>
+	<string>1:968510000223:ios:374400e6b82fa91659dfea</string>
 	<key>DATABASE_URL</key>
 	<string>https://carclenx.firebaseio.com</string>
 </dict>

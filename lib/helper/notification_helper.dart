@@ -5,6 +5,8 @@ import 'package:carclenx_vendor_app/controller/order_controller.dart';
 import 'package:carclenx_vendor_app/data/model/body/notification_payload_model.dart';
 import 'package:carclenx_vendor_app/helper/enums.dart';
 import 'package:carclenx_vendor_app/helper/route_helper.dart';
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -15,72 +17,97 @@ import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
 
 class NotificationHelper {
-  static Future<void> initialize(
-      FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin) async {
-    var androidInitialize =
-        new AndroidInitializationSettings('notification_icon');
-    var iOSInitialize = new DarwinInitializationSettings(
-        requestSoundPermission: false,
-        requestBadgePermission: false,
-        requestAlertPermission: false,
-        onDidReceiveLocalNotification: onDidReceiveLocalNotification);
-    var initializationsSettings = new InitializationSettings(
-        android: androidInitialize, iOS: iOSInitialize);
+  Future<void> setupInteractedMessage() async {
+    await Firebase.initializeApp();
 
-// when app is closed
-    final details =
-        await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
-    if (details != null && details.didNotificationLaunchApp) {
-      navigateTo(
-          Payload.fromJson(jsonDecode(details.notificationResponse.payload)));
-    }
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      // navigateTo(Payload.fromJson(message.data));
+    });
+    enableIOSNotifications();
+    await registerNotificationListeners();
+  }
 
-    flutterLocalNotificationsPlugin.initialize(
-      initializationsSettings,
-      onDidReceiveNotificationResponse:
-          (NotificationResponse notificationResponse) async {
-        if (notificationResponse.payload != null &&
-            notificationResponse.payload != '') {
-          navigateTo(
-              Payload.fromJson(jsonDecode(notificationResponse.payload)));
-        }
-      },
-      onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
-    );
-
-    final bool result = await flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-            IOSFlutterLocalNotificationsPlugin>()
-        ?.requestPermissions(
-          alert: true,
-          badge: true,
-          sound: true,
-        );
-
-    const AndroidNotificationChannel channel = AndroidNotificationChannel(
-      'pexa_partner', // id
-      'High Importance Notifications', // title
-      description:
-          'This channel is used for important notifications.', // description
-      sound: RawResourceAndroidNotificationSound('notification'),
-      importance: Importance.max, enableVibration: true, playSound: true,
-    );
+  Future<void> registerNotificationListeners() async {
+    final AndroidNotificationChannel channel = androidNotificationChannel();
+    final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+        FlutterLocalNotificationsPlugin();
     await flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin>()
         ?.createNotificationChannel(channel);
-
+    const AndroidInitializationSettings androidSettings =
+        AndroidInitializationSettings('notification_icon');
+    const DarwinInitializationSettings iOSSettings =
+        DarwinInitializationSettings(
+      requestSoundPermission: false,
+      requestBadgePermission: false,
+      requestAlertPermission: false,
+    );
+    const InitializationSettings initSettings =
+        InitializationSettings(android: androidSettings, iOS: iOSSettings);
+    flutterLocalNotificationsPlugin.initialize(
+      initSettings,
+      // onDidReceiveNotificationResponse: (NotificationResponse details) {
+      //   print(details.payload.toString());
+      // },
+      // onDidReceiveBackgroundNotificationResponse: (details) {
+      //   print(details.payload.toString());
+      // },
+    );
+    // onMessage is called when the app is in foreground and a notification is received
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print("onMessage: ${message.data}");
-      NotificationHelper.showNotification(
-          message, flutterLocalNotificationsPlugin, false);
-    });
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      navigateTo(Payload.fromJson(message.data));
+      // homeController.getHomeData(
+      //   withLoading: false,
+      // );
+      print('firebase_message' + message.toString());
+      final RemoteNotification notification = message.notification;
+      final AndroidNotification android = message.notification?.android;
+// If `onMessage` is triggered with a notification, construct our own
+      // local notification to show to users using the created channel.
+      if (notification != null && android != null) {
+        // flutterLocalNotificationsPlugin.show(
+        //   notification.hashCode,
+        //   notification.title,
+        //   notification.body,
+        //   NotificationDetails(
+        //     android: AndroidNotificationDetails(
+        //       channel.id,
+        //       channel.name,
+        //       channelDescription: channel.description,
+        //       playSound: true,
+        //       importance: Importance.high,
+        //       priority: Priority.high,
+        //       color: Theme.of(Get.context).primaryColor,
+        //       sound: RawResourceAndroidNotificationSound('notification'),
+        //     ),
+        //   ),
+        // );
+        showNotification(message, flutterLocalNotificationsPlugin, false);
+      }
     });
   }
 
-  static Future<void> showNotification(RemoteMessage message,
+  Future<void> enableIOSNotifications() async {
+    await FirebaseMessaging.instance
+        .setForegroundNotificationPresentationOptions(
+      alert: true, // Required to display a heads up notification
+      badge: true,
+      sound: true,
+    );
+  }
+
+  AndroidNotificationChannel androidNotificationChannel() =>
+      const AndroidNotificationChannel(
+        'pexa_partner', // id
+        'pexapartner', // title
+        description:
+            'This channel is used for important notifications.', // description
+        importance: Importance.max,
+        playSound: true,
+        sound: RawResourceAndroidNotificationSound('notification'),
+      );
+
+  Future<void> showNotification(RemoteMessage message,
       FlutterLocalNotificationsPlugin fln, bool data) async {
     if (!GetPlatform.isIOS) {
       String _title;
@@ -131,8 +158,8 @@ class NotificationHelper {
     }
   }
 
-  static Future<void> showTextNotification(String title, String body,
-      String payload, FlutterLocalNotificationsPlugin fln) async {
+  Future<void> showTextNotification(String title, String body, String payload,
+      FlutterLocalNotificationsPlugin fln) async {
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
       'pexa_partner',
@@ -147,7 +174,7 @@ class NotificationHelper {
     await fln.show(0, title, body, platformChannelSpecifics, payload: payload);
   }
 
-  static Future<void> showBigTextNotification(String title, String body,
+  Future<void> showBigTextNotification(String title, String body,
       String orderID, FlutterLocalNotificationsPlugin fln) async {
     BigTextStyleInformation bigTextStyleInformation = BigTextStyleInformation(
       body,
@@ -171,7 +198,7 @@ class NotificationHelper {
     await fln.show(0, title, body, platformChannelSpecifics, payload: orderID);
   }
 
-  static Future<void> showBigPictureNotificationHiddenLargeIcon(
+  Future<void> showBigPictureNotificationHiddenLargeIcon(
       String title,
       String body,
       String payload,
@@ -206,8 +233,7 @@ class NotificationHelper {
     await fln.show(0, title, body, platformChannelSpecifics, payload: payload);
   }
 
-  static Future<String> _downloadAndSaveFile(
-      String url, String fileName) async {
+  Future<String> _downloadAndSaveFile(String url, String fileName) async {
     final Directory directory = await getApplicationDocumentsDirectory();
     final String filePath = '${directory.path}/$fileName';
     final http.Response response = await http.get(Uri.parse(url));
@@ -216,7 +242,7 @@ class NotificationHelper {
     return filePath;
   }
 
-  static void onDidReceiveLocalNotification(
+  void onDidReceiveLocalNotification(
       int id, String title, String body, String payload) {
     showDialog(
       context: Get.context,
@@ -242,7 +268,7 @@ class NotificationHelper {
     );
   }
 
-  static void navigateTo(Payload payload) {
+  void navigateTo(Payload payload) {
     if (payload.assetType == CategoryType.CAR_SHOPPE) {
       Get.find<OrderController>()
           .getOrderWithId(payload.id, payload.assetType)
@@ -258,13 +284,28 @@ class NotificationHelper {
   }
 
   @pragma('vm:entry-point')
-  static void notificationTapBackground(
-      NotificationResponse notificationResponse) {
+  void notificationTapBackground(NotificationResponse notificationResponse) {
     if (notificationResponse.payload != null) {
       navigateTo(Payload.fromJson(json.decode(notificationResponse.payload)));
     }
   }
 }
+
+enableIOSNotifications() async {
+  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+    alert: true, // Required to display a heads up notification
+    badge: true,
+    sound: true,
+  );
+}
+
+androidNotificationChannel() => AndroidNotificationChannel(
+      'pexa_partner', // id
+      'pexapartner', // title
+      description:
+          'This channel is used for important notifications.', // description
+      importance: Importance.max,
+    );
 
 Future<dynamic> myBackgroundMessageHandler(RemoteMessage message) async {
   print(
